@@ -1,3 +1,5 @@
+const path = require("path");
+
 const studentMentorsRoutes =
     require("./src/routes/student-mentors.routes");
 
@@ -152,6 +154,14 @@ app.use(
     studentMentorsRoutes
 );
 
+app.use("/css", express.static(path.join(__dirname, "../css")));
+app.use("/js", express.static(path.join(__dirname, "../js")));
+app.use("/pages", express.static(path.join(__dirname, "../pages")));
+
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "../index.html"));
+});
+
 /* HOME */
 
 app.get("/", (req,res) => {
@@ -205,8 +215,7 @@ app.get("/test-db", async (req,res) => {
 
 /* PORT */
 
-const PORT =
-3000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
 
