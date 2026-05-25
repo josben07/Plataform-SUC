@@ -1,0 +1,112 @@
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
+
+body{background:#020617;color:white}
+
+.mentor-page{display:flex;min-height:100vh}
+
+.mentor-sidebar{width:270px;background:#0F172A;padding:28px}
+
+.mentor-logo{text-align:center;font-size:1.8rem;font-weight:900;margin-bottom:24px}
+
+.mentor-menu{display:flex;flex-direction:column;gap:12px}
+
+.mentor-menu a{
+    text-decoration:none;
+    color:rgba(255,255,255,.72);
+    padding:16px;
+    border-radius:16px;
+}
+
+.mentor-menu a:hover,
+.active-link{
+    background:rgba(108,77,255,.16);
+    color:white;
+}
+
+.mentor-main{flex:1;padding:42px}
+
+.mentor-header span{
+    color:#8B7CFF;
+    font-size:.8rem;
+    font-weight:900;
+    letter-spacing:2px;
+}
+
+.mentor-header h1{font-size:3rem;margin-top:10px}
+
+.mentor-header p{color:rgba(255,255,255,.62);margin-top:10px}
+
+.students-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:24px;
+    margin-top:38px;
+}
+
+.student-card{
+    background:#0F172A;
+    border-radius:28px;
+    padding:28px;
+}
+
+.student-avatar{
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#6C4DFF,#8B7CFF);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    margin-bottom:18px;
+}
+
+.student-card p{
+    margin-top:10px;
+    color:rgba(255,255,255,.62);
+}
+
+.student-meta{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+    flex-wrap:wrap;
+}
+
+.student-pill{
+    padding:8px 12px;
+    border-radius:999px;
+    background:rgba(108,77,255,.14);
+    color:#8B7CFF;
+    font-size:.8rem;
+    font-weight:800;
+}
+
+.empty-state{
+    grid-column:1/-1;
+    background:#0F172A;
+    border-radius:28px;
+    padding:40px;
+    text-align:center;
+}
+
+.app-toast{
+    position:fixed;
+    bottom:32px;
+    right:32px;
+    background:linear-gradient(135deg,#6C4DFF,#8B7CFF);
+    color:white;
+    padding:18px 24px;
+    border-radius:18px;
+    font-weight:800;
+    opacity:0;
+    transform:translateY(30px);
+    pointer-events:none;
+    transition:.3s ease;
+    z-index:9999;
+}
+
+.app-toast.show-toast{
+    opacity:1;
+    transform:translateY(0);
+}

@@ -1,0 +1,59 @@
+.fade-up{
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+    opacity 0.8s ease,
+    transform 0.8s ease;
+}
+
+.fade-up.show{
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* FLOATING EFFECT */
+
+.dashboard-main{
+    animation: floating 5s ease-in-out infinite;
+}
+
+@keyframes floating{
+
+    0%{
+        transform: translateY(0px);
+    }
+
+    50%{
+        transform: translateY(-12px);
+    }
+
+    100%{
+        transform: translateY(0px);
+    }
+
+}
+
+/* CARD HOVER */
+
+.feature-card,
+.course-card,
+.mentor-card-item,
+.board-task-card{
+
+    transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+
+}
+
+.feature-card:hover,
+.course-card:hover,
+.mentor-card-item:hover,
+.board-task-card:hover{
+
+    transform: translateY(-10px);
+
+    box-shadow:
+    0px 20px 50px rgba(15,15,20,0.10);
+
+}

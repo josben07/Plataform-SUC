@@ -1,0 +1,670 @@
+/* ========================= */
+/* HERO */
+/* ========================= */
+
+.courses-hero {
+
+    padding:
+        140px 0 80px;
+
+    text-align: center;
+}
+
+.courses-hero h1 {
+
+    font-size: 4rem;
+
+    line-height: 1.1;
+
+    max-width: 800px;
+
+    margin:
+        24px auto;
+}
+
+.courses-hero p {
+
+    max-width: 720px;
+
+    margin:
+        auto;
+
+    line-height: 1.9;
+
+    color: var(--gray);
+}
+
+/* SEARCH */
+
+.courses-search {
+
+    margin-top: 50px;
+
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+}
+
+.courses-search input {
+
+    width: 100%;
+    max-width: 520px;
+
+    padding: 18px 22px;
+
+    border-radius: 18px;
+
+    border: 1px solid var(--border);
+
+    background: var(--card-bg);
+
+    color: var(--dark);
+
+    font-size: 1rem;
+
+    outline: none;
+}
+
+.courses-search button {
+
+    padding:
+        18px 28px;
+
+    border-radius: 18px;
+
+    background: var(--primary);
+
+    color: white;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s ease;
+}
+
+.courses-search button:hover {
+
+    background: var(--primary-dark);
+}
+
+/* ========================= */
+/* FILTERS */
+/* ========================= */
+
+.courses-filters {
+
+    padding-bottom: 60px;
+}
+
+.filters-wrapper {
+
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 16px;
+
+    justify-content: center;
+}
+
+.filter-btn {
+
+    padding:
+        14px 24px;
+
+    border-radius: 50px;
+
+    border: 1px solid var(--border);
+
+    background: var(--card-bg);
+
+    color: var(--dark);
+
+    cursor: pointer;
+
+    transition: 0.3s ease;
+}
+
+.filter-btn:hover {
+
+    transform: translateY(-4px);
+}
+
+.active-filter {
+
+    background: var(--primary);
+
+    color: white;
+
+    border-color: transparent;
+}
+
+/* ========================= */
+/* COURSES GRID */
+/* ========================= */
+
+.courses-page {
+
+    padding-bottom: 120px;
+}
+
+.courses-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 30px;
+}
+
+/* CARD */
+
+.course-page-card {
+
+    background: var(--card-bg);
+
+    border: 1px solid var(--border);
+
+    border-radius: 32px;
+
+    overflow: hidden;
+
+    transition: 0.35s ease;
+}
+
+.course-page-card:hover {
+
+    transform: translateY(-10px);
+
+    box-shadow: var(--shadow);
+}
+
+/* THUMBNAILS */
+
+.course-thumbnail {
+
+    position: relative;
+    overflow: hidden;
+
+    height: 220px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.course-thumbnail::before{
+
+    content: '';
+
+    position: absolute;
+
+    width: 300px;
+    height: 300px;
+
+    background:
+    rgba(255,255,255,0.08);
+
+    border-radius: 50%;
+
+    top: -150px;
+    right: -100px;
+}
+
+.purple-thumb {
+
+    background:
+        linear-gradient(135deg,
+            #6C4DFF,
+            #8B7CFF);
+}
+
+.blue-thumb {
+
+    background:
+        linear-gradient(135deg,
+            #2563EB,
+            #3B82F6);
+}
+
+.green-thumb {
+
+    background:
+        linear-gradient(135deg,
+            #00B894,
+            #00D2A0);
+}
+
+/* CONTENT */
+
+.course-page-content {
+
+    padding: 32px;
+}
+
+.course-level {
+
+    display: inline-block;
+
+    margin-bottom: 18px;
+
+    padding:
+        8px 16px;
+
+    border-radius: 50px;
+
+    background:
+        rgba(108, 77, 255, 0.10);
+
+    color: var(--primary);
+
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.course-page-content h3 {
+
+    font-size: 1.5rem;
+
+    line-height: 1.4;
+
+    margin-bottom: 18px;
+}
+
+.course-page-content p {
+
+    line-height: 1.8;
+
+    color: var(--gray);
+
+    margin-bottom: 26px;
+}
+
+/* META */
+
+.course-meta {
+
+    display: flex;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 28px;
+
+    font-size: 0.95rem;
+
+    color: var(--gray);
+}
+
+/* PROGRESS */
+
+.course-progress {
+
+    display: flex;
+    align-items: center;
+
+    gap: 16px;
+}
+
+.progress-line {
+
+    flex: 1;
+
+    height: 10px;
+
+    border-radius: 50px;
+
+    background: rgba(108, 77, 255, 0.12);
+
+    overflow: hidden;
+}
+
+.progress-fill-line {
+
+    height: 100%;
+
+    border-radius: 50px;
+
+    background:
+        linear-gradient(90deg,
+            #6C4DFF,
+            #8B7CFF);
+}
+
+.progress-70 {
+    width: 70%;
+}
+
+.progress-40 {
+    width: 40%;
+}
+
+.progress-90 {
+    width: 90%;
+}
+
+/* ========================= */
+/* COURSE STATUS */
+/* ========================= */
+
+.course-status {
+
+    display: inline-block;
+
+    margin-left: 10px;
+
+    padding:
+        8px 14px;
+
+    border-radius: 50px;
+
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.unlocked {
+
+    background:
+        rgba(0, 184, 148, 0.12);
+
+    color: #00B894;
+}
+
+.locked {
+
+    background:
+        rgba(239, 68, 68, 0.12);
+
+    color: #EF4444;
+}
+
+.completed {
+
+    background:
+        rgba(59, 130, 246, 0.12);
+
+    color: #3B82F6;
+}
+
+/* ========================= */
+/* ACCESS BUTTON */
+/* ========================= */
+
+.course-access-btn {
+
+    width: 100%;
+
+    margin-top: 28px;
+
+    padding:
+        16px 20px;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(135deg,
+            #6C4DFF,
+            #8B7CFF);
+
+    color: white;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.35s ease;
+}
+
+.course-access-btn:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow:
+        0px 12px 30px rgba(108, 77, 255, 0.25);
+}
+
+/* ========================= */
+/* PREMIUM HOVER */
+/* ========================= */
+
+.course-page-card {
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.course-page-card::before {
+
+    content: '';
+
+    position: absolute;
+
+    width: 250px;
+    height: 250px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(108, 77, 255, 0.06);
+
+    top: -120px;
+    right: -120px;
+
+    transition: 0.4s ease;
+}
+
+.course-page-card:hover::before {
+
+    transform: scale(1.2);
+}
+
+/* ========================= */
+/* SMOOTH PROGRESS */
+/* ========================= */
+
+.progress-fill-line {
+
+    animation:
+        progressAnimation 1.2s ease;
+}
+
+@keyframes progressAnimation {
+
+    from {
+        width: 0;
+    }
+
+}
+
+/* ========================= */
+/* COURSE MODAL */
+/* ========================= */
+
+.course-modal{
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+    rgba(0,0,0,0.65);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition: 0.35s ease;
+
+    z-index: 9999;
+}
+
+.course-modal.active{
+
+    opacity: 1;
+    visibility: visible;
+}
+
+/* CONTENT */
+
+.course-modal-content{
+
+    width: 100%;
+    max-width: 760px;
+
+    background: var(--card-bg);
+
+    border-radius: 36px;
+
+    overflow: hidden;
+
+    position: relative;
+
+    transform: translateY(40px);
+
+    transition: 0.35s ease;
+}
+
+.course-modal.active .course-modal-content{
+
+    transform: translateY(0);
+}
+
+/* CLOSE */
+
+.close-modal{
+
+    position: absolute;
+
+    top: 22px;
+    right: 22px;
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+
+    background:
+    rgba(255,255,255,0.18);
+
+    color: white;
+
+    cursor: pointer;
+
+    z-index: 10;
+}
+
+/* BANNER */
+
+.modal-banner{
+
+    height: 260px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 2.5rem;
+    font-weight: 700;
+
+    color: white;
+
+    background:
+    linear-gradient(
+        135deg,
+        #6C4DFF,
+        #8B7CFF
+    );
+}
+
+/* BODY */
+
+.modal-body{
+
+    padding: 50px;
+}
+
+.modal-badge{
+
+    display: inline-block;
+
+    padding:
+    10px 18px;
+
+    border-radius: 50px;
+
+    background:
+    rgba(108,77,255,0.12);
+
+    color: var(--primary);
+
+    margin-bottom: 24px;
+}
+
+.modal-body h2{
+
+    font-size: 2.3rem;
+
+    margin-bottom: 20px;
+}
+
+.modal-body p{
+
+    line-height: 1.9;
+
+    color: var(--gray);
+
+    margin-bottom: 36px;
+}
+
+/* STATS */
+
+.modal-stats{
+
+    display: grid;
+
+    grid-template-columns: repeat(3,1fr);
+
+    gap: 20px;
+
+    margin-bottom: 40px;
+}
+
+.modal-stat{
+
+    padding: 24px;
+
+    border-radius: 22px;
+
+    background: var(--soft-bg);
+
+    text-align: center;
+}
+
+.modal-stat strong{
+
+    display: block;
+
+    margin-bottom: 10px;
+
+    font-size: 1.1rem;
+}
+
+/* ACTIONS */
+
+.modal-actions{
+
+    display: flex;
+
+    gap: 18px;
+}

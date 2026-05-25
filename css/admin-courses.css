@@ -1,0 +1,863 @@
+/* ========================= */
+/* ADMIN COURSES */
+/* ========================= */
+
+.courses-admin-body{
+
+    display: flex;
+
+    min-height: 100vh;
+
+    background:
+    #070b14;
+
+    color:
+    #F8FAFC;
+
+    overflow-x: hidden;
+
+    position: relative;
+}
+
+/* ========================= */
+/* BACKGROUND */
+/* ========================= */
+
+.courses-admin-body::before{
+
+    content: "";
+
+    position: fixed;
+
+    width: 500px;
+
+    height: 500px;
+
+    background:
+    rgba(108,77,255,0.14);
+
+    filter:
+    blur(140px);
+
+    top: -150px;
+
+    right: -120px;
+
+    z-index: 0;
+}
+
+.courses-admin-body::after{
+
+    content: "";
+
+    position: fixed;
+
+    width: 400px;
+
+    height: 400px;
+
+    background:
+    rgba(0,184,148,0.08);
+
+    filter:
+    blur(120px);
+
+    bottom: -120px;
+
+    left: -100px;
+
+    z-index: 0;
+}
+
+/* ========================= */
+/* SIDEBAR */
+/* ========================= */
+
+.sidebar{
+
+    width: 280px;
+
+    background:
+    rgba(13,17,23,0.88);
+
+    backdrop-filter:
+    blur(20px);
+
+    border-right:
+    1px solid rgba(255,255,255,0.06);
+
+    padding: 30px;
+
+    position: relative;
+
+    z-index: 10;
+}
+
+/* LOGO */
+
+.sidebar-logo{
+
+    font-size: 2rem;
+
+    font-weight: 800;
+
+    letter-spacing: -1px;
+
+    margin-bottom: 50px;
+
+    color:
+    white;
+}
+
+/* MENU */
+
+.sidebar-menu{
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+.sidebar-menu a{
+
+    padding:
+    16px 18px;
+
+    border-radius: 18px;
+
+    color:
+    rgba(255,255,255,0.7);
+
+    transition:
+    0.3s ease;
+
+    font-weight: 500;
+}
+
+.sidebar-menu a:hover{
+
+    background:
+    rgba(255,255,255,0.05);
+
+    color:
+    white;
+
+    transform:
+    translateX(4px);
+}
+
+/* ACTIVE */
+
+.active-link{
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(108,77,255,0.22),
+        rgba(139,124,255,0.12)
+    );
+
+    color:
+    white !important;
+
+    border:
+    1px solid rgba(108,77,255,0.24);
+}
+
+/* ========================= */
+/* MAIN */
+/* ========================= */
+
+.courses-main{
+
+    flex: 1;
+
+    padding: 40px;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+/* ========================= */
+/* TOPBAR */
+/* ========================= */
+
+.courses-topbar{
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 40px;
+}
+
+.courses-topbar h1{
+
+    font-size: 3rem;
+
+    letter-spacing: -2px;
+
+    margin-bottom: 10px;
+}
+
+.courses-topbar p{
+
+    color:
+    rgba(255,255,255,0.65);
+}
+
+/* BUTTON */
+
+#openModalBtn{
+
+    height: 58px;
+
+    padding:
+    0 28px;
+
+    border: none;
+
+    border-radius: 18px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #6C4DFF,
+        #8B7CFF
+    );
+
+    color:
+    white;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+    0.35s ease;
+
+    box-shadow:
+    0 14px 35px rgba(108,77,255,0.35);
+}
+
+#openModalBtn:hover{
+
+    transform:
+    translateY(-3px);
+
+    box-shadow:
+    0 20px 45px rgba(108,77,255,0.45);
+}
+
+/* ========================= */
+/* GRID */
+/* ========================= */
+
+.courses-grid{
+
+    display: grid;
+
+    grid-template-columns:
+    repeat(auto-fill,minmax(260px,1fr));
+
+    gap: 28px;
+}
+
+/* ========================= */
+/* COURSE CARD */
+/* ========================= */
+
+.admin-course-card{
+
+    background:
+    rgba(17,24,39,0.82);
+
+    backdrop-filter:
+    blur(18px);
+
+    border:
+    1px solid rgba(255,255,255,0.06);
+
+    border-radius: 28px;
+
+    overflow: hidden;
+
+    transition:
+    all 0.35s ease;
+
+    position: relative;
+
+    display: flex;
+
+    flex-direction: column;
+
+    min-height: 420px;
+}
+
+.admin-course-card:hover{
+
+    transform:
+    translateY(-6px);
+
+    border-color:
+    rgba(108,77,255,0.22);
+
+    box-shadow:
+    0 25px 60px rgba(0,0,0,0.35);
+}
+
+/* ========================= */
+/* IMAGE WRAPPER */
+/* ========================= */
+
+.course-image{
+
+    width: 100%;
+
+    height: 170px;
+
+    overflow: hidden;
+
+    position: relative;
+
+    background:
+    #0F172A;
+}
+
+/* IMAGE */
+
+.course-image img{
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+    transform 0.5s ease;
+}
+
+.admin-course-card:hover
+.course-image img{
+
+    transform:
+    scale(1.06);
+}
+
+/* ========================= */
+/* CONTENT */
+/* ========================= */
+
+.course-content{
+
+    flex: 1;
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 18px;
+}
+
+/* CATEGORY */
+
+.course-content span{
+
+    color:
+    #8B7CFF;
+
+    font-size: 0.9rem;
+
+    font-weight: 700;
+
+    margin-bottom: 10px;
+}
+
+/* TITLE */
+
+.course-content h3{
+
+    font-size: 1.1rem;
+
+    line-height: 1.35;
+
+    margin-bottom: 14px;
+
+    color:
+    white;
+}
+
+/* DESCRIPTION */
+
+.course-content p{
+
+    color:
+    rgba(255,255,255,0.68);
+
+    line-height: 1.7;
+
+    margin-bottom: 12px;
+}
+
+/* LOCKED */
+
+.locked-badge{
+
+    margin-top: auto;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    padding:
+    12px 18px;
+
+    border-radius: 999px;
+
+    background:
+    rgba(245,158,11,0.16);
+
+    color:
+    #F59E0B;
+
+    font-size: 0.85rem;
+
+    font-weight: 700;
+}
+
+/* ========================= */
+/* MODAL */
+/* ========================= */
+
+.course-modal{
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+    rgba(0,0,0,0.6);
+
+    backdrop-filter:
+    blur(10px);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transition:
+    0.35s ease;
+
+    z-index: 999;
+}
+
+/* ACTIVE */
+
+.active-modal{
+
+    opacity: 1;
+
+    visibility: visible;
+}
+
+/* CONTENT */
+
+.course-modal-content{
+
+    width: 500px;
+
+    background:
+    rgba(15,23,42,0.96);
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    border-radius: 32px;
+
+    padding: 36px;
+
+    box-shadow:
+    0 25px 80px rgba(0,0,0,0.45);
+
+    position: relative;
+}
+
+.course-modal-content h2{
+
+    font-size: 2rem;
+
+    margin-bottom: 28px;
+}
+
+/* FORM */
+
+#courseForm{
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+}
+
+/* INPUTS */
+
+#courseForm input,
+#courseForm textarea{
+
+    width: 100%;
+
+    border: none;
+
+    border-radius: 18px;
+
+    background:
+    rgba(255,255,255,0.05);
+
+    color:
+    white;
+
+    padding:
+    18px;
+
+    font-size: 1rem;
+}
+
+#courseForm textarea{
+
+    resize: none;
+
+    height: 120px;
+}
+
+/* CHECKBOX */
+
+#courseForm label{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    color:
+    rgba(255,255,255,0.72);
+}
+
+/* SUBMIT */
+
+#courseForm button{
+
+    height: 58px;
+
+    border: none;
+
+    border-radius: 18px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #6C4DFF,
+        #8B7CFF
+    );
+
+    color:
+    white;
+
+    font-size: 1rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+    0.35s ease;
+
+    margin-top: 10px;
+}
+
+#courseForm button:hover{
+
+    transform:
+    translateY(-3px);
+
+    box-shadow:
+    0 18px 45px rgba(108,77,255,0.35);
+}
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+
+@media(max-width: 900px){
+
+    .sidebar{
+
+        display: none;
+    }
+
+    .courses-main{
+
+        padding: 24px;
+    }
+
+    .courses-topbar{
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 20px;
+    }
+
+    .courses-topbar h1{
+
+        font-size: 2.3rem;
+    }
+
+    .course-modal-content{
+
+        width: 92%;
+    }
+
+}
+
+/* ACTIONS */
+
+.course-actions{
+
+    display: flex;
+
+    gap: 12px;
+
+    margin-top: 20px;
+}
+
+/* BUTTONS */
+
+.edit-btn,
+.delete-btn{
+
+    flex: 1;
+
+    height: 46px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    cursor: pointer;
+
+    font-weight: 700;
+
+    transition:
+    0.3s ease;
+}
+
+/* EDIT */
+
+.edit-btn{
+
+    background:
+    rgba(108,77,255,0.18);
+
+    color:
+    #8B7CFF;
+}
+
+.edit-btn:hover{
+
+    background:
+    rgba(108,77,255,0.28);
+}
+
+/* DELETE */
+
+.delete-btn{
+
+    background:
+    rgba(239,68,68,0.14);
+
+    color:
+    #EF4444;
+}
+
+.delete-btn:hover{
+
+    background:
+    rgba(239,68,68,0.24);
+}
+/* CLOSE */
+
+.close-modal{
+
+    position: absolute;
+
+    top: 24px;
+
+    right: 24px;
+
+    width: 42px;
+
+    height: 42px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    border-radius: 50%;
+
+    background:
+    rgba(255,255,255,0.06);
+
+    color:
+    white;
+
+    cursor: pointer;
+
+    transition:
+    0.3s ease;
+
+    font-size: 1rem;
+
+    font-weight: 700;
+}
+
+.close-modal:hover{
+
+    background:
+    rgba(108,77,255,0.2);
+
+    transform:
+    rotate(90deg);
+}   
+
+.builder-btn{
+
+    flex: 1;
+
+    height: 44px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    border-radius: 14px;
+
+    text-decoration: none;
+
+    background:
+    rgba(108,77,255,0.14);
+
+    color:
+    #8B7CFF;
+
+    font-size: 0.9rem;
+
+    font-weight: 700;
+
+    transition:
+    0.3s ease;
+}
+
+.builder-btn:hover{
+
+    background:
+    rgba(108,77,255,0.22);
+}
+
+/* EMPTY STATE */
+
+.empty-state{
+
+    width:100%;
+
+    min-height:260px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    padding:40px;
+}
+
+.empty-icon{
+
+    font-size:58px;
+
+    margin-bottom:18px;
+}
+
+.empty-state h3{
+
+    font-size:22px;
+
+    margin-bottom:10px;
+}
+
+.empty-state p{
+
+    color:
+    rgba(255,255,255,0.58);
+}
+
+.admin-toast{
+
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+
+    background:
+    linear-gradient(135deg,#6C4DFF,#8B7CFF);
+
+    color: white;
+
+    padding: 18px 24px;
+
+    border-radius: 18px;
+
+    font-weight: 700;
+
+    opacity: 0;
+
+    transform: translateY(30px);
+
+    pointer-events: none;
+
+    transition: 0.3s ease;
+
+    z-index: 9999;
+}
+
+.admin-toast.show-toast{
+
+    opacity: 1;
+
+    transform: translateY(0);
+}

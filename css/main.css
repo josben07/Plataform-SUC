@@ -1,0 +1,184 @@
+body{
+    background: #FCFCFD;
+    color: var(--dark);
+}
+
+.container{
+
+    width: 90%;
+
+    max-width: 1280px;
+
+    margin: 0 auto;
+}
+
+.btn{
+    padding: 14px 28px;
+    border-radius: 14px;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.btn-primary{
+    background: var(--primary);
+    color: var(--white);
+}
+
+.btn-primary:hover{
+    background: var(--primary-dark);
+}
+
+.btn-outline{
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--dark);
+}
+
+.btn-outline:hover{
+    background: #f2f2f2;
+}
+
+.btn-secondary{
+    background: #ECEBFF;
+    color: var(--primary);
+}
+body{
+    background: var(--light-bg);
+    color: var(--dark);
+
+    transition:
+    background 0.35s ease,
+    color 0.35s ease;
+}
+
+/* GENERAL CARDS */
+.feature-card,
+.course-card,
+.task-column,
+.mentor-card-item,
+.dashboard-card,
+.dashboard-small-card{
+
+    background: var(--card-bg);
+
+    border: 1px solid var(--border);
+
+}
+
+/* TEXTS */
+
+p{
+    color: var(--gray);
+}
+
+span{
+    color: inherit;
+}
+
+small{
+    color: var(--gray);
+}
+
+/* THEME BUTTON */
+
+.theme-toggle{
+
+    width: 46px;
+    height: 46px;
+
+    border-radius: 50%;
+
+    background: var(--card-bg);
+
+    border: 1px solid var(--border);
+
+    cursor: pointer;
+
+    font-size: 1.1rem;
+
+    transition: 0.3s ease;
+}
+
+.theme-toggle:hover{
+
+    transform: rotate(12deg);
+
+}
+
+/* ========================= */
+/* DARK MODE BUTTONS */
+/* ========================= */
+
+body.dark-mode .btn-outline{
+
+    background: transparent;
+
+    border: 1px solid #334155;
+
+    color: #E5E7EB;
+
+}
+
+body.dark-mode .btn-outline:hover{
+
+    background: #1E293B;
+
+}
+
+body.dark-mode .btn-secondary{
+
+    background: #1E293B;
+
+    color: #F3F4F6;
+
+}
+
+body.dark-mode .btn-secondary:hover{
+
+    background: #293548;
+
+}
+
+body.dark-mode .theme-toggle{
+
+    background: #1E293B;
+
+    border-color: #334155;
+
+    color: #F8FAFC;
+
+}
+
+body.dark-mode .course-btn,
+body.dark-mode .mentor-btn,
+body.dark-mode .btn-primary{
+
+    box-shadow:
+    0px 8px 24px rgba(108,77,255,0.25);
+
+}
+
+/* DARK MODE CARDS */
+body.dark-mode .feature-card,
+body.dark-mode .course-card,
+body.dark-mode .task-column,
+body.dark-mode .mentor-card-item,
+body.dark-mode .dashboard-card,
+body.dark-mode .dashboard-small-card{
+
+    background: #162033;
+
+    border: 1px solid #243041;
+
+}
+
+/* TASK CARDS */
+
+body.dark-mode .board-task-card,
+body.dark-mode .mini-task,
+body.dark-mode .activity-item,
+body.dark-mode .analytics-box{
+
+    background: #1B263B;
+
+}

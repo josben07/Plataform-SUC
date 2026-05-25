@@ -1,0 +1,1322 @@
+body{
+
+    margin: 0;
+
+    font-family: Inter,sans-serif;
+
+    background:
+    #020617;
+
+    color:
+    white;
+}
+
+/* PAGE */
+
+.builder-page{
+
+    padding:
+    50px;
+}
+
+/* TOPBAR */
+
+.builder-topbar{
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 40px;
+}
+
+/* LABEL */
+
+.builder-label{
+
+    color:
+    #8B7CFF;
+
+    font-size: 0.85rem;
+
+    letter-spacing: 2px;
+
+    font-weight: 700;
+}
+
+/* TITLE */
+
+.builder-topbar h1{
+
+    margin-top: 12px;
+
+    font-size: 2.6rem;
+
+    font-weight: 800;
+}
+
+/* BUTTON */
+
+.add-module-btn{
+
+    height: 54px;
+
+    padding:
+    0 24px;
+
+    border: none;
+
+    border-radius: 18px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #6C4DFF,
+        #8B7CFF
+    );
+
+    color:
+    white;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+    0.3s ease;
+}
+
+.add-module-btn:hover{
+
+    transform:
+    translateY(-2px);
+}
+
+/* MODULES */
+
+.modules-container{
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 24px;
+}
+
+/* MODULE CARD */
+
+.module-card{
+
+    background:
+    rgba(15,23,42,0.92);
+
+    border:
+    1px solid rgba(255,255,255,0.06);
+
+    border-radius: 28px;
+
+    overflow: hidden;
+}
+
+/* HEADER */
+
+.module-header{
+
+    padding:
+    24px 28px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    cursor: pointer;
+}
+
+/* MODULE TITLE */
+
+.module-title{
+
+    font-size: 1.1rem;
+
+    font-weight: 700;
+}
+
+/* TOGGLE */
+
+.module-toggle{
+
+    font-size: 1rem;
+
+    transition:
+    0.3s ease;
+}
+
+/* CONTENT */
+
+.module-content{
+
+    display: none;
+
+    padding:
+    0 28px 28px;
+}
+
+/* ACTIVE */
+
+.module-card.active
+.module-content{
+
+    display: block;
+}
+
+.module-card.active
+.module-toggle{
+
+    transform:
+    rotate(90deg);
+}
+
+/* LESSON */
+
+.lesson-item{
+
+    padding:
+    18px 20px;
+
+    border-radius: 18px;
+
+    background:
+    rgba(255,255,255,0.03);
+
+    margin-top: 14px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+}
+
+/* MODAL */
+
+.module-modal{
+
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background:
+    rgba(0,0,0,0.72);
+
+    z-index: 999;
+}
+
+.module-modal.active-modal{
+
+    display: flex;
+}
+
+/* MODAL CONTENT */
+
+.module-modal-content{
+
+    width: 420px;
+
+    background:
+    #0F172A;
+
+    border-radius: 28px;
+
+    padding:
+    36px;
+
+    position: relative;
+}
+
+/* CLOSE */
+
+.close-module-modal{
+
+    position: absolute;
+
+    top: 18px;
+
+    right: 18px;
+
+    cursor: pointer;
+}
+
+/* INPUT */
+
+.module-modal-content input{
+
+    width: 100%;
+
+    height: 54px;
+
+    margin-top: 20px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    padding:
+    0 18px;
+
+    background:
+    rgba(255,255,255,0.05);
+
+    color:
+    white;
+}
+
+/* BUTTON */
+
+.module-modal-content button{
+
+    width: 100%;
+
+    height: 54px;
+
+    margin-top: 20px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #6C4DFF,
+        #8B7CFF
+    );
+
+    color:
+    white;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+/* LESSON BUTTON */
+
+.add-lesson-btn{
+
+    width: 100%;
+
+    height: 52px;
+
+    margin-top: 18px;
+
+    border: none;
+
+    border-radius: 18px;
+
+    background:
+    rgba(108,77,255,0.12);
+
+    color:
+    #8B7CFF;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+/* LESSON MODAL */
+
+.lesson-modal{
+
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background:
+    rgba(0,0,0,0.72);
+
+    z-index: 999;
+}
+
+.lesson-modal.active-modal{
+
+    display: flex;
+}
+
+/* CONTENT */
+
+.lesson-modal-content{
+
+    width: 420px;
+
+    background:
+    #0F172A;
+
+    border-radius: 28px;
+
+    padding:
+    36px;
+
+    position: relative;
+}
+
+/* INPUT */
+
+.lesson-modal-content input{
+
+    width: 100%;
+
+    height: 54px;
+
+    margin-top: 18px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    padding:
+    0 18px;
+
+    background:
+    rgba(255,255,255,0.05);
+
+    color:
+    white;
+}
+
+/* BUTTON */
+
+.lesson-modal-content button{
+
+    width: 100%;
+
+    height: 54px;
+
+    margin-top: 20px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #6C4DFF,
+        #8B7CFF
+    );
+
+    color:
+    white;
+
+    font-weight: 700;
+}
+
+/* BACK BUTTON */
+
+.back-btn{
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 28px;
+
+    text-decoration: none;
+
+    color:
+    rgba(255,255,255,0.72);
+
+    font-size: 0.95rem;
+
+    font-weight: 600;
+
+    transition:
+    0.3s ease;
+}
+
+.back-btn:hover{
+
+    color:
+    white;
+
+    transform:
+    translateX(-3px);
+}
+
+/* LESSON ACTIONS */
+
+.lesson-actions{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+/* DELETE LESSON */
+
+.delete-lesson-btn{
+
+    width: 34px;
+
+    height: 34px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background:
+    rgba(239,68,68,0.12);
+
+    color:
+    #EF4444;
+
+    cursor: pointer;
+
+    transition:
+    0.3s ease;
+}
+
+.delete-lesson-btn:hover{
+
+    background:
+    rgba(239,68,68,0.22);
+}
+
+/* PREVIEW */
+
+.preview-label{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 18px;
+
+    color:
+    rgba(255,255,255,0.72);
+
+    font-size: 0.95rem;
+}
+
+/* META */
+
+.lesson-meta{
+
+    margin-top: 8px;
+}
+
+/* BADGE */
+
+.preview-badge{
+
+    padding:
+    6px 12px;
+
+    border-radius: 999px;
+
+    background:
+    rgba(34,197,94,0.14);
+
+    color:
+    #22C55E;
+
+    font-size: 0.72rem;
+
+    font-weight: 700;
+}
+
+/* VIDEO BUTTON */
+
+.video-btn{
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding:
+    8px 14px;
+
+    border-radius: 12px;
+
+    text-decoration: none;
+
+    background:
+    rgba(108,77,255,0.14);
+
+    color:
+    #8B7CFF;
+
+    font-size: 0.82rem;
+
+    font-weight: 700;
+
+    transition:
+    0.3s ease;
+}
+
+.video-btn:hover{
+
+    background:
+    rgba(108,77,255,0.22);
+}
+
+/* MODULE ACTIONS */
+
+.module-header-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+}
+
+/* EDIT MODULE */
+
+.edit-module-btn {
+
+    height: 38px;
+
+    padding:
+        0 16px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background:
+        rgba(255, 255, 255, 0.06);
+
+    color:
+        white;
+
+    cursor: pointer;
+
+    transition:
+        0.3s ease;
+}
+
+.edit-module-btn:hover {
+
+    background:
+        rgba(255, 255, 255, 0.12);
+}
+
+/* DELETE MODULE */
+
+.delete-module-btn{
+
+    height: 38px;
+
+    padding:
+    0 16px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background:
+    rgba(239,68,68,0.12);
+
+    color:
+    #EF4444;
+
+    cursor: pointer;
+
+    transition:
+    0.3s ease;
+}
+
+.delete-module-btn:hover{
+
+    background:
+    rgba(239,68,68,0.22);
+}
+
+/* EDIT LESSON */
+
+.edit-lesson-btn {
+
+    width: 34px;
+
+    height: 34px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background:
+        rgba(59, 130, 246, 0.14);
+
+    color:
+        #3B82F6;
+
+    cursor: pointer;
+
+    transition:
+        0.3s ease;
+}
+
+.edit-lesson-btn:hover {
+
+    background:
+        rgba(59, 130, 246, 0.22);
+}
+
+/* EDIT MODULE MODAL */
+
+.edit-module-modal {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background:
+        rgba(0, 0, 0, 0.72);
+
+    z-index: 999;
+}
+
+.edit-module-modal.active-modal {
+
+    display: flex;
+}
+
+/* CONTENT */
+
+.edit-module-content {
+
+    width: 420px;
+
+    background:
+        #0F172A;
+
+    border-radius: 28px;
+
+    padding:
+        36px;
+
+    position: relative;
+}
+
+/* CLOSE */
+
+.close-edit-module {
+
+    position: absolute;
+
+    top: 18px;
+
+    right: 18px;
+
+    cursor: pointer;
+
+    color:
+        rgba(255, 255, 255, 0.72);
+}
+
+/* INPUT */
+
+.edit-module-content input {
+
+    width: 100%;
+
+    height: 54px;
+
+    margin-top: 20px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    padding:
+        0 18px;
+
+    background:
+        rgba(255, 255, 255, 0.05);
+
+    color:
+        white;
+}
+
+/* BUTTON */
+
+.edit-module-content button {
+
+    width: 100%;
+
+    height: 54px;
+
+    margin-top: 20px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(135deg,
+            #6C4DFF,
+            #8B7CFF);
+
+    color:
+        white;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+/* DELETE MODULE MODAL */
+
+.delete-module-modal{
+
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background:
+    rgba(0,0,0,0.72);
+
+    z-index: 999;
+}
+
+.delete-module-modal.active-modal{
+
+    display: flex;
+}
+
+/* CONTENT */
+
+.delete-module-content{
+
+    width: 420px;
+
+    background:
+    #0F172A;
+
+    border-radius: 28px;
+
+    padding:
+    36px;
+
+    text-align: center;
+}
+
+/* TEXT */
+
+.delete-module-content p{
+
+    margin-top: 14px;
+
+    color:
+    rgba(255,255,255,0.72);
+
+    line-height: 1.6;
+}
+
+/* ACTIONS */
+
+.delete-module-actions{
+
+    display: flex;
+
+    gap: 14px;
+
+    margin-top: 28px;
+}
+
+/* BUTTON */
+
+.delete-module-actions button{
+
+    flex: 1;
+
+    height: 52px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+/* CANCEL */
+
+.cancel-delete-module{
+
+    background:
+    rgba(255,255,255,0.06);
+
+    color:
+    white;
+}
+
+/* DELETE */
+
+.confirm-delete-module{
+
+    background:
+    linear-gradient(
+        135deg,
+        #EF4444,
+        #DC2626
+    );
+
+    color:
+    white;
+}
+
+/* EDIT LESSON MODAL */
+
+.edit-lesson-modal {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background:
+        rgba(0, 0, 0, 0.72);
+
+    z-index: 999;
+}
+
+.edit-lesson-modal.active-modal {
+
+    display: flex;
+}
+
+/* CONTENT */
+
+.edit-lesson-content {
+
+    width: 440px;
+
+    background:
+        #0F172A;
+
+    border-radius: 28px;
+
+    padding:
+        36px;
+
+    position: relative;
+}
+
+/* CLOSE */
+
+.close-edit-lesson {
+
+    position: absolute;
+
+    top: 18px;
+
+    right: 18px;
+
+    cursor: pointer;
+
+    color:
+        rgba(255, 255, 255, 0.72);
+}
+
+/* INPUT */
+
+.edit-lesson-content input {
+
+    width: 100%;
+
+    height: 54px;
+
+    margin-top: 18px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    padding:
+        0 18px;
+
+    background:
+        rgba(255, 255, 255, 0.05);
+
+    color:
+        white;
+}
+
+/* BUTTON */
+
+.edit-lesson-content button {
+
+    width: 100%;
+
+    height: 54px;
+
+    margin-top: 20px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(135deg,
+            #6C4DFF,
+            #8B7CFF);
+
+    color:
+        white;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+/* RESOURCE MODAL */
+
+.resource-modal{
+
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background:
+    rgba(0,0,0,0.72);
+
+    z-index: 999;
+}
+
+.resource-modal.active-modal{
+
+    display: flex;
+}
+
+/* CONTENT */
+
+.resource-content{
+
+    width: 460px;
+
+    background:
+    #0F172A;
+
+    border-radius: 28px;
+
+    padding:
+    36px;
+
+    position: relative;
+}
+
+/* CLOSE */
+
+.close-resource-modal{
+
+    position: absolute;
+
+    top: 18px;
+
+    right: 18px;
+
+    cursor: pointer;
+
+    color:
+    rgba(255,255,255,0.72);
+}
+
+/* INPUT */
+
+.resource-content input,
+.resource-content select{
+
+    width: 100%;
+
+    height: 54px;
+
+    margin-top: 18px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    padding:
+    0 18px;
+
+    background:
+    rgba(255,255,255,0.05);
+
+    color:
+    white;
+
+    outline: none;
+}
+
+/* SELECT OPTIONS */
+
+.resource-content select option{
+
+    background:
+    #0F172A;
+
+    color:
+    white;
+}
+
+/* BUTTON */
+
+.resource-content button{
+
+    width: 100%;
+
+    height: 54px;
+
+    margin-top: 22px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #6C4DFF,
+        #8B7CFF
+    );
+
+    color:
+    white;
+
+    font-weight: 700;
+
+    cursor: pointer;
+} 
+
+/* RESOURCE BUTTON */
+
+.resource-btn{
+
+    margin-top: 14px;
+
+    height: 42px;
+
+    padding:
+    0 16px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background:
+    rgba(108,77,255,0.12);
+
+    color:
+    #8B7CFF;
+
+    cursor: pointer;
+
+    transition:
+    0.3s ease;
+}
+
+.resource-btn:hover{
+
+    background:
+    rgba(108,77,255,0.22);
+}
+
+/* RESOURCES LIST */
+
+.resources-list{
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    margin-top: 16px;
+}
+
+/* RESOURCE ITEM */
+
+.resource-item{
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding:
+    14px 18px;
+
+    border-radius: 16px;
+
+    background:
+    rgba(255,255,255,0.04);
+}
+
+/* LEFT */
+
+.resource-left{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+/* ICON */
+
+.resource-icon{
+
+    font-size: 20px;
+}
+
+/* TITLE */
+
+.resource-title{
+
+    color:
+    white;
+
+    font-size: 14px;
+}
+
+/* ACTIONS */
+
+.resource-actions{
+
+    display: flex;
+
+    gap: 10px;
+}
+
+/* BUTTON */
+
+.resource-actions button{
+
+    height: 38px;
+
+    padding:
+    0 14px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    font-size: 13px;
+}
+
+/* OPEN */
+
+.open-resource-btn{
+
+    background:
+    rgba(108,77,255,0.14);
+
+    color:
+    #8B7CFF;
+}
+
+/* DELETE */
+
+.delete-resource-btn{
+
+    background:
+    rgba(239,68,68,0.14);
+
+    color:
+    #EF4444;
+}
+
+/* EMPTY STATE */
+
+.empty-state{
+
+    width:100%;
+
+    min-height:260px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    padding:40px;
+}
+
+.empty-icon{
+
+    font-size:58px;
+
+    margin-bottom:18px;
+}
+
+.empty-state h3{
+
+    font-size:22px;
+
+    margin-bottom:10px;
+}
+
+.empty-state p{
+
+    color:
+    rgba(255,255,255,0.58);
+}

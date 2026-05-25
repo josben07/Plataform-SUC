@@ -1,0 +1,173 @@
+.difference-section{
+    padding: 120px 0;
+}
+
+.difference-grid{
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 70px;
+    align-items: center;
+    margin-top: 80px;
+}
+
+.difference-content{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.difference-item{
+    display: flex;
+    gap: 24px;
+
+    background: var(--card-bg);
+
+    border: 1px solid var(--border);
+
+    border-radius: 24px;
+
+    padding: 30px;
+
+    transition: 0.35s ease;
+}
+
+.difference-item:hover{
+    transform: translateY(-8px);
+}
+
+.difference-icon{
+
+    min-width: 60px;
+    height: 60px;
+
+    border-radius: 18px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #6C4DFF,
+        #8B7CFF
+    );
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.difference-item h3{
+    margin-bottom: 12px;
+    font-size: 1.3rem;
+}
+
+.difference-item p{
+    line-height: 1.8;
+}
+
+/* RIGHT SIDE */
+
+.difference-visual{
+    position: relative;
+
+    background: var(--card-bg);
+
+    border: 1px solid var(--border);
+
+    border-radius: 32px;
+
+    padding: 50px;
+
+    min-height: 500px;
+
+    overflow: hidden;
+}
+
+.stats-card{
+
+    background:
+    linear-gradient(
+        135deg,
+        #6C4DFF,
+        #8B7CFF
+    );
+
+    border-radius: 28px;
+
+    padding: 40px;
+
+    color: white;
+
+    margin-bottom: 50px;
+}
+
+.stats-card h3{
+    font-size: 3rem;
+    margin-bottom: 18px;
+}
+
+.stats-card p{
+    color: rgba(255,255,255,0.85);
+    line-height: 1.8;
+}
+
+/* CHART */
+
+.mini-chart{
+    display: flex;
+    align-items: flex-end;
+    gap: 18px;
+
+    height: 180px;
+}
+
+.chart-bar{
+    flex: 1;
+
+    border-radius: 20px 20px 0 0;
+
+    background:
+    linear-gradient(
+        180deg,
+        #8B7CFF,
+        #6C4DFF
+    );
+}
+
+.chart-1{ height: 70px; }
+.chart-2{ height: 110px; }
+.chart-3{ height: 150px; }
+.chart-4{ height: 180px; }
+
+/* FLOATING CARD */
+
+.difference-floating-card{
+
+    position: absolute;
+
+    right: 40px;
+    bottom: 40px;
+
+    background: var(--card-bg);
+
+    border: 1px solid var(--border);
+
+    border-radius: 20px;
+
+    padding: 20px 24px;
+
+    box-shadow: var(--shadow);
+}
+
+.difference-floating-card span{
+    display: block;
+    margin-bottom: 8px;
+    color: var(--gray);
+}
+
+.difference-floating-card strong{
+    font-size: 1.1rem;
+}

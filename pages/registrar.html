@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Registro | SUClassroom
+    </title>
+
+    <!-- CSS -->
+
+    <link
+        rel="stylesheet"
+        href="../css/reset.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/variables.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/global.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/navbar.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/footer.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/responsive.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/register.css"
+    >
+
+</head>
+
+<body>
+
+    <!-- ========================= -->
+    <!-- NAVBAR -->
+    <!-- ========================= -->
+
+    <header class="navbar">
+
+        <div class="container nav-container">
+
+            <!-- LOGO -->
+
+            <h2 class="logo">
+
+                SUClassroom
+
+            </h2>
+
+            <!-- MENU -->
+
+            <nav class="nav-menu">
+
+                <a href="../index.html">
+                    Inicio
+                </a>
+
+                <a href="./cursos.html">
+                    Cursos
+                </a>
+
+                <a href="./nosotros.html">
+                    Nosotros
+                </a>
+
+                <a href="./mentores.html">
+                    Mentores
+                </a>
+
+            </nav>
+
+            <!-- BUTTONS -->
+
+            <div class="nav-buttons">
+
+                <button
+                    class="theme-toggle"
+                    id="theme-toggle"
+                >
+
+                    🌙
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- ========================= -->
+    <!-- REGISTER -->
+    <!-- ========================= -->
+
+    <section class="register-section">
+
+        <div class="register-blur register-blur-1"></div>
+
+        <div class="register-blur register-blur-2"></div>
+
+        <div class="container register-container">
+
+            <!-- LEFT -->
+
+            <div class="register-content">
+
+                <span class="register-badge">
+
+                    Plataforma educativa premium
+
+                </span>
+
+                <h1>
+
+                    Crea tu cuenta y desbloquea
+                    tu ruta de aprendizaje
+
+                </h1>
+
+                <p>
+
+                    Accede a cursos, mentorías,
+                    proyectos reales y seguimiento
+                    personalizado en SUClassroom.
+
+                </p>
+
+            </div>
+
+            <!-- RIGHT -->
+
+            <div class="register-card">
+
+                <h2>
+
+                    Crear cuenta
+
+                </h2>
+
+                <form id="registerForm">
+
+                    <!-- FULL NAME -->
+
+                    <div class="input-group">
+
+                        <label>
+
+                            Nombre completo
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="full_name"
+                            placeholder="Ingresa tu nombre"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- EMAIL -->
+
+                    <div class="input-group">
+
+                        <label>
+
+                            Correo electrónico
+
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="correo@gmail.com"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- PASSWORD -->
+
+                    <div class="input-group">
+
+                        <label>
+
+                            Contraseña
+
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="********"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- BUTTON -->
+
+                    <button
+                        type="submit"
+                        class="register-btn"
+                    >
+
+                        Registrarme
+
+                    </button>
+
+                </form>
+
+                <!-- LOGIN -->
+
+                <div class="register-login">
+
+                    ¿Ya tienes cuenta?
+
+                    <a href="./login.html">
+
+                        Inicia sesión
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- TOAST -->
+    
+    <div class="auth-toast">
+    
+        <span id="authToastMessage">
+    
+            Mensaje
+    
+        </span>
+    
+    </div>
+
+    
+    <!-- JS -->
+
+    <script src="../js/main.js"></script>
+
+    <script src="../js/auth.js"></script>
+
+</body>
+
+</html>

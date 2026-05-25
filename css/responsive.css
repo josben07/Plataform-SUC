@@ -1,0 +1,249 @@
+@media screen and (max-width: 1100px){
+
+    .hero-container{
+        grid-template-columns: 1fr;
+    }
+
+    .hero-content{
+        text-align: center;
+    }
+
+    .hero-content p{
+        margin: auto;
+    }
+
+    .hero-buttons{
+        justify-content: center;
+    }
+
+    .hero-stats{
+        justify-content: center;
+    }
+
+    .hero-dashboard{
+        margin-top: 40px;
+    }
+
+}
+
+@media screen and (max-width: 768px){
+
+    .nav-menu{
+        display: none;
+    }
+
+    .hero-content h1{
+        font-size: 3rem;
+    }
+
+    .hero-stats{
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .hero-buttons{
+        flex-direction: column;
+    }
+
+    .dashboard-small-card{
+        display: none;
+    }
+
+}
+
+@media screen and (max-width: 992px){
+
+    .dashboard-grid{
+        grid-template-columns: 1fr;
+    }
+
+    .analytics{
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media screen and (max-width: 992px){
+
+    .features-grid{
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media screen and (max-width: 1100px){
+
+    .courses-grid{
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media screen and (max-width: 1100px){
+
+    .task-board{
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media screen and (max-width: 1100px){
+
+    .mentors-grid{
+        grid-template-columns: 1fr;
+    }
+
+}
+@media screen and (max-width: 992px){
+
+    .footer-grid{
+        grid-template-columns: 1fr;
+    }
+
+    .cta-container{
+        padding: 50px 30px;
+    }
+
+    .cta-container h2{
+        font-size: 2.2rem;
+    }
+
+    .cta-buttons{
+        flex-direction: column;
+    }
+
+}
+
+@media screen and (max-width: 992px){
+
+    .menu-toggle{
+        display: block;
+        z-index: 2000;
+    }
+
+    .nav-menu{
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: var(--white);
+        flex-direction: column;
+        padding: 120px 40px;
+        transition: 0.4s ease;
+        box-shadow: -10px 0 40px rgba(0,0,0,0.08);
+        z-index: 1500;
+    }
+
+    .nav-menu.active{
+        right: 0;
+    }
+
+    .nav-buttons{
+        display: none;
+    }
+
+}
+
+@media screen and (max-width: 1100px){
+
+    .steps-grid{
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media screen and (max-width: 1100px){
+
+    .difference-grid{
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media screen and (max-width: 1100px){
+
+    .testimonials-grid{
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media screen and (max-width: 1100px){
+
+    .mentors-preview-content{
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media screen and (max-width: 1100px){
+
+    .courses-grid{
+        grid-template-columns: 1fr;
+    }
+
+    .courses-hero h1{
+        font-size: 3rem;
+    }
+
+}
+
+@media screen and (max-width: 768px){
+
+    .courses-search{
+        flex-direction: column;
+    }
+
+    .courses-search button{
+        width: 100%;
+    }
+
+}
+@media screen and (max-width: 1100px){
+
+    .nav-menu{
+        display: none;
+    }
+
+}
+
+/* ========================= */
+/* TRUST RESPONSIVE */
+/* ========================= */
+
+@media screen and (max-width: 992px){
+
+    .trust-stats{
+
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+
+    .trust-top h2{
+
+        font-size: 2.3rem;
+    }
+
+}
+
+@media screen and (max-width: 600px){
+
+    .trust-stats{
+
+        grid-template-columns: 1fr;
+    }
+
+    .company-logos{
+
+        gap: 16px;
+    }
+
+    .company-logo{
+
+        width: 100%;
+
+        text-align: center;
+    }
+
+}

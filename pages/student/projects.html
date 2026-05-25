@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Proyectos | SUClassroom
+    </title>
+
+    <link rel="stylesheet" href="../../css/student-projects.css">
+
+</head>
+
+<body>
+
+    <div class="student-page">
+
+        <aside class="student-sidebar">
+
+            <div class="student-logo">
+                SUClassroom
+            </div>
+
+            <nav class="student-menu">
+
+                <a href="./dashboard.html">
+                    📊 Dashboard
+                </a>
+
+                <a href="./my-courses.html">
+                    📚 Mis cursos
+                </a>
+
+                <a href="./projects.html" class="active-link">
+                    🚀 Proyectos
+                </a>
+
+                <a href="./mentorships.html">
+                    🎓 Mentorías
+                </a>
+
+                <a href="./payments.html">
+                    💳 Pagos
+                </a>
+
+                <a href="./profile.html">
+                    👤 Perfil
+                </a>
+
+            </nav>
+
+        </aside>
+
+        <main class="student-main">
+
+            <div class="student-header">
+
+                <span>
+                    PROYECTOS
+                </span>
+
+                <h1>
+                    Entrega tus proyectos
+                </h1>
+
+                <p>
+                    Sube tus evidencias, revisa el estado y lee el feedback del mentor o administrador.
+                </p>
+
+                <button id="openProjectModal">
+                    + Subir proyecto
+                </button>
+
+            </div>
+
+            <div class="projects-grid" id="studentProjectsGrid"></div>
+
+        </main>
+
+    </div>
+
+    <!-- MODAL -->
+
+    <div class="project-modal">
+
+        <div class="project-modal-content">
+
+            <span class="close-project-modal">
+                ✕
+            </span>
+
+            <h2>
+                Subir proyecto
+            </h2>
+
+            <form id="projectForm">
+
+                <input type="text" id="projectTitle" placeholder="Título del proyecto" required>
+
+                <textarea id="projectDescription" placeholder="Descripción del proyecto" required></textarea>
+
+                <input type="text" id="projectUrl" placeholder="Link del proyecto, GitHub, Drive o demo" required>
+
+                <select id="projectCourse" required>
+                    <option value="">
+                        Selecciona un curso
+                    </option>
+                </select>
+
+                <button type="submit">
+                    Enviar proyecto
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="app-toast">
+        <span id="appToastMessage">Acción realizada</span>
+    </div>
+
+    <script src="../../js/student-projects.js"></script>
+
+</body>
+
+</html>

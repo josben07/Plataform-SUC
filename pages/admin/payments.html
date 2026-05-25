@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+
+        Pagos
+
+    </title>
+
+    <link rel="stylesheet" href="../../css/admin-payments.css">
+
+</head>
+
+<body>
+
+    <div class="payments-page">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <h1>
+
+                SUClassroom
+
+            </h1>
+
+            <nav>
+
+                <a href="dashboard.html">
+
+                    📊 Dashboard
+
+                </a>
+
+                <a href="users.html">
+
+                    👤 Usuarios
+
+                </a>
+
+                <a href="courses.html">
+
+                    📚 Cursos
+
+                </a>
+
+                <a href="projects.html">
+
+                    🚀 Proyectos
+
+                </a>
+
+                <a href="mentor.html">
+
+                    🎓 Mentorías
+
+                </a>
+
+                <a class="active-link" href="payments.html">
+
+                    💳 Pagos
+
+                </a>
+
+            </nav>
+
+        </aside>
+
+        <!-- CONTENT -->
+
+        <main class="payments-content">
+
+            <div class="payments-topbar">
+
+                <h2>
+
+                    Gestión de Pagos
+
+                </h2>
+
+            </div>
+
+            <!-- FILTERS -->
+
+            <div class="payments-filters">
+
+                <input type="text" id="searchPayment" placeholder="Buscar pago...">
+
+                <div class="status-filters">
+
+                    <button class="filter-btn active-filter" data-status="all">
+
+                        Todos
+
+                    </button>
+
+                    <button class="filter-btn" data-status="pendiente">
+
+                        Pendientes
+
+                    </button>
+
+                    <button class="filter-btn" data-status="aprobado">
+
+                        Aprobados
+
+                    </button>
+
+                    <button class="filter-btn" data-status="rechazado">
+
+                        Rechazados
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- TABLE -->
+
+            <div class="payments-table-container">
+
+                <table class="payments-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+
+                                Alumno
+
+                            </th>
+
+                            <th>
+
+                                Curso
+
+                            </th>
+
+                            <th>
+
+                                Método
+
+                            </th>
+
+                            <th>
+
+                                Monto
+
+                            </th>
+
+                            <th>
+
+                                Estado
+
+                            </th>
+
+                            <th>
+
+                                Acciones
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="paymentsTableBody">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <div class="admin-toast">
+        <span id="adminToastMessage">
+            Acción realizada
+        </span>
+    </div>
+
+    <script src="../../js/admin-payments.js"></script>
+
+</body>
+
+</html>

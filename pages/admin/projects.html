@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+
+        Admin Projects
+
+    </title>
+
+    <link rel="stylesheet" href="../../css/admin-projects.css">
+
+</head>
+
+<body>
+
+    <div class="projects-page">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <h1>
+
+                SUClassroom
+
+            </h1>
+
+            <nav>
+
+                <a href="dashboard.html">
+
+                    📊 Dashboard
+
+                </a>
+
+                <a href="users.html">
+
+                    👤 Usuarios
+
+                </a>
+
+                <a href="courses.html">
+
+                    📚 Cursos
+
+                </a>
+
+                <a class="active-link" href="projects.html">
+
+                    🚀 Proyectos
+
+                </a>
+
+            </nav>
+
+        </aside>
+
+        <!-- CONTENT -->
+
+        <main class="projects-content">
+
+            <div class="projects-topbar">
+
+                <h2>
+
+                    Gestión de Proyectos
+
+                </h2>
+
+            </div>
+
+            <div class="projects-filters">
+            
+                <input type="text" id="searchProject" placeholder="Buscar proyecto...">
+            
+                <div class="status-filters">
+            
+                    <button class="filter-btn active-filter" data-status="all">
+            
+                        Todos
+            
+                    </button>
+            
+                    <button class="filter-btn" data-status="pending">
+            
+                        Pendientes
+            
+                    </button>
+            
+                    <button class="filter-btn" data-status="approved">
+            
+                        Aprobados
+            
+                    </button>
+            
+                    <button class="filter-btn" data-status="rejected">
+            
+                        Rechazados
+            
+                    </button>
+            
+                </div>
+            
+            </div>
+
+            <!-- PROJECTS -->
+
+            <div class="projects-grid" id="projectsGrid">
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <div class="feedback-modal">
+    
+        <div class="feedback-modal-content">
+    
+            <span class="close-feedback-modal">✕</span>
+    
+            <h2>Evaluar proyecto</h2>
+    
+            <form id="feedbackForm">
+    
+                <select id="projectStatus">
+                    <option value="approved">Aprobado</option>
+                    <option value="pending">Pendiente</option>
+                    <option value="rejected">Rechazado</option>
+                </select>
+    
+                <textarea id="projectFeedback" placeholder="Escribe el feedback para el alumno..." required></textarea>
+    
+                <button type="submit">
+                    Guardar evaluación
+                </button>
+    
+            </form>
+    
+        </div>
+    
+    </div>
+
+    <div class="admin-toast">
+        <span id="adminToastMessage">
+            Acción realizada
+        </span>
+    </div>
+    
+
+    <script src="../../js/admin-projects.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Login | SUClassroom
+    </title>
+
+    <!-- CSS -->
+
+    <link
+        rel="stylesheet"
+        href="../css/reset.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/variables.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/global.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/navbar.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/footer.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/responsive.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/login.css"
+    >
+
+</head>
+
+<body>
+
+    <!-- ========================= -->
+    <!-- NAVBAR -->
+    <!-- ========================= -->
+
+    <header class="navbar">
+
+        <div class="container nav-container">
+
+            <!-- LOGO -->
+
+            <a
+                href="../index.html"
+                class="logo"
+            >
+
+                SUClassroom
+
+            </a>
+
+            <!-- MENU -->
+
+            <nav class="nav-menu">
+
+                <a href="../index.html">
+                    Inicio
+                </a>
+
+                <a href="./cursos.html">
+                    Cursos
+                </a>
+
+                <a href="./nosotros.html">
+                    Nosotros
+                </a>
+
+                <a href="./mentores.html">
+                    Mentores
+                </a>
+
+            </nav>
+
+            <!-- BUTTONS -->
+
+            <div class="nav-buttons">
+
+                <button
+                    class="theme-toggle"
+                    id="theme-toggle"
+                >
+
+                    🌙
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- ========================= -->
+    <!-- LOGIN -->
+    <!-- ========================= -->
+
+    <section class="login-section">
+
+        <div class="login-blur login-blur-1"></div>
+
+        <div class="login-blur login-blur-2"></div>
+
+        <div class="container login-container">
+
+            <!-- LEFT -->
+
+            <div class="login-content">
+
+                <span class="login-badge">
+
+                    Bienvenido nuevamente
+
+                </span>
+
+                <h1>
+
+                    Continúa tu ruta
+                    de aprendizaje y
+                    desbloquea nuevos cursos
+
+                </h1>
+
+                <p>
+
+                    Accede a tus cursos,
+                    mentorías, proyectos y
+                    progreso personalizado.
+
+                </p>
+
+            </div>
+
+            <!-- RIGHT -->
+
+            <div class="login-card">
+
+                <h2>
+
+                    Iniciar sesión
+
+                </h2>
+
+                <form id="loginForm">
+
+                    <!-- EMAIL -->
+
+                    <div class="input-group">
+
+                        <label>
+
+                            Correo electrónico
+
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="correo@gmail.com"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- PASSWORD -->
+
+                    <div class="input-group">
+
+                        <label>
+
+                            Contraseña
+
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="********"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- BUTTON -->
+
+                    <button
+                        type="submit"
+                        class="login-btn"
+                    >
+
+                        Ingresar
+
+                    </button>
+
+                </form>
+
+                <!-- REGISTER -->
+
+                <div class="login-register">
+
+                    ¿No tienes cuenta?
+
+                    <a href="./registrar.html">
+
+                        Regístrate
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <div class="auth-toast">
+    
+        <span id="authToastMessage">
+            Mensaje
+        </span>
+    
+    </div>
+
+    <!-- JS -->
+
+    <script src="../js/main.js"></script>
+
+    <script src="../js/auth.js"></script>
+
+</body>
+
+</html>

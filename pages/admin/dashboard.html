@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Admin Dashboard | SUClassroom
+    </title>
+
+    <!-- CSS -->
+
+    <link rel="stylesheet" href="../../css/reset.css">
+
+    <link rel="stylesheet" href="../../css/variables.css">
+
+    <link rel="stylesheet" href="../../css/global.css">
+
+    <link rel="stylesheet" href="../../css/admin-dashboard.css">
+
+</head>
+
+<body class="admin-body">
+
+    <!-- ========================= -->
+    <!-- SIDEBAR -->
+    <!-- ========================= -->
+
+    <aside class="sidebar">
+
+        <!-- LOGO -->
+
+        <div class="sidebar-logo">
+
+            SUClassroom
+
+        </div>
+
+        <!-- MENU -->
+
+        <nav class="sidebar-menu">
+
+            <a href="#" class="active-link">
+
+                📊 Dashboard
+
+            </a>
+
+            <a href="./users.html">
+
+                👤 Usuarios
+
+            </a>
+
+            <a href="./courses.html">
+
+                📚 Cursos
+
+            </a>
+
+            <a href="./projects.html">
+
+                🚀 Proyectos
+
+            </a>
+
+            <a href="./mentor.html">
+
+                🎓 Mentorías
+
+            </a>
+
+            <a href="./payments.html">
+
+                💳 Pagos
+
+            </a>
+
+            <a href="./settings.html">
+
+                ⚙️ Configuración
+
+            </a>
+
+        </nav>
+
+        <!-- LOGOUT -->
+
+        <button class="logout-btn" id="logoutBtn">
+
+            Cerrar sesión
+
+        </button>
+
+    </aside>
+
+    <!-- ========================= -->
+    <!-- MAIN -->
+    <!-- ========================= -->
+
+    <main class="admin-main">
+
+        <!-- TOPBAR -->
+
+        <header class="admin-topbar">
+
+            <div>
+
+                <h1>
+
+                    Dashboard Admin
+
+                </h1>
+
+                <p>
+
+                    Bienvenido nuevamente 🚀
+
+                </p>
+
+            </div>
+
+            <!-- USER -->
+
+            <div class="admin-user">
+
+                <div class="admin-avatar">
+
+                    A
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- ========================= -->
+        <!-- STATS -->
+        <!-- ========================= -->
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <span>Usuarios registrados</span>
+                <h2 id="usersCount">0</h2>
+            </div>
+
+            <div class="stat-card">
+                <span>Cursos creados</span>
+                <h2 id="coursesCount">0</h2>
+            </div>
+
+            <div class="stat-card">
+                <span>Proyectos pendientes</span>
+                <h2 id="projectsCount">0</h2>
+            </div>
+
+            <div class="stat-card">
+                <span>Mentorías activas</span>
+                <h2 id="mentorCount">0</h2>
+            </div>
+
+            <div class="stat-card">
+                <span>Pagos pendientes</span>
+                <h2 id="paymentsCount">0</h2>
+            </div>
+
+        </section>
+
+        <!-- ========================= -->
+        <!-- TABLE -->
+        <!-- ========================= -->
+
+        <section class="admin-table-section">
+
+            <div class="table-header">
+
+                <h2>
+
+                    Últimos usuarios registrados
+
+                </h2>
+
+            </div>
+
+            <!-- TABLE -->
+
+            <table class="admin-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Nombre
+                        </th>
+
+                        <th>
+                            Correo
+                        </th>
+
+                        <th>
+                            Rol
+                        </th>
+
+                        <th>
+                            Estado
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+                            Aurelio
+                        </td>
+
+                        <td>
+                            aurelio@gmail.com
+                        </td>
+
+                        <td>
+                            Admin
+                        </td>
+
+                        <td>
+
+                            <span class="status active-status">
+
+                                Activo
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+    <!-- JS -->
+
+    <script src="../../js/dashboard-admin.js"></script>
+
+</body>
+
+</html>

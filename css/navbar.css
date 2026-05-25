@@ -1,0 +1,148 @@
+/* ========================= */
+/* NAVBAR */
+/* ========================= */
+
+.navbar{
+
+    position: sticky;
+
+    top: 0;
+
+    width: 100%;
+
+    z-index: 999;
+
+    background: rgba(255,255,255,0.85);
+
+    backdrop-filter: blur(18px);
+
+    border-bottom: 1px solid var(--border);
+}
+
+/* CONTAINER inicio*/
+
+.nav-container{
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    height: 82px;
+
+    gap: 30px;
+}
+
+/* CONTAINER cursos*/
+.navbar-container{
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    height: 82px;
+
+    gap: 30px;
+}
+
+.theme-toggle{
+
+    width: 48px;
+    height: 48px;
+
+    border-radius: 50%;
+
+    background: var(--soft-bg);
+
+    border: 1px solid var(--border);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: var(--dark);
+
+    font-size: 1rem;
+
+    transition: 0.3s ease;
+}
+
+.theme-toggle:hover{
+
+    transform:
+    translateY(-3px);
+
+    background: var(--primary);
+
+    color: white;
+}
+/* CONTAINER cursos FINALIZA ARRIBA WAA*/
+
+
+/* LOGO */
+.logo{
+
+    font-size: 1.2rem;
+
+    font-weight: 700;
+
+    color: var(--primary);
+
+    white-space: nowrap;
+}
+
+/* MENU */
+
+.nav-menu{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 32px;
+}
+
+.nav-menu a{
+
+    color: var(--dark);
+
+    font-weight: 500;
+
+    transition: 0.3s ease;
+}
+
+.nav-menu a:hover{
+
+    color: var(--primary);
+}
+
+.active-link{
+
+    color: var(--primary);
+
+    font-weight: 600;
+}
+
+/* BUTTONS */
+
+.nav-buttons{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+}
+
+/* DARK MODE */
+
+body.dark-mode .navbar{
+
+    background:
+    rgba(15,23,42,0.85);
+
+    border-color: #243041;
+}

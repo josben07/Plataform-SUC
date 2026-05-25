@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+
+        Mentorías
+
+    </title>
+
+    <link rel="stylesheet" href="../../css/admin-mentor.css">
+
+</head>
+
+<body>
+
+    <div class="mentor-page">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <h1>
+
+                SUClassroom
+
+            </h1>
+
+            <nav>
+
+                <a href="dashboard.html">
+
+                    📊 Dashboard
+
+                </a>
+
+                <a href="users.html">
+
+                    👤 Usuarios
+
+                </a>
+
+                <a href="courses.html">
+
+                    📚 Cursos
+
+                </a>
+
+                <a href="projects.html">
+
+                    🚀 Proyectos
+
+                </a>
+
+                <a class="active-link" href="mentor.html">
+
+                    🎓 Mentorías
+
+                </a>
+
+            </nav>
+
+        </aside>
+
+        <!-- CONTENT -->
+
+        <main class="mentor-content">
+
+            <div class="mentor-topbar">
+
+                <h2>
+
+                    Gestión de Mentorías
+
+                </h2>
+
+                <button id="openMentorModal">
+
+                    + Nueva Mentoría
+
+                </button>
+
+            </div>
+
+            <!-- GRID -->
+
+            <div class="mentor-grid" id="mentorGrid">
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- MODAL -->
+
+    <div class="mentor-modal">
+
+        <div class="mentor-modal-content">
+
+            <span class="close-mentor-modal">
+
+                ✕
+
+            </span>
+
+            <h2>
+
+                Nueva Mentoría
+
+            </h2>
+
+            <form id="mentorForm">
+
+                <input type="text" id="mentorName" placeholder="Mentor" required>
+
+                <input type="text" id="mentorSpecialty" placeholder="Especialidad">
+
+                <input type="text" id="sessionTitle" placeholder="Título" required>
+
+                <textarea id="sessionDescription" placeholder="Descripción"></textarea>
+
+                <input type="date" id="sessionDate">
+
+                <input type="time" id="sessionTime">
+
+                <input type="text" id="meetLink" placeholder="Link de reunión">
+
+                <button type="submit">
+
+                    Guardar Mentoría
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- DELETE MODAL -->
+    
+    <div class="delete-modal">
+    
+        <div class="delete-modal-content">
+    
+            <h2>
+    
+                ¿Eliminar mentoría?
+    
+            </h2>
+    
+            <p>
+    
+                Esta acción no se puede deshacer.
+    
+            </p>
+    
+            <div class="delete-actions">
+    
+                <button id="cancelDeleteMentor">
+    
+                    Cancelar
+    
+                </button>
+    
+                <button id="confirmDeleteMentor">
+    
+                    Eliminar
+    
+                </button>
+    
+            </div>
+    
+        </div>
+    
+    </div>
+
+    <div class="admin-toast">
+        <span id="adminToastMessage">
+            Acción realizada
+        </span>
+    </div>
+
+    <script src="../../js/admin-mentor.js"></script>
+
+</body>
+
+</html>

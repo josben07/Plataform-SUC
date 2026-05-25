@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Estudiantes | Mentor</title>
+    <link rel="stylesheet" href="../../css/mentor-students.css">
+</head>
+
+<body>
+
+    <div class="mentor-page">
+
+        <aside class="mentor-sidebar">
+            <div class="mentor-logo">SUClassroom</div>
+
+            <nav class="mentor-menu">
+                <a href="./dashboard.html">📊 Dashboard</a>
+                <a href="./projects.html">🚀 Proyectos</a>
+                <a href="./mentorships.html">🎓 Mentorías</a>
+                <a href="./students.html" class="active-link">👥 Estudiantes</a>
+                <a href="./profile.html">👤 Perfil</a>
+            </nav>
+        </aside>
+
+        <main class="mentor-main">
+
+            <div class="mentor-header">
+                <span>ESTUDIANTES</span>
+                <h1>Seguimiento de alumnos</h1>
+                <p>Visualiza alumnos con proyectos enviados o mentorías reservadas.</p>
+            </div>
+
+            <div class="students-grid" id="studentsGrid"></div>
+
+        </main>
+
+    </div>
+
+    <div class="app-toast">
+        <span id="appToastMessage">Acción realizada</span>
+    </div>
+
+    <script src="../../js/mentor-students.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,347 @@
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
+    font-family:sans-serif;
+}
+
+body{
+
+    background:#020617;
+    color:white;
+}
+
+/* LAYOUT */
+
+.payments-page{
+
+    display:flex;
+
+    min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+
+    width:270px;
+
+    background:#0F172A;
+
+    padding:32px;
+}
+
+.sidebar h1{
+
+    margin-bottom:42px;
+}
+
+.sidebar nav{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+}
+
+.sidebar a{
+
+    padding:14px;
+
+    border-radius:14px;
+
+    text-decoration:none;
+
+    color:rgba(255,255,255,0.72);
+}
+
+.active-link{
+
+    background:
+    rgba(108,77,255,0.14);
+
+    color:white !important;
+}
+
+/* CONTENT */
+
+.payments-content{
+
+    flex:1;
+
+    padding:42px;
+}
+
+/* FILTERS */
+
+.payments-filters{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-top:28px;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+}
+
+#searchPayment{
+
+    width:320px;
+
+    height:52px;
+
+    border:none;
+
+    border-radius:16px;
+
+    padding:0 18px;
+
+    background:#0F172A;
+
+    color:white;
+
+    outline:none;
+}
+
+/* FILTER BUTTONS */
+
+.status-filters{
+
+    display:flex;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+}
+
+.filter-btn{
+
+    height:46px;
+
+    padding:0 18px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:
+    rgba(255,255,255,0.05);
+
+    color:
+    rgba(255,255,255,0.72);
+
+    cursor:pointer;
+}
+
+.active-filter{
+
+    background:
+    rgba(108,77,255,0.18);
+
+    color:white;
+}
+
+/* TABLE */
+
+.payments-table-container{
+
+    margin-top:32px;
+
+    background:#0F172A;
+
+    border-radius:24px;
+
+    overflow:hidden;
+}
+
+.payments-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+.payments-table th,
+.payments-table td{
+
+    padding:22px;
+
+    text-align:left;
+}
+
+.payments-table th{
+
+    background:
+    rgba(255,255,255,0.03);
+}
+
+/* STATUS */
+
+.payment-status{
+
+    display:inline-flex;
+
+    padding:
+    8px 14px;
+
+    border-radius:999px;
+
+    font-size:13px;
+}
+
+.pendiente{
+
+    background:
+    rgba(245,158,11,0.14);
+
+    color:#F59E0B;
+}
+
+.aprobado{
+
+    background:
+    rgba(34,197,94,0.14);
+
+    color:#22C55E;
+}
+
+.rechazado{
+
+    background:
+    rgba(239,68,68,0.14);
+
+    color:#EF4444;
+}
+
+/* ACTIONS */
+
+.payment-actions{
+
+    display:flex;
+
+    gap:10px;
+}
+
+.payment-actions button{
+
+    border:none;
+
+    border-radius:12px;
+
+    padding:
+    10px 14px;
+
+    cursor:pointer;
+
+    font-weight:700;
+}
+
+.approve-btn{
+
+    background:
+    rgba(34,197,94,0.14);
+
+    color:#22C55E;
+}
+
+.reject-btn{
+
+    background:
+    rgba(239,68,68,0.14);
+
+    color:#EF4444;
+}
+
+/* PENDING */
+
+.pending-btn{
+
+    background:
+    rgba(245,158,11,0.14);
+
+    color:#F59E0B;
+}
+
+/* EMPTY STATE */
+
+.empty-state{
+
+    width:100%;
+
+    min-height:260px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    padding:40px;
+}
+
+.empty-icon{
+
+    font-size:58px;
+
+    margin-bottom:18px;
+}
+
+.empty-state h3{
+
+    font-size:22px;
+
+    margin-bottom:10px;
+}
+
+.empty-state p{
+
+    color:
+    rgba(255,255,255,0.58);
+}
+
+.admin-toast{
+
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+
+    background:
+    linear-gradient(135deg,#6C4DFF,#8B7CFF);
+
+    color: white;
+
+    padding: 18px 24px;
+
+    border-radius: 18px;
+
+    font-weight: 700;
+
+    opacity: 0;
+
+    transform: translateY(30px);
+
+    pointer-events: none;
+
+    transition: 0.3s ease;
+
+    z-index: 9999;
+}
+
+.admin-toast.show-toast{
+
+    opacity: 1;
+
+    transform: translateY(0);
+}

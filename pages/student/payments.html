@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pagos | SUClassroom</title>
+    <link rel="stylesheet" href="../../css/student-payments.css">
+</head>
+
+<body>
+
+    <div class="student-page">
+
+        <aside class="student-sidebar">
+            <div class="student-logo">SUClassroom</div>
+
+            <nav class="student-menu">
+                <a href="./dashboard.html">📊 Dashboard</a>
+                <a href="./my-courses.html">📚 Mis cursos</a>
+                <a href="./projects.html">🚀 Proyectos</a>
+                <a href="./mentorships.html">🎓 Mentorías</a>
+                <a href="./payments.html" class="active-link">💳 Pagos</a>
+                <a href="./profile.html">👤 Perfil</a>
+            </nav>
+        </aside>
+
+        <main class="student-main">
+
+            <div class="student-header">
+                <span>PAGOS</span>
+                <h1>Historial de pagos</h1>
+                <p>Revisa tus pagos simulados y el estado de aprobación.</p>
+            </div>
+
+            <div class="payments-grid" id="paymentsGrid"></div>
+
+        </main>
+
+    </div>
+
+    <div class="pay-modal">
+    
+        <div class="pay-modal-content">
+    
+            <span class="close-pay-modal">
+                ✕
+            </span>
+    
+            <h2>
+                Confirmar pago
+            </h2>
+    
+            <p id="payCourseName"></p>
+            <p id="payAmount"></p>
+    
+            <div class="pay-box">
+    
+                <strong>Datos para pago simulado</strong>
+    
+                <p>Yape / Plin: 999 888 777</p>
+                <p>Titular: SUClassroom</p>
+    
+            </div>
+    
+            <button id="confirmPayBtn">
+                Ya realicé el pago
+            </button>
+    
+        </div>
+    
+    </div>
+
+    <div class="app-toast">
+        <span id="appToastMessage">Acción realizada</span>
+    </div>
+
+    <script src="../../js/student-payments.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Proyectos | Mentor</title>
+    <link rel="stylesheet" href="../../css/mentor-projects.css">
+</head>
+
+<body>
+
+    <div class="mentor-page">
+
+        <aside class="mentor-sidebar">
+
+            <div class="mentor-logo">SUClassroom</div>
+
+            <nav class="mentor-menu">
+                <a href="./dashboard.html">📊 Dashboard</a>
+                <a href="./projects.html" class="active-link">🚀 Proyectos</a>
+                <a href="./mentorships.html">🎓 Mentorías</a>
+                <a href="./students.html">👥 Estudiantes</a>
+                <a href="./profile.html">👤 Perfil</a>
+            </nav>
+
+        </aside>
+
+        <main class="mentor-main">
+
+            <div class="mentor-header">
+                <span>PROYECTOS</span>
+                <h1>Revisión de entregas</h1>
+                <p>Evalúa proyectos enviados por alumnos y registra feedback.</p>
+            </div>
+
+            <div class="projects-grid" id="mentorProjectsGrid"></div>
+
+        </main>
+
+    </div>
+
+    <div class="feedback-modal">
+
+        <div class="feedback-modal-content">
+
+            <span class="close-feedback-modal">✕</span>
+
+            <h2>Evaluar proyecto</h2>
+
+            <form id="feedbackForm">
+
+                <select id="projectStatus">
+                    <option value="approved">Aprobado</option>
+                    <option value="pending">Pendiente</option>
+                    <option value="rejected">Rechazado</option>
+                </select>
+
+                <textarea id="projectFeedback" placeholder="Escribe el feedback para el alumno..." required></textarea>
+
+                <button type="submit">
+                    Guardar evaluación
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="app-toast">
+        <span id="appToastMessage">Acción realizada</span>
+    </div>
+
+    <script src="../../js/mentor-projects.js"></script>
+
+</body>
+
+</html>

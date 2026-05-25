@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mentor | SUClassroom</title>
+    <link rel="stylesheet" href="../../css/mentor-dashboard.css">
+</head>
+
+<body>
+
+    <div class="mentor-page">
+
+        <aside class="mentor-sidebar">
+
+            <div class="mentor-logo">
+                SUClassroom
+            </div>
+
+            <nav class="mentor-menu">
+
+                <a href="./dashboard.html" class="active-link">
+                    📊 Dashboard
+                </a>
+
+                <a href="./projects.html">
+                    🚀 Proyectos
+                </a>
+
+                <a href="./mentorships.html">
+                    🎓 Mentorías
+                </a>
+
+                <a href="./students.html">
+                    👥 Estudiantes
+                </a>
+
+                <a href="./profile.html">
+                    👤 Perfil
+                </a>
+
+            </nav>
+
+            <button id="logoutBtn" class="logout-btn">
+                Cerrar sesión
+            </button>
+
+        </aside>
+
+        <main class="mentor-main">
+
+            <header class="mentor-header">
+
+                <div>
+
+                    <span>
+                        PANEL DEL MENTOR
+                    </span>
+
+                    <h1 id="mentorName">
+                        Bienvenido
+                    </h1>
+
+                    <p>
+                        Revisa proyectos, gestiona mentorías y acompaña el progreso de tus estudiantes.
+                    </p>
+
+                </div>
+
+                <div class="mentor-avatar" id="mentorAvatar">
+                    M
+                </div>
+
+            </header>
+
+            <section class="mentor-stats">
+
+                <div class="mentor-stat-card">
+                    <span>Proyectos pendientes</span>
+                    <h2 id="pendingProjects">0</h2>
+                </div>
+
+                <div class="mentor-stat-card">
+                    <span>Mentorías reservadas</span>
+                    <h2 id="reservedSessions">0</h2>
+                </div>
+
+                <div class="mentor-stat-card">
+                    <span>Estudiantes activos</span>
+                    <h2 id="activeStudents">0</h2>
+                </div>
+
+            </section>
+
+            <section class="mentor-section">
+
+                <div class="section-header">
+
+                    <h2>
+                        Proyectos recientes
+                    </h2>
+
+                    <p>
+                        Últimas entregas enviadas por estudiantes.
+                    </p>
+
+                </div>
+
+                <div class="recent-projects" id="recentProjects"></div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <div class="app-toast">
+        <span id="appToastMessage">Acción realizada</span>
+    </div>
+
+    <script src="../../js/mentor-dashboard.js"></script>
+
+</body>
+
+</html>

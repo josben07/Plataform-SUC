@@ -1,0 +1,104 @@
+.how-it-works{
+    padding: 120px 0;
+}
+
+.steps-grid{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 28px;
+    margin-top: 70px;
+}
+
+.step-card{
+    position: relative;
+
+    background: var(--card-bg);
+
+    border: 1px solid var(--border);
+
+    border-radius: 28px;
+
+    padding: 40px;
+
+    overflow: hidden;
+
+    transition: 0.35s ease;
+}
+
+.step-card:hover{
+
+    transform: translateY(-10px);
+
+    box-shadow:
+    0px 20px 50px rgba(15,23,42,0.08);
+
+}
+
+.step-number{
+
+    width: 70px;
+    height: 70px;
+
+    border-radius: 20px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #6C4DFF,
+        #8B7CFF
+    );
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+
+    font-size: 1.3rem;
+    font-weight: 700;
+
+    margin-bottom: 30px;
+}
+
+.step-card h3{
+
+    font-size: 1.4rem;
+
+    margin-bottom: 18px;
+
+    line-height: 1.4;
+}
+
+.step-card p{
+
+    line-height: 1.8;
+
+    color: var(--gray);
+}
+
+/* HOVER GLOW */
+
+.step-card::before{
+
+    content: '';
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    background:
+    rgba(108,77,255,0.08);
+
+    border-radius: 50%;
+
+    top: -60px;
+    right: -60px;
+
+    transition: 0.4s ease;
+}
+
+.step-card:hover::before{
+
+    transform: scale(1.2);
+}

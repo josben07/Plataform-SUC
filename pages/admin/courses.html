@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Cursos | SUClassroom
+    </title>
+
+    <link rel="stylesheet" href="../../css/reset.css">
+
+    <link rel="stylesheet" href="../../css/global.css">
+
+    <link rel="stylesheet" href="../../css/admin-courses.css">
+
+</head>
+
+<body class="courses-admin-body">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div>
+
+            <div class="sidebar-logo">
+
+                SUClassroom
+
+            </div>
+
+            <nav class="sidebar-menu">
+
+                <a href="./dashboard.html">
+
+                    Dashboard
+
+                </a>
+
+                <a href="./users.html">
+
+                    Usuarios
+
+                </a>
+
+                <a href="./courses.html" class="active-link">
+
+                    Cursos
+
+                </a>
+
+            </nav>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+
+    <main class="courses-main">
+
+        <!-- TOPBAR -->
+
+        <div class="courses-topbar">
+
+            <div>
+
+                <h1>
+
+                    Gestión de cursos
+
+                </h1>
+
+                <p>
+
+                    Administra cursos,
+                    módulos y bloqueos.
+
+                </p>
+
+            </div>
+
+            <!-- BUTTON -->
+
+            <button id="openModalBtn">
+
+                + Crear curso
+
+            </button>
+
+        </div>
+
+        <!-- GRID -->
+
+        <div class="courses-grid" id="coursesGrid">
+
+        </div>
+
+    </main>
+
+    <!-- MODAL -->
+
+    <div class="course-modal">
+
+        <div class="course-modal-content">
+
+            <span class="close-modal">
+                ✕
+            </span>
+
+            <h2>
+                Crear curso
+            </h2>
+
+            <form id="courseForm">
+
+                <input type="text" id="title" placeholder="Título" required>
+
+                <textarea id="description" placeholder="Descripción" required></textarea>
+
+                <input type="text" id="category" placeholder="Categoría" required>
+
+                <input type="text" id="level" placeholder="Nivel" required>
+
+                <input type="text" id="duration" placeholder="Duración" required>
+
+                <input type="number" id="price" placeholder="Precio" required>
+
+                <input type="text" id="thumbnail" placeholder="URL imagen" required>
+
+                <label>
+
+                    <input type="checkbox" id="is_locked">
+
+                    Curso bloqueado
+
+                </label>
+
+                <button type="submit">
+
+                    Guardar curso
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="admin-toast">
+        <span id="adminToastMessage">
+            Acción realizada
+        </span>
+    </div>
+
+    <script src="../../js/admin-courses.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+
+        Configuración
+
+    </title>
+
+    <link rel="stylesheet" href="../../css/admin-settings.css">
+
+</head>
+
+<body>
+
+    <div class="settings-page">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <h1>
+
+                SUClassroom
+
+            </h1>
+
+            <nav>
+
+                <a href="dashboard.html">
+
+                    📊 Dashboard
+
+                </a>
+
+                <a href="users.html">
+
+                    👤 Usuarios
+
+                </a>
+
+                <a href="courses.html">
+
+                    📚 Cursos
+
+                </a>
+
+                <a href="projects.html">
+
+                    🚀 Proyectos
+
+                </a>
+
+                <a href="mentor.html">
+
+                    🎓 Mentorías
+
+                </a>
+
+                <a href="payments.html">
+
+                    💳 Pagos
+
+                </a>
+
+                <a class="active-link" href="settings.html">
+
+                    ⚙️ Configuración
+
+                </a>
+
+            </nav>
+
+        </aside>
+
+        <!-- CONTENT -->
+
+        <main class="settings-content">
+
+            <h2>
+
+                Configuración General
+
+            </h2>
+
+            <!-- GRID -->
+
+            <div class="settings-grid">
+
+                <!-- BRAND -->
+
+                <div class="settings-card">
+
+                    <h3>
+
+                        Personalización de plataforma
+
+                    </h3>
+
+                    <input type="text" id="platformName" placeholder="Nombre plataforma">
+
+                    <textarea id="platformDescription" placeholder="Descripción"></textarea>
+
+                    <button id="saveBrandingBtn">
+
+                            Guardar configuración 
+
+                    </button >
+
+                </div>
+
+                <!-- SYSTEM -->
+
+                <div class="settings-card">
+
+                    <h3>
+
+                        Sistema
+
+                    </h3>
+
+                    <div class="toggle-item">
+
+                        <span>
+
+                            Mentorías
+
+                        </span>
+
+                        <label class="switch">
+
+                            <input type="checkbox" id="mentorshipsToggle" checked>
+
+                            <span class="slider"></span>
+
+                        </label>
+
+                    </div>
+
+                    <div class="toggle-item">
+
+                        <span>
+
+                            Pagos
+
+                        </span>
+
+                        <label class="switch">
+
+                            <input type="checkbox" id="paymentsToggle" checked>
+
+                            <span class="slider"></span>
+
+                        </label>
+
+                    </div>
+
+                    <div class="toggle-item">
+
+                        <span>
+
+                            Modo mantenimiento
+
+                        </span>
+
+                        <label class="switch">
+
+                            <input type="checkbox" id="maintenanceToggle">
+
+                            <span class="slider"></span>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- SECURITY -->
+
+                <div class="settings-card">
+
+                    <h3>
+
+                        Seguridad
+
+                    </h3>
+
+                    <input type="password" id="newPassword" placeholder="Nueva contraseña">
+
+                    <input type="password" id="confirmPassword" placeholder="Confirmar contraseña">
+
+                    <button id="savePasswordBtn">
+
+                        Cambiar contraseña
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- TOAST -->
+    
+    <div class="settings-toast">
+    
+        <span id="toastMessage">
+    
+            Configuración guardada
+    
+        </span>
+    
+    </div>
+
+    <script src="../../js/admin-settings.js"></script>
+
+</body>
+
+</html>

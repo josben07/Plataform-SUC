@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Alumno | SUClassroom
+    </title>
+
+    <link rel="stylesheet" href="../../css/student-dashboard.css">
+
+</head>
+
+<body>
+
+    <div class="student-page">
+
+        <aside class="student-sidebar">
+
+            <div class="student-logo">
+                SUClassroom
+            </div>
+
+            <nav class="student-menu">
+
+                <a href="#" class="active-link">
+                    📊 Dashboard
+                </a>
+
+                <a href="./my-courses.html">
+                    📚 Mis cursos
+                </a>
+
+                <a href="./projects.html">
+                    🚀 Proyectos
+                </a>
+
+                <a href="./mentorships.html">
+                    🎓 Mentorías
+                </a>
+
+                <a href="./payments.html">
+                    💳 Pagos
+                </a>
+
+                <a href="./profile.html">
+                    👤 Perfil
+                </a>
+
+            </nav>
+
+            <button class="student-logout" id="logoutBtn">
+                Cerrar sesión
+            </button>
+
+        </aside>
+
+        <main class="student-main">
+
+            <header class="student-topbar">
+
+                <div>
+
+                    <span class="student-label">
+                        PANEL DEL ALUMNO
+                    </span>
+
+                    <h1 id="studentName">
+                        Bienvenido
+                    </h1>
+
+                    <p>
+                        Continúa tu ruta de aprendizaje y desbloquea nuevos cursos.
+                    </p>
+
+                </div>
+
+                <div class="student-avatar" id="studentAvatar">
+                    A
+                </div>
+
+            </header>
+
+            <section class="student-stats">
+
+                <div class="student-stat-card">
+
+                    <span>
+                        Cursos disponibles
+                    </span>
+
+                    <h2 id="availableCourses">
+                        0
+                    </h2>
+
+                </div>
+
+                <div class="student-stat-card">
+
+                    <span>
+                        Cursos bloqueados
+                    </span>
+
+                    <h2 id="lockedCourses">
+                        0
+                    </h2>
+
+                </div>
+
+                <div class="student-stat-card">
+
+                    <span>
+                        Progreso general
+                    </span>
+
+                    <h2 id="progressPercentage">
+                        0%
+                    </h2>
+
+                </div>
+
+            </section>
+
+            <section class="student-section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            Cursos disponibles
+                        </h2>
+
+                        <p>
+                            Explora los cursos creados por el administrador.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                                <div class="student-filters">
+                                
+                                    <button class="student-filter active-student-filter" onclick="changeStudentFilter('all', this)">
+                                        Todos
+                                    </button>
+                                
+                                    <button class="student-filter" onclick="window.location.href='./my-courses.html'">
+                                        Mis cursos
+                                    </button>
+                                
+                                    <button class="student-filter" onclick="changeStudentFilter('locked', this)">
+                                        Bloqueados
+                                    </button>
+                                
+                                </div>
+
+                <div class="student-courses-grid" id="studentCoursesGrid">
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <div class="app-toast">
+        <span id="appToastMessage">Acción realizada</span>
+    </div>
+
+    <script src="../../js/student-dashboard.js"></script>
+
+</body>
+
+</html>

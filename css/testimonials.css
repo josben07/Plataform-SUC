@@ -1,0 +1,160 @@
+.testimonials {
+    padding: 120px 0;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-top: 70px;
+}
+
+.testimonial-card {
+
+    background: var(--card-bg);
+
+    border: 1px solid var(--border);
+
+    border-radius: 30px;
+
+    padding: 35px;
+
+    transition: 0.35s ease;
+    backdrop-filter: blur(12px);
+
+    overflow: hidden;
+
+    position: relative;
+}
+
+.testimonial-card:hover{
+
+    transform: translateY(-12px);
+
+    border-color:
+    rgba(108,77,255,0.25);
+
+    box-shadow:
+    0 20px 60px rgba(0,0,0,0.08);
+}
+
+.featured-testimonial {
+
+    background:
+        linear-gradient(135deg,
+            #6C4DFF,
+            #8B7CFF);
+
+    color: white;
+}
+
+.featured-testimonial span,
+.featured-testimonial .testimonial-text {
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.testimonial-top {
+
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+    margin-bottom: 28px;
+}
+
+.testimonial-avatar{
+
+    width: 74px;
+    height: 74px;
+
+    border-radius: 50%;
+
+    overflow: hidden;
+
+    flex-shrink: 0;
+
+    position: relative;
+
+    border: 3px solid rgba(108,77,255,0.15);
+
+    box-shadow:
+    0 10px 30px rgba(108,77,255,0.18);
+}
+
+/* IMAGE */
+
+.testimonial-avatar img{
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition: 0.4s ease;
+}
+
+/* HOVER */
+
+.testimonial-card:hover
+.testimonial-avatar img{
+
+    transform: scale(1.08);
+}
+
+.testimonial-top{
+
+    position: relative;
+
+    z-index: 2;
+}
+
+.testimonial-text{
+
+    position: relative;
+
+    z-index: 2;
+}
+
+.testimonial-top h4 {
+    margin-bottom: 6px;
+}
+
+.testimonial-top span{
+
+    color: #252a30;
+
+    font-weight: 600;
+
+    font-size: 0.95rem;
+
+    letter-spacing: 0.2px;
+}
+
+.testimonial-text {
+
+    line-height: 1.9;
+
+    color: #374151;
+
+    font-size: 1rem;
+}
+
+/* ========================= */
+/* DARK MODE */
+/* ========================= */
+
+body.dark-mode .testimonial-top span{
+
+    color: #CBD5E1;
+}
+
+body.dark-mode .testimonial-text{
+
+    color: #E2E8F0;
+}
+
+body.dark-mode .testimonial-card:hover{
+
+    box-shadow:
+    0 20px 60px rgba(0,0,0,0.4);
+}

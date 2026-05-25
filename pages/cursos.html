@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Cursos | SUClassroom
+    </title>
+
+    <!-- GLOBAL CSS -->
+    <link rel="stylesheet" href="../css/global.css">
+
+    <!-- NAVBAR -->
+    <link rel="stylesheet" href="../css/navbar.css">
+
+    <!-- CURSOS -->
+    <link rel="stylesheet" href="../css/courses.css">
+
+    <!-- RESPONSIVE -->
+    <link rel="stylesheet" href="../css/responsive.css">
+
+</head>
+
+<body>
+
+    <!-- ========================= -->
+    <!-- NAVBAR -->
+    <!-- ========================= -->
+
+    <header class="navbar">
+
+        <div class="container navbar-container">
+
+            <!-- LOGO -->
+            <div class="logo">
+
+                <h2>
+                    SUClassroom
+                </h2>
+
+            </div>
+
+            <!-- MENU -->
+            <nav class="nav-menu">
+
+                <a href="../index.html">
+                    Inicio
+                </a>
+
+                <a href="cursos.html" class="active-link">
+                    Cursos
+                </a>
+
+                <a href="./nosotros.html">
+                    Sobre Nosotros
+                </a>
+
+                <a href="mentores.html">
+                    Mentores
+                </a>
+
+                <a href="./empresas.html">
+                    Empresas
+                </a>
+
+            </nav>
+
+            <!-- MOBILE -->
+            <div class="menu-toggle" id="menu-toggle">
+
+                ☰
+
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="nav-buttons">
+
+                <button class="theme-toggle" id="theme-toggle">
+
+                    🌙
+
+                </button>
+
+                <a href="./login.html" class="btn btn-outline">
+                    Ingresar
+                </a>
+
+                <a href="./registrar.html" class="btn btn-primary">
+                    Comenzar
+                </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ========================= -->
+    <!-- HERO -->
+    <!-- ========================= -->
+
+    <section class="courses-hero">
+
+        <div class="container">
+
+            <div class="courses-hero-content">
+
+                <span class="section-badge">
+
+                    Explora cursos
+
+                </span>
+
+                <h1>
+
+                    Aprende habilidades
+                    prácticas para construir
+                    proyectos reales.
+
+                </h1>
+
+                <p>
+
+                    Descubre rutas enfocadas en
+                    emprendimiento, tecnología,
+                    productividad y crecimiento digital.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- COURSES LAYOUT -->
+    <!-- ========================= -->
+
+    <section class="courses-layout">
+
+        <div class="container courses-container">
+
+            <!-- SIDEBAR -->
+            <aside class="courses-sidebar">
+
+                <h3>
+                    Categorías
+                </h3>
+
+                <ul class="sidebar-links">
+
+                    <li>
+                        <button class="category-filter active-category" data-filter="all">
+                            Todos
+                        </button>
+                    </li>
+
+                    <li>
+                        <button class="category-filter" data-filter="marketing">
+                            Marketing
+                        </button>
+                    </li>
+
+                    <li>
+                        <button class="category-filter" data-filter="tecnologia">
+                            Tecnología
+                        </button>
+                    </li>
+
+                    <li>
+                        <button class="category-filter" data-filter="branding">
+                            Branding
+                        </button>
+                    </li>
+
+                    <li>
+                        <button class="category-filter" data-filter="productividad">
+                            Productividad
+                        </button>
+                    </li>
+
+                    <li>
+                        <button class="category-filter" data-filter="ia">
+                            IA para negocios
+                        </button>
+                    </li>
+
+                    <li>
+                        <button class="category-filter" data-filter="finanzas">
+                            Finanzas
+                        </button>
+                    </li>
+
+                </ul>
+
+            </aside>
+
+
+
+            <!-- COURSES CONTENT -->
+            <div class="courses-content">
+
+                <div class="courses-topbar">
+
+                    <div class="courses-top-left">
+
+                        <h2>
+                            Todos los cursos
+                        </h2>
+
+                        <p>
+                            Explora rutas enfocadas
+                            en crecimiento profesional.
+                        </p>
+
+                    </div>
+
+
+                    <div class="courses-actions">
+
+                        <!-- SEARCH -->
+                        <div class="courses-search">
+
+                            <input type="text" id="course-search" placeholder="Buscar cursos...">
+
+                        </div>
+
+                        <!-- FILTER -->
+                        <select class="courses-filter" id="courses-sort">
+
+                            <option value="popular">
+                                Más populares
+                            </option>
+
+                            <option value="recent">
+                                Más recientes
+                            </option>
+
+                            <option value="rating">
+                                Mejor valorados
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <!-- GRID -->
+                <div class="courses-grid">
+
+                    <!-- CARD -->
+                    <div class="course-card" data-category="tecnologia" data-popularity="99" data-rating="4.5"
+                        data-date="2025">
+
+                        <div class="course-image">
+                            <img src="../assets/coursesimg/fullstack.jpg" alt="Curso Full Stack">
+
+                            <span class="course-badge">
+                                Bestseller
+                            </span>
+
+                        </div>
+
+                        <div class="course-info">
+
+                            <span class="course-category">
+                                Tecnología
+                            </span>
+
+                            <h3>
+                                Desarrollo Full Stack moderno
+                            </h3>
+
+                            <p>
+                                Aprende frontend, backend
+                                y despliegue profesional.
+                            </p>
+
+                            <div class="course-meta">
+
+                                <span>
+                                    8 semanas
+                                </span>
+
+                                <span>
+                                    Intermedio
+                                </span>
+
+                            </div>
+
+                            <div class="course-footer">
+
+                                <div class="course-price">
+                                    S/89
+                                </div>
+
+                                <button class="course-btn" data-title="Desarrollo Full Stack moderno"
+                                    data-category="Tecnología" data-duration="10h 30min"
+                                    data-description="Aprende a construir aplicaciones modernas utilizando frontend y backend profesional con tecnologías escalables."
+                                    data-image="../assets/coursesimg/fullstack.jpg" data-modules="
+    Fundamentos web:HTML|CSS|JavaScript,
+    Frontend moderno:React|Componentes|Hooks,
+    Backend profesional:Node.js|APIs REST|Express,
+    Bases de datos:MongoDB|Modelado|Consultas,
+    Deploy y escalabilidad:Hosting|Optimización|Producción
+    " data-skills="
+    JavaScript,
+    React,
+    Node.js,
+    APIs REST,
+    MongoDB
+    ">
+
+                                    Ver curso
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- CARD -->
+                    <div class="course-card" data-category="marketing" data-popularity="80" data-rating="4.7"
+                        data-date="2024">
+
+                        <div class="course-image marketing-bg">
+
+                            <img src="../assets/coursesimg/marketing.jpg" alt="Curso Marketing">
+
+                            <span class="course-badge">
+                                Nuevo
+                            </span>
+
+                        </div>
+
+                        <div class="course-info">
+
+                            <span class="course-category">
+                                Marketing
+                            </span>
+
+                            <h3>
+                                Marketing digital para startups
+                            </h3>
+
+                            <p>
+                                Aprende campañas, anuncios
+                                y estrategias digitales modernas.
+                            </p>
+
+                            <div class="course-meta">
+
+                                <span>
+                                    6 semanas
+                                </span>
+
+                                <span>
+                                    Básico
+                                </span>
+
+                            </div>
+
+                            <div class="course-footer">
+
+                                <div class="course-price">
+                                    S/69
+                                </div>
+
+                                <button class="course-btn" data-title="Marketing digital para startups"
+                                    data-category="Marketing" data-duration="8h 30min"
+                                    data-description="Domina estrategias digitales para posicionar startups, generar ventas y construir campañas escalables."
+                                    data-image="../assets/coursesimg/marketing.jpg" data-modules="
+    Fundamentos marketing:Audiencia|Branding|Canales,
+    Estrategia digital:Funnels|Contenido|SEO,
+    Publicidad online:Meta Ads|Google Ads|Remarketing,
+    Crecimiento startup:Escalabilidad|Métricas|Conversión,
+    Automatización:Email marketing|CRM|Optimización
+    " data-skills="
+    Marketing digital,
+    Funnels,
+    SEO,
+    Publicidad online,
+    Growth marketing
+    ">
+
+                                    Ver curso
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- CARD -->
+                    <div class="course-card" data-category="branding" data-popularity="60" data-rating="4.9"
+                        data-date="2023">
+
+                        <div class="course-image branding-bg">
+                            <img src="../assets/coursesimg/branding.jpg" alt="Curso Branding">
+
+                            <span class="course-badge">
+                                Popular
+                            </span>
+
+                        </div>
+
+                        <div class="course-info">
+
+                            <span class="course-category">
+                                Branding
+                            </span>
+
+                            <h3>
+                                Construcción de marca personal
+                            </h3>
+
+                            <p>
+                                Aprende identidad visual,
+                                comunicación y posicionamiento.
+                            </p>
+
+                            <div class="course-meta">
+
+                                <span>
+                                    5 semanas
+                                </span>
+
+                                <span>
+                                    Intermedio
+                                </span>
+
+                            </div>
+
+                            <div class="course-footer">
+
+                                <div class="course-price">
+                                    S/79
+                                </div>
+
+                                <button class="course-btn" data-title="Construcción de marca personal"
+                                    data-category="Branding" data-duration="10h 30 min"
+                                    data-description="Aprende a construir una marca sólida, posicionarte digitalmente y crear una identidad visual profesional."
+                                    data-image="../assets/coursesimg/branding.jpg" data-modules="
+    Fundamentos del branding:Introducción|Conceptos base|Casos reales,
+    Identidad visual:Paleta de colores|Tipografía|Logo,
+    Estrategia digital:Posicionamiento|Contenido|Redes sociales,
+    Marca profesional:Storytelling|Autoridad|Escalabilidad"
+                                    data-skills="Branding,Comunicación,Identidad visual,Estrategia">
+
+                                    Ver curso
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- CARD -->
+                    <div class="course-card locked-course" data-category="ia" data-popularity="75" data-rating="5.0"
+                        data-date="2025">
+
+                        <div class="course-image ia-bg">
+
+                            <img src="../assets/coursesimg/ia.jpg" alt="Curso IA">
+
+                            <!-- LOCK -->
+
+                            <div class="course-lock">
+
+                                🔒 Disponible al completar
+                                el curso anterior
+
+                            </div>
+
+                            <span class="course-badge">
+                                IA
+                            </span>
+
+                        </div>
+
+                        <div class="course-info">
+
+                            <span class="course-category">
+                                Inteligencia Artificial
+                            </span>
+
+                            <h3>
+                                IA aplicada a negocios
+                            </h3>
+
+                            <p>
+                                Automatiza procesos y mejora
+                                productividad con herramientas IA.
+                            </p>
+
+                            <div class="course-meta">
+
+                                <span>
+                                    7 semanas
+                                </span>
+
+                                <span>
+                                    Avanzado
+                                </span>
+
+                            </div>
+
+                            <div class="course-footer">
+
+                                <div class="course-price">
+                                    S/119
+                                </div>
+
+                                <button class="course-btn">
+                                    Ver curso
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- CARD -->
+                    <div class="course-card locked-course" data-category="productividad" data-popularity="76"
+                        data-rating="4.6" data-date="2024">
+
+                        <div class="course-image productivity-bg">
+                            <img src="../assets/coursesimg/productividad.jpg" alt="Curso Productividad">
+
+                            <!-- LOCK -->
+
+                            <div class="course-lock">
+
+                                🔒 Disponible al completar
+                                el curso anterior
+
+                            </div>
+
+                            <span class="course-badge">
+                                Productividad
+                            </span>
+
+                        </div>
+
+                        <div class="course-info">
+
+                            <span class="course-category">
+                                Productividad
+                            </span>
+
+                            <h3>
+                                Gestión de proyectos ágiles
+                            </h3>
+
+                            <p>
+                                Organiza tareas, equipos y flujos
+                                de trabajo eficientes.
+                            </p>
+
+                            <div class="course-meta">
+
+                                <span>
+                                    4 semanas
+                                </span>
+
+                                <span>
+                                    Básico
+                                </span>
+
+                            </div>
+
+                            <div class="course-footer">
+
+                                <div class="course-price">
+                                    S/59
+                                </div>
+
+                                <button class="course-btn">
+                                    Ver curso
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- CARD -->
+                    <div class="course-card locked-course" data-category="finanzas" data-popularity="89"
+                        data-rating="4.8" data-date="2025">
+
+                        <div class="course-image finance-bg">
+                            <img src="../assets/coursesimg/finanzas.jpg" alt="Curso Finanzas">
+
+                            <!-- LOCK -->
+
+                            <div class="course-lock">
+
+                                🔒 Disponible al completar
+                                el curso anterior
+
+                            </div>
+                            <span class="course-badge">
+                                Finanzas
+                            </span>
+
+                        </div>
+
+                        <div class="course-info">
+
+                            <span class="course-category">
+                                Finanzas
+                            </span>
+
+                            <h3>
+                                Finanzas para emprendedores
+                            </h3>
+
+                            <p>
+                                Aprende flujo de caja,
+                                inversión y crecimiento financiero.
+                            </p>
+
+                            <div class="course-meta">
+
+                                <span>
+                                    6 semanas
+                                </span>
+
+                                <span>
+                                    Intermedio
+                                </span>
+
+                            </div>
+
+                            <div class="course-footer">
+
+                                <div class="course-price">
+                                    S/99
+                                </div>
+
+                                <button class="course-btn">
+                                    Ver curso
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- COURSE MODAL -->
+    <!-- ========================= -->
+
+    <div class="course-modal">
+
+        <div class="course-modal-content">
+
+            <!-- CLOSE -->
+
+            <button class="close-course-modal">
+
+                ✕
+
+            </button>
+
+            <!-- TOP -->
+
+            <div class="course-modal-top">
+
+                <img id="modalCourseImage" src="" alt="Curso">
+
+                <div class="course-modal-info">
+
+                    <span id="modalCourseCategory">
+
+                        Branding
+
+                    </span>
+
+                    <!-- HORAS PARA CADA CURSO -->
+                    <div class="course-duration" id="modalCourseDuration">
+
+                        ⏱ 10h 30min
+
+                    </div>
+
+                    <h2 id="modalCourseTitle">
+
+                        Curso
+
+                    </h2>
+
+                    <p id="modalCourseDescription">
+
+                        Descripción
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- MODULES -->
+
+            <div class="course-modal-section">
+
+                <h3>
+                    Módulos del curso
+                </h3>
+
+                <div id="modalCourseModules" class="course-modules">
+
+                </div>
+
+            </div>
+
+            <!-- SKILLS -->
+
+            <div class="course-modal-section">
+
+                <h3>
+                    Lo que aprenderás
+                </h3>
+
+                <div id="modalCourseSkills" class="course-skills">
+
+                </div>
+
+            </div>
+
+            <!-- FOOTER -->
+
+            <div class="course-modal-footer">
+
+                <a href="../pages/registrar.html" class="btn btn-primary">
+
+                    Registrarse para desbloquear
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- JS -->
+    <!-- ========================= -->
+
+    <script src="../js/main.js"></script>
+    <script src="../js/cursos.js"></script>
+
+</body>
+
+</html>

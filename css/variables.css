@@ -1,0 +1,43 @@
+:root{
+
+    --primary: #6C4DFF;
+    --primary-dark: #593BEB;
+
+    --dark: #111827;
+
+    --white: #FFFFFF;
+
+    --gray: #6B7280;
+
+    --light-bg: #F7F8FC;
+
+    --card-bg: #FFFFFF;
+
+    --border: #ECECEC;
+
+    --shadow:
+    0px 10px 40px rgba(15,23,42,0.06);
+
+}
+
+
+/* DARK MODE */
+
+body.dark-mode{
+
+    --dark: #F3F4F6;
+
+    --white: #111827;
+
+    --gray: #C0C7D4;
+
+    --light-bg: #0F172A;
+
+    --card-bg: #162033;
+
+    --border: #243041;
+
+    --shadow:
+    0px 10px 40px rgba(0,0,0,0.35);
+
+}

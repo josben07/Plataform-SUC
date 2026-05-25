@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil | SUClassroom</title>
+    <link rel="stylesheet" href="../../css/student-profile.css">
+</head>
+
+<body>
+
+    <div class="student-page">
+
+        <aside class="student-sidebar">
+            <div class="student-logo">SUClassroom</div>
+
+            <nav class="student-menu">
+                <a href="./dashboard.html">📊 Dashboard</a>
+                <a href="./my-courses.html">📚 Mis cursos</a>
+                <a href="./projects.html">🚀 Proyectos</a>
+                <a href="./mentorships.html">🎓 Mentorías</a>
+                <a href="./payments.html">💳 Pagos</a>
+                <a href="./profile.html" class="active-link">👤 Perfil</a>
+            </nav>
+        </aside>
+
+        <main class="student-main">
+
+            <div class="profile-card">
+
+                <div class="profile-avatar" id="profileAvatar">
+                    A
+                </div>
+
+                <h1 id="profileName">
+                    Alumno
+                </h1>
+
+                <p id="profileEmail">
+                    correo@demo.com
+                </p>
+
+                <form id="profileForm">
+
+                    <input type="text" id="fullName" placeholder="Nombre completo" required>
+
+                    <input type="email" id="email" placeholder="Correo" disabled>
+
+                    <button type="submit">
+                        Guardar cambios
+                    </button>
+
+                </form>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <div class="app-toast">
+        <span id="appToastMessage">Acción realizada</span>
+    </div>
+
+    <script src="../../js/student-profile.js"></script>
+
+</body>
+
+</html>

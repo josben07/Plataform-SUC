@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Mentores | SUClassroom
+    </title>
+
+    <!-- GLOBAL -->
+    <link rel="stylesheet" href="../css/global.css">
+
+    <!-- NAVBAR -->
+    <link rel="stylesheet" href="../css/navbar.css">
+
+    <!-- MENTORS -->
+    <link rel="stylesheet" href="../css/mentors.css">
+
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header class="navbar">
+
+        <div class="container nav-container">
+
+            <!-- LOGO -->
+
+            <h2 class="logo">
+                SUClassroom
+            </h2>
+
+            <!-- MENU -->
+
+            <nav class="nav-menu">
+
+                <a href="../index.html">
+                    Inicio
+                </a>
+
+                <a href="cursos.html">
+                    Cursos
+                </a>
+
+                <a href="./nosotros.html">
+                    Sobre Nosotros
+                </a>
+
+                <a href="#" class="active-link">
+                    Mentores
+                </a>
+
+                <a href="./empresas.html">
+                    Empresas
+                </a>
+
+            </nav>
+
+            <!-- BUTTONS -->
+
+            <div class="nav-buttons">
+
+                <button class="theme-toggle" id="theme-toggle">
+                    🌙
+                </button>
+
+                <a href="./login.html" class="btn btn-outline">
+                    Ingresar
+                </a>
+
+                <a href="./registrar.html" class="btn btn-primary">
+                    Comenzar
+                </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- HERO -->
+
+    <section class="mentors-hero">
+
+        <div class="container">
+
+            <div class="mentors-hero-content">
+
+                <span class="section-badge">
+                    Mentores especializados
+                </span>
+
+                <h1>
+                    Aprende junto a expertos
+                    que ya construyen
+                    proyectos reales.
+                </h1>
+
+                <p>
+                    Conecta con profesionales en tecnología,
+                    negocios, branding, IA y productividad
+                    que te acompañarán durante tu proceso
+                    de aprendizaje.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- MENTORS LAYOUT -->
+    <!-- ========================= -->
+
+    <section class="mentors-layout">
+
+        <div class="container mentors-container">
+
+            <!-- SIDEBAR -->
+
+            <aside class="mentors-sidebar">
+
+                <!-- SPECIALTIES -->
+
+                <div class="sidebar-box">
+
+                    <h3>
+                        Especialidades
+                    </h3>
+
+                    <div class="sidebar-links">
+
+                        <button class="mentor-filter active-filter" data-filter="all">
+                            Todos
+                        </button>
+
+                        <button class="mentor-filter" data-filter="ia">
+                            Inteligencia Artificial
+                        </button>
+
+                        <button class="mentor-filter" data-filter="backend">
+                            Backend
+                        </button>
+
+                        <button class="mentor-filter" data-filter="marketing">
+                            Marketing
+                        </button>
+
+                        <button class="mentor-filter" data-filter="branding">
+                            Branding
+                        </button>
+
+                        <button class="mentor-filter" data-filter="productividad">
+                            Productividad
+                        </button>
+
+                        <button class="mentor-filter" data-filter="uiux">
+                            UI/UX
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- COMPANIES -->
+
+                <div class="sidebar-box">
+
+                    <h3>
+                        Empresas
+                    </h3>
+
+                    <div class="sidebar-links">
+
+                        <button class="mentor-company-filter" data-company="google">
+                            Google
+                        </button>
+
+                        <button class="mentor-company-filter" data-company="microsoft">
+                            Microsoft
+                        </button>
+
+                        <button class="mentor-company-filter" data-company="notion">
+                            Notion
+                        </button>
+
+                        <button class="mentor-company-filter" data-company="stripe">
+                            Stripe
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+            <!-- CONTENT -->
+
+            <div class="mentors-content">
+
+                <!-- TOPBAR -->
+
+                <div class="mentors-topbar">
+
+                    <div>
+
+                        <h2>
+                            Mentores destacados
+                        </h2>
+
+                        <p>
+                            Aprende junto a expertos
+                            que trabajan en empresas
+                            reales y startups tecnológicas.
+                        </p>
+
+                    </div>
+
+                    <div class="mentors-search">
+
+                        <input type="text" placeholder="Buscar mentor...">
+
+                    </div>
+
+                </div>
+
+                <!-- GRID de mentores -->
+
+                <div class="mentors-grid">
+                    <div class="empty-mentors">
+
+                        <h3>
+                            No se encontraron mentores
+                        </h3>
+
+                        <p>
+                            Prueba otra búsqueda o categoría.
+                        </p>
+
+                    </div>
+
+                    <!-- CARD 1 -->
+
+                    <div class="mentor-card" data-category="uiux" data-company="google">
+
+                        <div class="mentor-image">
+                            <div class="mentor-badge">
+                                Top Mentor
+                            </div>
+
+                            <img src="../assets/mentorsimg/carlos.jpg" alt="Carlos Medina">
+
+                        </div>
+
+                        <div class="mentor-info">
+
+                            <div class="mentor-top">
+
+                                <div>
+
+                                    <h3>
+                                        Carlos Medina
+                                    </h3>
+
+                                    <span>
+                                        Senior Product Designer
+                                    </span>
+
+                                </div>
+
+                                <div class="mentor-rating">
+                                    ★ 4.9
+                                </div>
+
+                            </div>
+
+                            <p class="mentor-description">
+
+                                Especialista en diseño UX/UI,
+                                productos SaaS y experiencia
+                                digital para startups modernas.
+
+                            </p>
+
+                            <div class="mentor-tags">
+                                <div class="mentor-stats">
+
+                                    <span>
+                                        +320 estudiantes
+                                    </span>
+
+                                    <span>
+                                        7 años exp.
+                                    </span>
+
+                                </div>
+
+                                <span>UI/UX</span>
+                                <span>Figma</span>
+                                <span>Design Systems</span>
+
+                            </div>
+
+                            <div class="mentor-footer">
+
+                                <div class="mentor-price">
+                                    S/120
+                                    <span>/ sesión</span>
+                                </div>
+
+                                <button class="mentor-btn" data-name="Carlos Medina" data-role="Senior Product Designer"
+                                    data-description="Especialista en diseño UX/UI, productos SaaS y experiencia digital para startups modernas."
+                                    data-image="../assets/mentorsimg/carlos.jpg" data-tags="UI/UX,Figma,Design Systems">
+                                    Ver perfil
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- CARD 2 -->
+
+                    <div class="mentor-card" data-category="backend" data-company="microsoft">
+
+                        <div class="mentor-image">
+                            <div class="mentor-badge">
+                                Senior Backend
+                            </div>
+
+                            <img src="../assets/mentorsimg/ana.jpg" alt="Ana Torres">
+
+                        </div>
+
+                        <div class="mentor-info">
+
+                            <div class="mentor-top">
+
+                                <div>
+
+                                    <h3>
+                                        Ana Torres
+                                    </h3>
+
+                                    <span>
+                                        Backend Engineer
+                                    </span>
+
+                                </div>
+
+                                <div class="mentor-rating">
+                                    ★ 5.0
+                                </div>
+
+                            </div>
+
+                            <p class="mentor-description">
+
+                                Construcción de APIs modernas,
+                                arquitecturas escalables y
+                                sistemas backend robustos.
+
+                            </p>
+
+                            <div class="mentor-tags">
+                                <div class="mentor-stats">
+
+                                    <span>
+                                        +410 estudiantes
+                                    </span>
+
+                                    <span>
+                                        9 años exp.
+                                    </span>
+
+                                </div>
+
+                                <span>Node.js</span>
+                                <span>APIs</span>
+                                <span>MongoDB</span>
+
+                            </div>
+
+                            <div class="mentor-footer">
+
+                                <div class="mentor-price">
+                                    S/150
+                                    <span>/ sesión</span>
+                                </div>
+
+                                <button class="mentor-btn" data-name="Ana Torres" data-role="Backend Engineer"
+                                    data-description="Construcción de APIs modernas, arquitecturas escalables y sistemas backend robustos."
+                                    data-image="../assets/mentorsimg/ana.jpg" data-tags="Node.js,APIs,MongoDB">
+                                    Ver perfil
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- CARD 3 -->
+
+                    <div class="mentor-card" data-category="marketing" data-company="notion">
+
+                        <div class="mentor-image">
+                            <div class="mentor-badge">
+                                Growth Expert
+                            </div>
+
+                            <img src="../assets/mentorsimg/diego.jpg" alt="Diego Ramos">
+
+                        </div>
+
+                        <div class="mentor-info">
+
+                            <div class="mentor-top">
+
+                                <div>
+
+                                    <h3>
+                                        Diego Ramos
+                                    </h3>
+
+                                    <span>
+                                        Growth Marketing Lead
+                                    </span>
+
+                                </div>
+
+                                <div class="mentor-rating">
+                                    ★ 4.8
+                                </div>
+
+                            </div>
+
+                            <p class="mentor-description">
+
+                                Estrategias de crecimiento,
+                                campañas digitales y adquisición
+                                de usuarios para startups.
+
+                            </p>
+
+                            <div class="mentor-tags">
+                                <div class="mentor-stats">
+
+                                    <span>
+                                        +270 estudiantes
+                                    </span>
+
+                                    <span>
+                                        6 años exp.
+                                    </span>
+
+                                </div>
+
+                                <span>Marketing</span>
+                                <span>Ads</span>
+                                <span>Growth</span>
+
+                            </div>
+
+                            <div class="mentor-footer">
+
+                                <div class="mentor-price">
+                                    S/110
+                                    <span>/ sesión</span>
+                                </div>
+
+                                <button class="mentor-btn" data-name="Diego Ramos" data-role="Growth Marketing Lead"
+                                    data-description="Estrategias de crecimiento, campañas digitales y adquisición de usuarios para startups."
+                                    data-image="../assets/mentorsimg/diego.jpg" data-tags="Marketing,Ads,Growth">
+                                    Ver perfil
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- CARD 4 -->
+
+                    <div class="mentor-card" data-category="ia" data-company="google">
+
+                        <div class="mentor-image">
+                            <div class="mentor-badge">
+                                AI Specialist
+                            </div>
+
+                            <img src="../assets/mentorsimg/luis.jpg" alt="Luis Mendoza">
+
+                        </div>
+
+                        <div class="mentor-info">
+
+                            <div class="mentor-top">
+
+                                <div>
+
+                                    <h3>
+                                        Luis Mendoza
+                                    </h3>
+
+                                    <span>
+                                        AI Engineer
+                                    </span>
+
+                                </div>
+
+                                <div class="mentor-rating">
+                                    ★ 5.0
+                                </div>
+
+                            </div>
+
+                            <p class="mentor-description">
+
+                                Automatización con IA,
+                                machine learning y herramientas
+                                aplicadas a negocios.
+
+                            </p>
+
+                            <div class="mentor-tags">
+                                <div class="mentor-stats">
+
+                                    <span>
+                                        +500 estudiantes
+                                    </span>
+
+                                    <span>
+                                        10 años exp.
+                                    </span>
+
+                                </div>
+
+                                <span>IA</span>
+                                <span>Machine Learning</span>
+                                <span>Automation</span>
+
+                            </div>
+
+                            <div class="mentor-footer">
+
+                                <div class="mentor-price">
+                                    S/180
+                                    <span>/ sesión</span>
+                                </div>
+
+                                <button class="mentor-btn" data-name="Luis Mendoza" data-role="AI Engineer"
+                                    data-description="Automatización con IA, machine learning y herramientas aplicadas a negocios."
+                                    data-image="../assets/mentorsimg/luis.jpg"
+                                    data-tags="IA,Machine Learning,Automation">
+                                    Ver perfil
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- CARD 5 -->
+
+                    <div class="mentor-card" data-category="branding" data-company="stripe">
+
+                        <div class="mentor-image">
+                            <div class="mentor-badge">
+                                Branding Pro
+                            </div>
+
+                            <img src="../assets/mentorsimg/valeria.jpg" alt="Valeria Cruz">
+
+                        </div>
+
+                        <div class="mentor-info">
+
+                            <div class="mentor-top">
+
+                                <div>
+
+                                    <h3>
+                                        Valeria Cruz
+                                    </h3>
+
+                                    <span>
+                                        Branding Strategist
+                                    </span>
+
+                                </div>
+
+                                <div class="mentor-rating">
+                                    ★ 4.9
+                                </div>
+
+                            </div>
+
+                            <p class="mentor-description">
+
+                                Construcción de marcas modernas,
+                                identidad visual y storytelling
+                                para negocios digitales.
+
+                            </p>
+
+                            <div class="mentor-tags">
+                                <div class="mentor-stats">
+
+                                    <span>
+                                        +190 estudiantes
+                                    </span>
+
+                                    <span>
+                                        5 años exp.
+                                    </span>
+
+                                </div>
+
+                                <span>Branding</span>
+                                <span>Identity</span>
+                                <span>Strategy</span>
+
+                            </div>
+
+                            <div class="mentor-footer">
+
+                                <div class="mentor-price">
+                                    S/130
+                                    <span>/ sesión</span>
+                                </div>
+
+                                <button class="mentor-btn" data-name="Valeria Cruz" data-role="Branding Strategist"
+                                    data-description="Construcción de marcas modernas, identidad visual y storytelling para negocios digitales."
+                                    data-image="../assets/mentorsimg/valeria.jpg"
+                                    data-tags="Branding,Identity,Strategy">
+                                    Ver perfil
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- CARD 6 -->
+
+                    <div class="mentor-card" data-category="productividad" data-company="microsoft">
+
+                        <div class="mentor-image">
+                            <div class="mentor-badge">
+                                Agile Mentor
+                            </div>
+
+                            <img src="../assets/mentorsimg/jorge.jpg" alt="Jorge Salazar">
+
+                        </div>
+
+                        <div class="mentor-info">
+
+                            <div class="mentor-top">
+
+                                <div>
+
+                                    <h3>
+                                        Jorge Salazar
+                                    </h3>
+
+                                    <span>
+                                        Productivity Coach
+                                    </span>
+
+                                </div>
+
+                                <div class="mentor-rating">
+                                    ★ 4.7
+                                </div>
+
+                            </div>
+
+                            <p class="mentor-description">
+
+                                Productividad, organización,
+                                metodologías ágiles y sistemas
+                                de trabajo eficientes.
+
+                            </p>
+
+                            <div class="mentor-tags">
+                                <div class="mentor-stats">
+
+                                    <span>
+                                        +350 estudiantes
+                                    </span>
+
+                                    <span>
+                                        8 años exp.
+                                    </span>
+
+                                </div>
+
+                                <span>Productividad</span>
+                                <span>Scrum</span>
+                                <span>Agile</span>
+
+                            </div>
+
+                            <div class="mentor-footer">
+
+                                <div class="mentor-price">
+                                    S/95
+                                    <span>/ sesión</span>
+                                </div>
+
+                                <button class="mentor-btn" data-name="Jorge Salazar" data-role="Productivity Coach"
+                                    data-description="Productividad, organización, metodologías ágiles y sistemas de trabajo eficientes."
+                                    data-image="../assets/mentorsimg/jorge.jpg" data-tags="Productividad,Scrum,Agile">
+                                    Ver perfil
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+    <!-- ========================= -->
+    <!-- MENTOR MODAL -->
+    <!-- ========================= -->
+
+    <div class="mentor-modal">
+
+        <div class="mentor-modal-content">
+
+            <!-- CLOSE -->
+
+            <button class="close-modal">
+                ✕
+            </button>
+
+            <!-- IMAGE -->
+
+            <div class="mentor-modal-image">
+
+                <img id="modalImage" src="" alt="">
+
+            </div>
+
+            <!-- INFO -->
+
+            <div class="mentor-modal-info">
+
+                <span class="modal-badge">
+                    Mentor Premium
+                </span>
+
+                <h2 id="modalName">
+                    Carlos Medina
+                </h2>
+
+                <p class="modal-role" id="modalRole">
+                    Senior Product Designer
+                </p>
+
+                <p class="modal-description" id="modalDescription">
+                    Especialista en diseño
+                    UX/UI y productos SaaS.
+                </p>
+
+                <!-- STATS -->
+
+                <div class="modal-stats">
+
+                    <div>
+
+                        <strong>
+                            +320
+                        </strong>
+
+                        <span>
+                            Estudiantes
+                        </span>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            7 años
+                        </strong>
+
+                        <span>
+                            Experiencia
+                        </span>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            ★ 4.9
+                        </strong>
+
+                        <span>
+                            Rating
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- TAGS -->
+
+                <div class="mentor-tags" id="modalTags">
+
+                </div>
+
+                <!-- BUTTON -->
+
+                <a href="../pages/registrar.html" class="mentor-modal-btn">
+
+                    Reservar mentoría
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- JS -->
+    <script src="../js/main.js"></script>
+    <script src="../js/mentors.js"></script>
+
+</body>
+
+</html>

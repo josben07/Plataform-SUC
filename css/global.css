@@ -1,0 +1,230 @@
+/* ========================= */
+/* GOOGLE FONT */
+/* ========================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ========================= */
+/* ROOT */
+/* ========================= */
+
+:root{
+
+    --primary: #6C4DFF;
+
+    --primary-light: #8B7CFF;
+
+    --dark: #111827;
+
+    --gray: #6B7280;
+
+    --light: #F8FAFC;
+
+    --white: #FFFFFF;
+
+    --border: #E5E7EB;
+
+    --card-bg: #FFFFFF;
+
+    --soft-bg: #F3F4F6;
+
+    --shadow:
+    0 10px 40px rgba(0,0,0,0.06);
+}
+
+/* DARK MODE */
+
+body.dark-mode{
+
+    --dark: #F9FAFB;
+
+    --gray: #CBD5E1;
+
+    --light: #0F172A;
+
+    --white: #FFFFFF;
+
+    --border: #243041;
+
+    --card-bg: #111827;
+
+    --soft-bg: #1E293B;
+
+    background: #020617;
+
+    color: #F8FAFC;
+}
+
+/* ========================= */
+/* RESET */
+/* ========================= */
+
+*{
+
+    margin: 0;
+    padding: 0;
+
+    box-sizing: border-box;
+}
+
+html{
+
+    scroll-behavior: smooth;
+}
+
+body{
+
+    font-family: 'Inter', sans-serif;
+
+    background: var(--light);
+
+    color: var(--dark);
+
+    transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+a{
+
+    text-decoration: none;
+
+    color: inherit;
+}
+
+button{
+
+    border: none;
+
+    cursor: pointer;
+
+    font-family: inherit;
+}
+
+ul{
+
+    list-style: none;
+}
+
+/* ========================= */
+/* CONTAINER */
+/* ========================= */
+
+.container{
+
+    width: 90%;
+
+    max-width: 1280px;
+
+    margin: auto;
+}
+
+/* ========================= */
+/* BUTTONS */
+/* ========================= */
+
+.btn{
+
+    padding:
+    14px 24px;
+
+    border-radius: 14px;
+
+    font-weight: 600;
+
+    transition: 0.3s ease;
+}
+
+.btn-primary{
+
+    background: var(--primary);
+
+    color: white;
+}
+
+.btn-primary:hover{
+
+    transform: translateY(-3px);
+
+    background: var(--primary-light);
+}
+
+.btn-outline{
+
+    background: transparent;
+
+    border: 1px solid var(--border);
+
+    color: var(--dark);
+}
+
+.btn-outline:hover{
+
+    background: var(--soft-bg);
+}
+
+/* ========================= */
+/* SECTION */
+/* ========================= */
+
+section{
+
+    position: relative;
+}
+
+/* ========================= */
+/* BADGE */
+/* ========================= */
+
+.section-badge{
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding:
+    12px 22px;
+
+    border-radius: 999px;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(108,77,255,0.18),
+        rgba(108,77,255,0.08)
+    );
+
+    border:
+    1px solid rgba(108,77,255,0.14);
+
+    backdrop-filter:
+    blur(14px);
+
+    color: var(--primary);
+
+    font-weight: 600;
+
+    font-size: 0.95rem;
+
+    box-shadow:
+    0 10px 30px rgba(108,77,255,0.10);
+}
+
+body.dark-mode .section-badge{
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(108,77,255,0.26),
+        rgba(108,77,255,0.12)
+    );
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    color:
+    #d9ccff;
+}
+

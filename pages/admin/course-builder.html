@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Course Builder
+    </title>
+
+    <link rel="stylesheet" href="../../css/admin-course-builder.css">
+
+</head>
+
+<body class="dark-mode">
+
+    <section class="builder-page">
+
+        <a href="./courses.html" class="back-btn">
+
+            ← Volver a cursos
+
+        </a>
+
+        <!-- TOPBAR -->
+
+        <div class="builder-topbar">
+
+            <div>
+
+                <span class="builder-label">
+                    COURSE BUILDER
+                </span>
+
+                <h1 id="courseTitle">
+
+                    Curso
+
+                </h1>
+
+            </div>
+
+            <button class="add-module-btn" id="openModuleModal">
+
+                + Nuevo módulo
+
+            </button>
+
+        </div>
+
+        <!-- CONTENT -->
+
+        <div class="modules-container" id="modulesContainer">
+
+        </div>
+
+    </section>
+
+    <!-- MODULE MODAL -->
+
+    <div class="module-modal">
+
+        <div class="module-modal-content">
+
+            <span class="close-module-modal">
+
+                ✕
+
+            </span>
+
+            <h2>
+
+                Nuevo módulo
+
+            </h2>
+
+            <form id="moduleForm">
+
+                <input type="text" id="moduleTitle" placeholder="Nombre del módulo" required>
+
+                <button type="submit">
+
+                    Crear módulo
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- LESSON MODAL -->
+
+    <div class="lesson-modal">
+
+        <div class="lesson-modal-content">
+
+            <span class="close-lesson-modal">
+
+                ✕
+
+            </span>
+
+            <h2>
+
+                Nueva clase
+
+            </h2>
+
+            <form id="lessonForm">
+
+                <input type="text" id="lessonTitle" placeholder="Nombre de la clase" required>
+
+                <input type="text" id="lessonDuration" placeholder="Duración" required>
+
+                <input type="text" id="lessonVideo" placeholder="URL del video" required>
+
+                <label class="preview-label">
+
+                    <input type="checkbox" id="lessonPreview">
+
+                    Preview gratis
+
+                </label>
+
+                <button type="submit">
+
+                    Crear clase
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- EDIT MODULE MODAL -->
+    
+    <div class="edit-module-modal">
+    
+        <div class="edit-module-content">
+    
+            <span class="close-edit-module">
+    
+                ✕
+    
+            </span>
+    
+            <h2>
+    
+                Editar módulo
+    
+            </h2>
+    
+            <form id="editModuleForm">
+    
+                <input type="text" id="editModuleTitle" placeholder="Nombre del módulo" required>
+    
+                <button type="submit">
+    
+                    Guardar cambios
+    
+                </button>
+    
+            </form>
+    
+        </div>
+    
+    </div>
+
+    <!-- EDIT LESSON MODAL -->
+
+    <div class="edit-lesson-modal">
+
+        <div class="edit-lesson-content">
+
+            <span class="close-edit-lesson">
+
+                ✕
+
+            </span>
+
+            <h2>
+
+                Editar clase
+
+            </h2>
+
+            <form id="editLessonForm">
+
+                <input type="text" id="editLessonTitle" placeholder="Título" required>
+
+                <input type="text" id="editLessonDuration" placeholder="Duración" required>
+
+                <input type="text" id="editLessonVideo" placeholder="Video URL" required>
+
+                <label class="preview-label">
+
+                    <input type="checkbox" id="editLessonPreview">
+
+                    Preview gratis
+
+                </label>
+
+                <button type="submit">
+
+                    Guardar cambios
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- DELETE MODULE MODAL -->
+    
+    <div class="delete-module-modal">
+    
+        <div class="delete-module-content">
+    
+            <h2>
+    
+                ¿Eliminar módulo?
+    
+            </h2>
+    
+            <p>
+    
+                Esta acción eliminará el módulo
+                y todas sus clases.
+    
+            </p>
+    
+            <div class="delete-module-actions">
+    
+                <button class="cancel-delete-module">
+    
+                    Cancelar
+    
+                </button>
+    
+                <button class="confirm-delete-module">
+    
+                    Eliminar
+    
+                </button>
+    
+            </div>
+    
+        </div>
+    
+    </div>
+
+    <!-- RESOURCE MODAL -->
+    
+    <div class="resource-modal">
+    
+        <div class="resource-content">
+    
+            <span class="close-resource-modal">
+    
+                ✕
+    
+            </span>
+    
+            <h2>
+    
+                Agregar recurso
+    
+            </h2>
+    
+            <form id="resourceForm">
+    
+                <input type="text" id="resourceTitle" placeholder="Nombre del recurso" required>
+    
+                <input type="text" id="resourceUrl" placeholder="URL del archivo" required>
+    
+                <select id="resourceType">
+    
+                    <option value="pdf">
+    
+                        PDF
+    
+                    </option>
+    
+                    <option value="ppt">
+    
+                        PPT
+    
+                    </option>
+    
+                    <option value="zip">
+    
+                        ZIP
+    
+                    </option>
+    
+                    <option value="doc">
+    
+                        DOC
+    
+                    </option>
+    
+                </select>
+    
+                <button type="submit">
+    
+                    Guardar recurso
+    
+                </button>
+    
+            </form>
+    
+        </div>
+    
+    </div>
+
+    <script src="../../js/course-builder.js"></script>
+
+</body>
+
+</html>
