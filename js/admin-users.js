@@ -42,7 +42,7 @@ async function loadUsers() {
         const response =
             await fetch(
 
-                "http://localhost:3000/api/users"
+                `${API_URL}/api/users`
 
             );
 
@@ -280,7 +280,7 @@ userForm.addEventListener(
         e.preventDefault();
 
         await fetch(
-            `http://localhost:3000/api/users/${editingUserId}`,
+            `${API_URL}/api/users/${editingUserId}`,
             {
                 method: "PUT",
 

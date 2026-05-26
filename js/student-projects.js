@@ -99,7 +99,7 @@ async function loadCoursesForProjects() {
 
     const studentResponse =
         await fetch(
-            `http://localhost:3000/api/student-courses/${user.id}`
+            `${API_URL}/api/student-courses/${user.id}`
         );
 
     const studentCourses =
@@ -107,7 +107,7 @@ async function loadCoursesForProjects() {
 
     const coursesResponse =
         await fetch(
-            "http://localhost:3000/api/courses"
+            `${API_URL}/api/courses`
         );
 
     const courses =
@@ -153,7 +153,7 @@ async function loadStudentProjects() {
 
     const response =
         await fetch(
-            "http://localhost:3000/api/projects"
+            `${API_URL}/api/projects`
         );
 
     const projects =
@@ -295,7 +295,7 @@ projectForm.addEventListener(
         if (editingProjectId) {
 
             await fetch(
-                `http://localhost:3000/api/projects/${editingProjectId}`,
+                `${API_URL}/api/projects/${editingProjectId}`,
                 {
                     method: "PUT",
 
@@ -312,7 +312,7 @@ projectForm.addEventListener(
         } else {
 
             await fetch(
-                "http://localhost:3000/api/projects",
+                `${API_URL}/api/projects`,
                 {
                     method: "POST",
 
@@ -343,7 +343,7 @@ projectForm.addEventListener(
 async function deleteStudentProject(projectId) {
 
     await fetch(
-        `http://localhost:3000/api/projects/${projectId}`,
+        `${API_URL}/api/projects/${projectId}`,
         {
             method: "DELETE"
         }

@@ -126,7 +126,7 @@ async function loadMentors() {
     const response =
         await fetch(
 
-            "http://localhost:3000/api/mentor"
+            `${API_URL}/api/mentor`
 
         );
 
@@ -285,9 +285,9 @@ mentorForm.addEventListener(
         const url =
             editingMentorId
 
-                ? `http://localhost:3000/api/mentor/${editingMentorId}`
+                ? `${API_URL}/api/mentor/${editingMentorId}`
 
-                : "http://localhost:3000/api/mentor";
+                : `${API_URL}/api/mentor`;
 
         const method =
             editingMentorId
@@ -433,7 +433,7 @@ confirmDeleteMentor.addEventListener(
 
         await fetch(
 
-            `http://localhost:3000/api/mentor/${deletingMentorId}`,
+            `${API_URL}/api/mentor/${deletingMentorId}`,
 
             {
 

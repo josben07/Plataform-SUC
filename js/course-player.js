@@ -51,7 +51,7 @@ let completedLessons =
 async function loadCourse() {
 
     const response =
-        await fetch("http://localhost:3000/api/courses");
+        await fetch(`${API_URL}/api/courses`);
 
     const courses =
         await response.json();
@@ -77,7 +77,7 @@ async function loadModules() {
 
     const response =
         await fetch(
-            `http://localhost:3000/api/modules/${courseId}`
+            `${API_URL}/api/modules/${courseId}`
         );
 
     const modules =
@@ -116,7 +116,7 @@ async function loadLessons(moduleId, moduleIndex) {
 
     const response =
         await fetch(
-            `http://localhost:3000/api/lessons/${moduleId}`
+            `${API_URL}/api/lessons/${moduleId}`
         );
 
     const lessons =
@@ -209,7 +209,7 @@ async function loadResources(lessonId) {
 
     const response =
         await fetch(
-            `http://localhost:3000/api/resources/${lessonId}`
+            `${API_URL}/api/resources/${lessonId}`
         );
 
     const resources =
@@ -254,7 +254,7 @@ async function loadProgress() {
 
     const response =
         await fetch(
-            `http://localhost:3000/api/progress/${user.id}/${courseId}`
+            `${API_URL}/api/progress/${user.id}/${courseId}`
         );
 
     completedLessons =
@@ -273,7 +273,7 @@ completeLessonBtn.addEventListener(
         }
 
         await fetch(
-            "http://localhost:3000/api/progress/complete",
+            `${API_URL}/api/progress/complete`,
             {
                 method: "POST",
 

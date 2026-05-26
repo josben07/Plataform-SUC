@@ -92,7 +92,7 @@ async function loadSettings() {
     const response =
         await fetch(
 
-            "http://localhost:3000/api/settings"
+            `${API_URL}/api/settings`
 
         );
 
@@ -148,7 +148,7 @@ async function saveSettings(password = null) {
 
     await fetch(
 
-        "http://localhost:3000/api/settings",
+        `${API_URL}/api/settings`,
 
         {
 

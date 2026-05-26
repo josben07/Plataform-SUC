@@ -64,7 +64,7 @@ if (registerForm) {
                 const response =
                     await fetch(
 
-                        "http://localhost:3000/api/auth/register",
+                        `${API_URL}/api/auth/register`,
 
                         {
 
@@ -160,7 +160,7 @@ if (loginForm) {
                 const response =
                     await fetch(
 
-                        "http://localhost:3000/api/auth/login",
+                        `${API_URL}/api/auth/login`,
 
                         {
 

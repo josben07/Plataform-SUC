@@ -15,7 +15,7 @@ async function loadMyCourses() {
 
     const studentResponse =
         await fetch(
-            `http://localhost:3000/api/student-courses/${user.id}`
+            `${API_URL}/api/student-courses/${user.id}`
         );
 
     const studentCourses =
@@ -23,7 +23,7 @@ async function loadMyCourses() {
 
     const courseResponse =
         await fetch(
-            "http://localhost:3000/api/courses"
+            `${API_URL}/api/courses`
         );
 
     const courses =
@@ -70,7 +70,7 @@ async function loadMyCourses() {
 
             const progressResponse =
                 await fetch(
-                    `http://localhost:3000/api/progress/${user.id}/${course.id}`
+                    `${API_URL}/api/progress/${user.id}/${course.id}`
                 );
 
             const progressData =
@@ -193,7 +193,7 @@ async function openMentorModal(courseId) {
 
     const response =
         await fetch(
-            "http://localhost:3000/api/student-mentors/mentors"
+            `${API_URL}/api/student-mentors/mentors`
         );
 
     const mentors =
@@ -268,7 +268,7 @@ closeMentorModal.addEventListener(
 async function assignMentor(mentorId) {
 
     await fetch(
-        "http://localhost:3000/api/student-mentors/assign",
+        `${API_URL}/api/student-mentors/assign`,
         {
             method: "POST",
 

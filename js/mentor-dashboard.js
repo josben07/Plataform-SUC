@@ -44,7 +44,7 @@ async function loadMentorDashboard() {
 
     const projectResponse =
         await fetch(
-            "http://localhost:3000/api/projects"
+            `${API_URL}/api/projects`
         );
 
     const projects =
@@ -52,7 +52,7 @@ async function loadMentorDashboard() {
 
     const sessionResponse =
         await fetch(
-            "http://localhost:3000/api/mentor"
+            `${API_URL}/api/mentor`
         );
 
     const sessions =

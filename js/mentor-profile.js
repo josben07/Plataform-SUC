@@ -68,7 +68,7 @@ profileForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     await fetch(
-        `http://localhost:3000/api/users/${user.id}`,
+        `${API_URL}/api/users/${user.id}`,
         {
             method: "PUT",
 

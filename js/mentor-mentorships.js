@@ -12,7 +12,7 @@ const mentorSessionsGrid =
 async function loadMentorSessions() {
 
     const response =
-        await fetch("http://localhost:3000/api/mentor");
+        await fetch(`${API_URL}/api/mentor`);
 
     const sessions =
         await response.json();

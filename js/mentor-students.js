@@ -12,19 +12,19 @@ const studentsGrid =
 async function loadStudents() {
 
     const usersResponse =
-        await fetch("http://localhost:3000/api/users");
+        await fetch(`${API_URL}/api/users`);
 
     const users =
         await usersResponse.json();
 
     const projectsResponse =
-        await fetch("http://localhost:3000/api/projects");
+        await fetch(`${API_URL}/api/projects`);
 
     const projects =
         await projectsResponse.json();
 
     const sessionsResponse =
-        await fetch("http://localhost:3000/api/mentor");
+        await fetch(`${API_URL}/api/mentor`);
 
     const sessions =
         await sessionsResponse.json();

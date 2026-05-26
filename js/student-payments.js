@@ -38,7 +38,7 @@ async function loadPayments() {
 
     const response =
         await fetch(
-            "http://localhost:3000/api/payments"
+            `${API_URL}/api/payments`
         );
 
     const payments =
@@ -157,7 +157,7 @@ confirmPayBtn.addEventListener(
     async () => {
 
         await fetch(
-            `http://localhost:3000/api/payments/${currentPaymentId}`,
+            `${API_URL}/api/payments/${currentPaymentId}`,
             {
                 method: "PUT",
 

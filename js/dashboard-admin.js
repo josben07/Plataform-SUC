@@ -81,7 +81,7 @@ async function loadDashboardStats() {
 
     const response =
         await fetch(
-            "http://localhost:3000/api/dashboard/stats"
+            `${API_URL}/api/dashboard/stats`
         );
 
     const stats =

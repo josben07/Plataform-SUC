@@ -49,7 +49,7 @@ async function loadProjects() {
     const response =
         await fetch(
 
-            "http://localhost:3000/api/projects"
+            `${API_URL}/api/projects`
 
         );
 
@@ -244,7 +244,7 @@ async function updateStatus(
 
     await fetch(
 
-        `http://localhost:3000/api/projects/${projectId}`,
+        `${API_URL}/api/projects/${projectId}`,
 
         {
 
@@ -333,7 +333,7 @@ feedbackForm.addEventListener(
 
         await fetch(
 
-            `http://localhost:3000/api/projects/${currentProjectId}`,
+            `${API_URL}/api/projects/${currentProjectId}`,
 
             {
 

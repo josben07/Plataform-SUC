@@ -49,7 +49,7 @@ async function loadPayments() {
     const response =
         await fetch(
 
-            "http://localhost:3000/api/payments"
+            `${API_URL}/api/payments`
 
         );
 
@@ -257,7 +257,7 @@ async function updatePaymentStatus(
 
     await fetch(
 
-        `http://localhost:3000/api/payments/${paymentId}`,
+        `${API_URL}/api/payments/${paymentId}`,
 
         {
 

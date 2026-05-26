@@ -58,7 +58,7 @@ async function loadCourse() {
     const response =
         await fetch(
 
-            `http://localhost:3000/api/courses`
+            `${API_URL}/api/courses`
 
         );
 
@@ -88,7 +88,7 @@ async function loadCourse() {
 async function loadModules() {
 
     const response = await fetch(
-        `http://localhost:3000/api/modules/${courseId}`
+        `${API_URL}/api/modules/${courseId}`
     );
 
     const modules = await response.json();
@@ -267,7 +267,7 @@ moduleForm.addEventListener(
 
         await fetch(
 
-            "http://localhost:3000/api/modules",
+            `${API_URL}/api/modules`,
 
             {
 
@@ -315,7 +315,7 @@ loadModules();
 async function loadLessons(moduleId) {
 
     const response = await fetch(
-        `http://localhost:3000/api/lessons/${moduleId}`
+        `${API_URL}/api/lessons/${moduleId}`
     );
 
     const lessons = await response.json();
@@ -541,7 +541,7 @@ lessonForm.addEventListener(
 
         await fetch(
 
-            "http://localhost:3000/api/lessons",
+            `${API_URL}/api/lessons`,
 
             {
 
@@ -598,7 +598,7 @@ async function deleteLesson(
 
     await fetch(
 
-        `http://localhost:3000/api/lessons/${lessonId}`,
+        `${API_URL}/api/lessons/${lessonId}`,
 
         {
 
@@ -685,7 +685,7 @@ editModuleForm.addEventListener(
 
         await fetch(
 
-            `http://localhost:3000/api/modules/${currentModuleId}`,
+            `${API_URL}/api/modules/${currentModuleId}`,
 
             {
 
@@ -779,7 +779,7 @@ confirmDeleteModule.addEventListener(
 
         await fetch(
 
-            `http://localhost:3000/api/modules/${currentDeleteModuleId}`,
+            `${API_URL}/api/modules/${currentDeleteModuleId}`,
 
             {
 
@@ -892,7 +892,7 @@ editLessonForm.addEventListener(
 
         await fetch(
 
-            `http://localhost:3000/api/lessons/${currentLesson.id}`,
+            `${API_URL}/api/lessons/${currentLesson.id}`,
 
             {
 
@@ -1014,7 +1014,7 @@ resourceForm.addEventListener(
 
         await fetch(
 
-            "http://localhost:3000/api/resources",
+            `${API_URL}/api/resources`,
 
             {
 
@@ -1072,7 +1072,7 @@ async function loadResources(
     const response =
         await fetch(
 
-            `http://localhost:3000/api/resources/${lessonId}`
+            `${API_URL}/api/resources/${lessonId}`
 
         );
 
@@ -1188,7 +1188,7 @@ async function deleteResource(
 
     await fetch(
 
-        `http://localhost:3000/api/resources/${resourceId}`,
+        `${API_URL}/api/resources/${resourceId}`,
 
         {
 
