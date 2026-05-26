@@ -35,27 +35,27 @@ const resourcesRoutes =
     require("./src/routes/resources.routes");
 
 const lessonsRoutes =
-require(
-    "./src/routes/lessons.routes"
-);
+    require(
+        "./src/routes/lessons.routes"
+    );
 
 const modulesRoutes =
-require(
-    "./src/routes/modules.routes"
-);
+    require(
+        "./src/routes/modules.routes"
+    );
 
 const express =
-require("express");
+    require("express");
 
 const cors =
-require("cors");
+    require("cors");
 
 require("dotenv").config();
 
 /* EXPRESS */
 
 const app =
-express();
+    express();
 
 /* MIDDLEWARES */
 
@@ -66,18 +66,18 @@ app.use(express.json());
 /* ROUTES */
 
 const authRoutes =
-require("./src/routes/authRoutes");
+    require("./src/routes/authRoutes");
 
 const usersRoutes =
-require("./src/routes/users.routes");
+    require("./src/routes/users.routes");
 
 const coursesRoutes =
-require("./src/routes/courses.routes");
+    require("./src/routes/courses.routes");
 
 /* CONFIG */
 
 const supabase =
-require("./src/config/supabase");
+    require("./src/config/supabase");
 
 /* API ROUTES */
 
@@ -179,9 +179,9 @@ app.get("/", (req, res) => {
 
 /* TEST DATABASE */
 
-app.get("/test-db", async (req,res) => {
+app.get("/test-db", async (req, res) => {
 
-    try{
+    try {
 
         const {
 
@@ -190,11 +190,11 @@ app.get("/test-db", async (req,res) => {
 
         } = await supabase
 
-        .from("users")
+            .from("users")
 
-        .select("*");
+            .select("*");
 
-        if(error){
+        if (error) {
 
             return res.status(400).json(error);
 
@@ -202,12 +202,12 @@ app.get("/test-db", async (req,res) => {
 
         res.json(data);
 
-    }catch(err){
+    } catch (err) {
 
         res.status(500).json({
 
             error:
-            err.message
+                err.message
 
         });
 
