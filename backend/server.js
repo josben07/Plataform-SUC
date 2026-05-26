@@ -1,3 +1,6 @@
+/* agregado para correr backend hoy */
+const path =
+    require("path");
 
 const studentMentorsRoutes =
     require("./src/routes/student-mentors.routes");
@@ -153,16 +156,24 @@ app.use(
     studentMentorsRoutes
 );
 
+/* agregado para correr backend hoy */
+app.use(express.json());
+app.use(
+    express.static(
+        path.join(__dirname, "..")
+    )
+);
+
 /* HOME */
 
-app.get("/", (req,res) => {
+app.get("/", (req, res) => {
 
-    res.json({
-
-        message:
-        "SUClassroom backend funcionando 🚀"
-
-    });
+    res.sendFile(
+        path.join(
+            __dirname,
+            "../index.html"
+        )
+    );
 
 });
 
