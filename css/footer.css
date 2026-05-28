@@ -1,166 +1,214 @@
-.cta-section{
-    padding: 120px 0;
+.cta-section {
+  padding: 120px 0;
 }
 
-.cta-container{
+.cta-container {
+  background: linear-gradient(135deg, #6c4dff, #8b7cff);
 
-    background:
-    linear-gradient(
-        135deg,
-        #6C4DFF,
-        #8B7CFF
-    );
+  border-radius: 40px;
 
-    border-radius: 40px;
+  padding: 80px;
 
-    padding: 80px;
+  text-align: center;
 
-    text-align: center;
+  color: var(--white);
 
-    color: var(--white);
+  position: relative;
 
-    position: relative;
+  overflow: hidden;
 
-    overflow: hidden;
-
-    box-shadow:
-    0 25px 80px rgba(108,77,255,0.25);
+  box-shadow: 0 25px 80px rgba(108, 77, 255, 0.25);
 }
 
-.cta-badge{
-    display: inline-block;
-    padding: 10px 18px;
-    border-radius: 50px;
-    background: rgba(255,255,255,0.15);
-    margin-bottom: 22px;
-    font-weight: 600;
+.cta-badge {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.15);
+  margin-bottom: 22px;
+  font-weight: 600;
 }
 
-.cta-container h2{
+.cta-container h2 {
+  font-size: 3rem;
 
-    font-size: 3rem;
+  line-height: 1.15;
 
-    line-height: 1.15;
+  margin-bottom: 24px;
 
-    margin-bottom: 24px;
-
-    letter-spacing: -1px;
+  letter-spacing: -1px;
 }
-.cta-container p{
+.cta-container p {
+  max-width: 700px;
 
-    max-width: 700px;
+  margin: auto;
 
-    margin: auto;
+  line-height: 1.9;
 
-    line-height: 1.9;
+  margin-bottom: 36px;
 
-    margin-bottom: 36px;
+  color: rgba(255, 255, 255, 0.96);
 
-    color:
-    rgba(255,255,255,0.96);
+  font-size: 1.05rem;
 
-    font-size: 1.05rem;
-
-    font-weight: 400;
+  font-weight: 400;
 }
 
-.cta-buttons{
-    display: flex;
-    justify-content: center;
-    gap: 18px;
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
 }
 
-.footer{
-    background: #111827;
-    color: var(--white);
-    padding-top: 90px;
+.footer {
+  background: #111827;
+  color: var(--white);
+  padding-top: 90px;
 }
 
-.footer-grid{
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 40px;
-    padding-bottom: 70px;
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 70px;
 }
 
-.footer-brand h2{
-    margin-bottom: 20px;
-    font-size: 2rem;
+.footer-brand h2 {
+  margin-bottom: 20px;
+  font-size: 2rem;
 }
 
-.footer-brand p{
-    line-height: 1.9;
-    opacity: 0.75;
-    max-width: 420px;
+.footer-brand p {
+  line-height: 1.9;
+  opacity: 0.75;
+  max-width: 420px;
 }
 
-.footer-links{
-    display: flex;
-    flex-direction: column;
+.footer-links {
+  display: flex;
+  flex-direction: column;
 }
 
-.footer-links h4{
-    margin-bottom: 24px;
+.footer-links h4 {
+  margin-bottom: 24px;
 }
 
-.footer-links a{
-    color: rgba(255,255,255,0.75);
-    margin-bottom: 14px;
-    transition: 0.3s;
+.footer-links a {
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 14px;
+  transition: 0.3s;
 }
 
-.footer-links a:hover{
-    color: var(--white);
+.footer-links a:hover {
+  color: var(--white);
 }
 
-.footer-bottom{
+.footer-bottom {
+  border-top: 1px solid rgba(108, 77, 255, 0.22);
 
-    border-top:
-    1px solid rgba(108,77,255,0.22);
+  box-shadow: 0 -8px 30px rgba(108, 77, 255, 0.08);
 
-    box-shadow:
-    0 -8px 30px rgba(108,77,255,0.08);
+  padding: 30px 0;
 
-    padding: 30px 0;
-
-    text-align: center;
+  text-align: center;
 }
 
-.footer-bottom p{
-    opacity: 0.7;
+.footer-bottom p {
+  opacity: 0.7;
 }
 
 /* ========================= */
 /* FOOTER TOP BORDER FIX */
 /* ========================= */
 
-.footer{
+.footer {
+  background: #111827;
 
-    background: #111827;
+  color: var(--white);
 
-    color: var(--white);
+  padding-top: 90px;
 
-    padding-top: 90px;
+  border-top: 1px solid rgba(108, 77, 255, 0.22);
 
-    border-top:
-    1px solid rgba(108,77,255,0.22);
-
-    box-shadow:
-    0 -20px 60px rgba(108,77,255,0.08);
+  box-shadow: 0 -20px 60px rgba(108, 77, 255, 0.08);
 }
 
 /* ========================= */
 /* FOOTER TITLES DARK MODE */
 /* ========================= */
 
-body.dark-mode .footer-brand h2{
-
-    color:
-    #ffffff;
+body.dark-mode .footer-brand h2 {
+  color: #ffffff;
 }
 
-body.dark-mode .footer-links h4{
+body.dark-mode .footer-links h4 {
+  color: rgba(255, 255, 255, 0.96);
+}
 
-    color:
-    rgba(255,255,255,0.96);
+/* ========================= */
+/* TEAM GARRA CODE PREMIUM */
+/* ========================= */
+
+.team-garra-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-top: 18px;
+
+  padding: 12px 22px;
+
+  border-radius: 999px;
+
+  text-decoration: none;
+
+  background: linear-gradient(
+    135deg,
+    rgba(108, 77, 255, 0.22),
+    rgba(139, 124, 255, 0.12)
+  );
+
+  border: 1px solid rgba(139, 124, 255, 0.35);
+
+  color: rgba(255, 255, 255, 0.92);
+
+  font-size: 0.95rem;
+
+  font-weight: 500;
+
+  transition: all 0.35s ease;
+
+  backdrop-filter: blur(12px);
+
+  box-shadow: 0 0 30px rgba(108, 77, 255, 0.12);
+}
+
+.team-garra-badge span {
+  color: #b4a8ff;
+
+  font-weight: 700;
+}
+
+.team-garra-badge:hover {
+  transform: translateY(-4px) scale(1.03);
+
+  border-color: rgba(180, 168, 255, 0.6);
+
+  box-shadow: 0 0 35px rgba(108, 77, 255, 0.35);
+
+  background: linear-gradient(
+    135deg,
+    rgba(108, 77, 255, 0.35),
+    rgba(139, 124, 255, 0.22)
+  );
+}
+
+body.dark-mode .team-garra-badge {
+  background: linear-gradient(
+    135deg,
+    rgba(108, 77, 255, 0.28),
+    rgba(139, 124, 255, 0.18)
+  );
 }
