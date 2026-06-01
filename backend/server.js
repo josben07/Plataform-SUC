@@ -1,3 +1,12 @@
+const mentorProfilesRoutes =
+    require("./src/routes/mentor-profiles.routes");
+
+const commentReactionsRoutes =
+    require("./src/routes/comment-reactions.routes");
+
+const commentsRoutes =
+    require("./src/routes/comments.routes");
+
 /* agregado para correr backend hoy */
 const path =
     require("path");
@@ -162,6 +171,19 @@ app.use(
     express.static(
         path.join(__dirname, "..")
     )
+);
+
+app.use(
+    "/api/comments",
+    commentsRoutes
+);
+app.use(
+    "/api/comment-reactions",
+    commentReactionsRoutes
+);
+app.use(
+    "/api/mentor-profiles",
+    mentorProfilesRoutes
 );
 
 /* HOME */

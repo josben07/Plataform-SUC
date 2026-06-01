@@ -1,3 +1,12 @@
+const commentForm =
+    document.getElementById("commentForm");
+
+const commentInput =
+    document.getElementById("commentInput");
+
+const commentsList =
+    document.getElementById("commentsList");
+
 const token =
     localStorage.getItem("token");
 
@@ -129,15 +138,19 @@ async function loadLessons(moduleId, moduleIndex) {
 
         container.innerHTML += `
 
-            <button
-                class="player-lesson"
-                onclick='openLesson(${JSON.stringify(lesson)})'
-            >
-                ${moduleIndex + 1}.${index}
-                ${lesson.title}
-            </button>
+    <button
+        class="player-lesson"
+        id="lesson-${lesson.id}"
+        onclick='openLesson(${JSON.stringify(lesson)})'
+    >
+        <span>
+            ${moduleIndex + 1}.${index}
+        </span>
 
-        `;
+        ${lesson.title}
+    </button>
+
+`;
 
     });
 
@@ -149,6 +162,29 @@ async function openLesson(lesson) {
 
     currentLessonId =
         lesson.id;
+
+    document
+        .querySelectorAll(".player-lesson")
+        .forEach(button => {
+
+            button.classList.remove(
+                "active-lesson"
+            );
+
+        });
+
+    const activeLesson =
+        document.getElementById(
+            `lesson-${lesson.id}`
+        );
+
+    if (activeLesson) {
+
+        activeLesson.classList.add(
+            "active-lesson"
+        );
+
+    }
 
     const isCompleted =
         completedLessons.some(
@@ -182,24 +218,120 @@ async function openLesson(lesson) {
 
     if (lesson.video_url) {
 
-        videoBox.innerHTML = `
-            <a
-                href="${lesson.video_url}"
-                target="_blank"
-                style="color:white;text-decoration:none;"
-            >
-                ▶ Ver video
-            </a>
-        `;
+        videoBox.innerHTML = getVideoPlayer(
+            lesson.video_url
+        );
 
     } else {
 
-        videoBox.textContent =
-            "Sin video";
+        videoBox.innerHTML = `
+        <div class="empty-video">
+            Sin video disponible
+        </div>
+    `;
+
+    }
+
+    function getVideoPlayer(videoUrl) {
+
+        let url =
+            videoUrl.trim();
+
+        if (url.includes("youtube.com/watch?v=")) {
+
+            const videoId =
+                url.split("v=")[1].split("&")[0];
+
+            return `
+            <iframe
+                src="https://www.youtube.com/embed/${videoId}"
+                class="course-video-frame"
+                allowfullscreen
+            ></iframe>
+        `;
+        }
+
+        if (url.includes("youtu.be/")) {
+
+            const videoId =
+                url.split("youtu.be/")[1].split("?")[0];
+
+            return `
+            <iframe
+                src="https://www.youtube.com/embed/${videoId}"
+                class="course-video-frame"
+                allowfullscreen
+            ></iframe>
+        `;
+        }
+
+        if (url.includes("vimeo.com/")) {
+
+            const videoId =
+                url.split("vimeo.com/")[1].split("?")[0];
+
+            return `
+            <iframe
+                src="https://player.vimeo.com/video/${videoId}"
+                class="course-video-frame"
+                allowfullscreen
+            ></iframe>
+        `;
+        }
+
+        if (url.includes("drive.google.com")) {
+
+            let driveUrl =
+                url;
+
+            if (url.includes("/view")) {
+
+                driveUrl =
+                    url.replace(
+                        "/view",
+                        "/preview"
+                    );
+
+            }
+
+            return `
+            <iframe
+                src="${driveUrl}"
+                class="course-video-frame"
+                allowfullscreen
+            ></iframe>
+        `;
+        }
+
+        if (
+            url.endsWith(".mp4") ||
+            url.endsWith(".webm") ||
+            url.endsWith(".ogg")
+        ) {
+
+            return `
+            <video
+                class="course-video-frame"
+                controls
+            >
+                <source src="${url}">
+                Tu navegador no soporta este video.
+            </video>
+        `;
+        }
+
+        return `
+        <iframe
+            src="${url}"
+            class="course-video-frame"
+            allowfullscreen
+        ></iframe>
+    `;
 
     }
 
     loadResources(lesson.id);
+    loadComments(lesson.id);
 
 }
 
@@ -307,6 +439,187 @@ completeLessonBtn.addEventListener(
 
     }
 );
+
+async function loadComments(lessonId) {
+
+    const response =
+        await fetch(
+            `${API_URL}/api/comments/${lessonId}`
+        );
+
+    const comments =
+        await response.json();
+
+    commentsList.innerHTML =
+        "";
+
+    if (comments.length === 0) {
+
+        commentsList.innerHTML = `
+
+            <div class="empty-comments">
+                Aún no hay comentarios en esta clase.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    for (const comment of comments) {
+
+        const reactionsResponse =
+            await fetch(
+                `${API_URL}/api/comment-reactions/${comment.id}`
+            );
+
+        const reactions =
+            await reactionsResponse.json();
+
+        commentsList.innerHTML += `
+
+            <div class="comment-card">
+
+                <div class="comment-avatar">
+                    ${comment.user_name.charAt(0)}
+                </div>
+
+                <div>
+
+                    <strong>
+                        ${comment.user_name}
+                    </strong>
+
+                    <p>
+                        ${comment.comment}
+                    </p>
+
+                    <div class="comment-reactions">
+
+                        <button
+                            onclick="reactToComment('${comment.id}','like')"
+                        >
+                            👍 ${reactions.likes}
+                        </button>
+
+                        <button
+                            onclick="reactToComment('${comment.id}','dislike')"
+                        >
+                            👎 ${reactions.dislikes}
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+commentForm.addEventListener(
+    "submit",
+    async (e) => {
+
+        e.preventDefault();
+
+        if (!currentLessonId) {
+
+            return;
+
+        }
+
+        if (commentInput.value.trim() === "") {
+
+            return;
+
+        }
+
+        await fetch(
+            `${API_URL}/api/comments`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify({
+
+                        lesson_id:
+                            currentLessonId,
+
+                        user_id:
+                            user.id,
+
+                        user_name:
+                            user.full_name,
+
+                        comment:
+                            commentInput.value.trim()
+
+                    })
+            }
+        );
+
+        commentInput.value =
+            "";
+
+        loadComments(
+            currentLessonId
+        );
+
+    }
+);
+
+async function reactToComment(
+
+    commentId,
+    reaction
+
+) {
+
+    await fetch(
+        `${API_URL}/api/comment-reactions`,
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:
+                JSON.stringify({
+
+                    comment_id:
+                        commentId,
+
+                    user_id:
+                        user.id,
+
+                    reaction:
+                        reaction
+
+                })
+        }
+    );
+
+    if (currentLessonId) {
+
+        loadComments(
+            currentLessonId
+        );
+
+    }
+
+}
 
 /* INIT */
 

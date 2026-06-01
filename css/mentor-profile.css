@@ -112,3 +112,14 @@ body{background:#020617;color:white}
     opacity:1;
     transform:translateY(0);
 }
+
+.profile-card textarea{
+    min-height:120px;
+    border:none;
+    border-radius:16px;
+    padding:18px;
+    background:rgba(255,255,255,.05);
+    color:white;
+    outline:none;
+    resize:none;
+}

@@ -377,3 +377,32 @@ body{
     font-weight:800;
     cursor:pointer;
 }
+
+.assigned-mentor-box{
+
+    margin-top:14px;
+
+    padding:12px 14px;
+
+    border-radius:14px;
+
+    background:rgba(108,77,255,.14);
+
+    color:#A89BFF;
+
+    font-size:.9rem;
+
+    font-weight:700;
+}
+
+.assigned-mentor-box strong{
+
+    color:white;
+}
+
+.no-mentor{
+
+    background:rgba(255,255,255,.05);
+
+    color:rgba(255,255,255,.55);
+}

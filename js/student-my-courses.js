@@ -1,6 +1,3 @@
-let selectedCourseForMentor =
-    null;
-
 const user =
     JSON.parse(
         localStorage.getItem("user")
@@ -28,6 +25,22 @@ async function loadMyCourses() {
 
     const courses =
         await courseResponse.json();
+
+    const assignedMentorsResponse =
+        await fetch(
+            `${API_URL}/api/student-mentors/${user.id}`
+        );
+
+    const assignedMentors =
+        await assignedMentorsResponse.json();
+
+    const mentorProfilesResponse =
+        await fetch(
+            `${API_URL}/api/mentor-profiles`
+        );
+
+    const mentorProfiles =
+        await mentorProfilesResponse.json();
 
     myCoursesGrid.innerHTML = "";
 
@@ -59,11 +72,29 @@ async function loadMyCourses() {
                 c => c.id === relation.course_id
             );
 
-        if (!course) return;
+        if (!course) {
+            continue;
+        }
 
         const isUnlocked =
             relation.unlocked === true;
-        
+
+        const assignedMentor =
+            assignedMentors.find(
+                item =>
+                    item.course_id === course.id
+            );
+
+        const mentorData =
+            assignedMentor
+                ?
+                mentorProfiles.find(
+                    mentor =>
+                        mentor.id === assignedMentor.mentor_id
+                )
+                :
+                null;
+
         let progressPercent = 0;
 
         if (isUnlocked) {
@@ -78,13 +109,15 @@ async function loadMyCourses() {
 
             const completedLessons =
                 progressData.filter(
-                    item => item.completed === true
+                    item =>
+                        item.completed === true
                 );
 
             progressPercent =
                 completedLessons.length > 0
                     ? 100
                     : 0;
+
         }
 
         myCoursesGrid.innerHTML += `
@@ -98,6 +131,7 @@ async function loadMyCourses() {
                     src="${course.thumbnail ||
             "https://images.unsplash.com/photo-1516321318423-f06f85e504b3"
             }"
+                    alt="${course.title}"
                 >
 
                 <div class="my-course-content">
@@ -114,17 +148,42 @@ async function loadMyCourses() {
                         course-status
                         ${isUnlocked ? "approved-status" : "pending-status"}
                     ">
+
                         ${isUnlocked
                 ? "Desbloqueado"
                 : "Pendiente de aprobación"
             }
+
                     </div>
+
+                    ${mentorData
+                ?
+                `
+                        <div class="assigned-mentor-box">
+
+                            Mentor asignado:
+
+                            <strong>
+                                ${mentorData.full_name}
+                            </strong>
+
+                        </div>
+                        `
+                :
+                `
+                        <div class="assigned-mentor-box no-mentor">
+
+                            Sin mentor asignado
+
+                        </div>
+                        `
+            }
 
                     <div class="progress-bar">
 
                         <div
                             class="progress-fill"
-                            style="width:${progressPercent}%;"   
+                            style="width:${progressPercent}%;"
                         ></div>
 
                     </div>
@@ -137,24 +196,24 @@ async function loadMyCourses() {
                 : ""
             }"
                     >
+
                         ${isUnlocked
                 ? "Continuar"
                 : "Esperando aprobación"
             }
+
                     </button>
 
                     <button
-
-                    class="mentor-select-btn"
-
+                        class="mentor-select-btn"
                         onclick="
-                    openMentorModal(
-                        '${course.id}'
-                    )
-                    "
-
+                            window.location.href=
+                            './select-mentor.html?courseId=${course.id}'
+                        "
                     >
-                     Elegir mentor
+
+                        Elegir mentor
+
                     </button>
 
                 </div>
@@ -164,142 +223,6 @@ async function loadMyCourses() {
         `;
 
     }
-
-}
-
-const mentorModal =
-    document.querySelector(
-        ".mentor-modal"
-    );
-
-const closeMentorModal =
-    document.querySelector(
-        ".close-mentor-modal"
-    );
-
-const mentorList =
-    document.getElementById(
-        "mentorList"
-    );
-
-async function openMentorModal(courseId) {
-
-    selectedCourseForMentor =
-        courseId;
-
-    mentorModal.classList.add(
-        "active-modal"
-    );
-
-    const response =
-        await fetch(
-            `${API_URL}/api/student-mentors/mentors`
-        );
-
-    const mentors =
-        await response.json();
-
-    mentorList.innerHTML = "";
-
-    if (mentors.length === 0) {
-
-        mentorList.innerHTML = `
-
-            <div class="empty-state">
-
-                <h3>
-                    No hay mentores disponibles
-                </h3>
-
-                <p>
-                    El administrador debe asignar usuarios con rol mentor.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-    }
-
-    mentors.forEach(mentor => {
-
-        mentorList.innerHTML += `
-
-            <div class="mentor-item">
-
-                <div class="mentor-avatar">
-                    ${mentor.full_name.charAt(0)}
-                </div>
-
-                <h3>
-                    ${mentor.full_name}
-                </h3>
-
-                <p>
-                    ${mentor.email}
-                </p>
-
-                <button
-                    onclick="assignMentor('${mentor.id}')"
-                >
-                    Seleccionar
-                </button>
-
-            </div>
-
-        `;
-
-    });
-
-}
-
-closeMentorModal.addEventListener(
-    "click",
-    () => {
-
-        mentorModal.classList.remove(
-            "active-modal"
-        );
-
-    }
-);
-
-async function assignMentor(mentorId) {
-
-    await fetch(
-        `${API_URL}/api/student-mentors/assign`,
-        {
-            method: "POST",
-
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body:
-                JSON.stringify({
-
-                    student_id:
-                        user.id,
-
-                    mentor_id:
-                        mentorId,
-
-                    course_id:
-                        selectedCourseForMentor
-
-                })
-        }
-    );
-
-    mentorModal.classList.remove(
-        "active-modal"
-    );
-
-    alert(
-        "Mentor asignado correctamente"
-    );
 
 }
 

@@ -1,0 +1,167 @@
+body{
+    background:#020617;
+    color:white;
+}
+
+.mentors-hero{
+    padding:70px 0 40px;
+    background:#020617;
+}
+
+.mentors-hero-content h1{
+    color:white;
+    font-size:3rem;
+}
+
+.mentors-hero-content p{
+    color:rgba(255,255,255,.62);
+}
+
+.section-badge{
+    color:#8B7CFF;
+    font-weight:900;
+    letter-spacing:2px;
+}
+
+.mentors-layout{
+    padding:20px 0 80px;
+    background:#020617;
+}
+
+.sidebar-box,
+.mentor-card,
+.mentor-modal-content{
+    background:#0F172A !important;
+    border:1px solid rgba(255,255,255,.08) !important;
+}
+
+.sidebar-box h3,
+.mentors-topbar h2,
+.mentor-top h3,
+.mentor-modal-info h2{
+    color:white;
+}
+
+.mentors-topbar p,
+.mentor-description,
+.mentor-top span,
+.modal-description,
+.modal-stats span{
+    color:rgba(255,255,255,.62) !important;
+}
+
+.mentors-search input{
+    background:rgba(255,255,255,.05);
+    color:white;
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.mentor-filter{
+    color:rgba(255,255,255,.72);
+}
+
+.mentor-filter:hover,
+.active-filter{
+    color:#8B7CFF;
+}
+
+.mentor-card{
+    border-radius:28px;
+}
+
+.mentor-card:hover{
+    border-color:rgba(139,124,255,.35) !important;
+    box-shadow:0 24px 70px rgba(108,77,255,.18);
+}
+
+.mentor-tags span,
+.mentor-stats span,
+.modal-stats div{
+    background:rgba(108,77,255,.14);
+    color:#A89BFF !important;
+}
+
+.mentor-price{
+    display:none;
+}
+
+.mentor-btn,
+.mentor-modal-btn{
+    background:linear-gradient(135deg,#6C4DFF,#8B7CFF);
+    color:white;
+}
+
+.close-modal{
+    position:absolute;
+    top:20px;
+    right:20px;
+    width:52px;
+    height:52px;
+    border:none;
+    border-radius:50%;
+    background:rgba(0,0,0,.75);
+    color:white;
+    font-size:1.4rem;
+    font-weight:800;
+    cursor:pointer;
+    z-index:9999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.close-modal:hover{
+    background:#6C4DFF;
+    transform:rotate(90deg);
+}
+
+.mentor-modal{
+    background:rgba(0,0,0,.78);
+}
+
+.app-toast{
+
+    position:fixed;
+
+    bottom:32px;
+    right:32px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #6C4DFF,
+        #8B7CFF
+    );
+
+    color:white;
+
+    padding:
+    18px 24px;
+
+    border-radius:
+    18px;
+
+    font-weight:
+    800;
+
+    opacity:0;
+
+    transform:
+    translateY(30px);
+
+    pointer-events:none;
+
+    transition:
+    .3s ease;
+
+    z-index:
+    99999;
+}
+
+.app-toast.show-toast{
+
+    opacity:1;
+
+    transform:
+    translateY(0);
+}

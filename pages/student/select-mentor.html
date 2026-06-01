@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Elegir Mentor | SUClassroom</title>
+
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/mentors.css">
+    <link rel="stylesheet" href="../../css/student-select-mentor.css">
+</head>
+
+<body>
+
+    <section class="mentors-hero">
+
+        <div class="container">
+
+            <div class="mentors-hero-content">
+
+                <span class="section-badge">
+                    Selección de mentor
+                </span>
+
+                <h1>
+                    Elige el mentor que te acompañará
+                    en este curso
+                </h1>
+
+                <p>
+                    Revisa la experiencia, especialidades y perfil profesional
+                    antes de seleccionar tu mentor.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="mentors-layout">
+
+        <div class="container mentors-container">
+
+            <aside class="mentors-sidebar">
+
+                <div class="sidebar-box">
+
+                    <h3>
+                        Opciones
+                    </h3>
+
+                    <div class="sidebar-links">
+
+                        <button class="mentor-filter active-filter" onclick="loadMentors()">
+                            Todos los mentores
+                        </button>
+
+                        <button class="mentor-filter" onclick="window.location.href='./my-courses.html'">
+                            Volver a mis cursos
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+            <div class="mentors-content">
+
+                <div class="mentors-topbar">
+
+                    <div>
+
+                        <h2>
+                            Mentores disponibles
+                        </h2>
+
+                        <p>
+                            Selecciona un mentor para este curso.
+                        </p>
+
+                    </div>
+
+                    <div class="mentors-search">
+
+                        <input type="text" id="mentorSearch" placeholder="Buscar mentor...">
+
+                    </div>
+
+                </div>
+
+                <div class="mentors-grid" id="studentMentorsGrid"></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <div class="mentor-modal">
+
+        <div class="mentor-modal-content">
+
+            <button class="close-modal">
+                ✕
+            </button>
+
+            <div class="mentor-modal-image">
+
+                <img id="modalImage" src="" alt="">
+
+            </div>
+
+            <div class="mentor-modal-info">
+
+                <span class="modal-badge">
+                    Mentor profesional
+                </span>
+
+                <h2 id="modalName">
+                    Mentor
+                </h2>
+
+                <p class="modal-role" id="modalRole">
+                    Cargo profesional
+                </p>
+
+                <p class="modal-description" id="modalDescription">
+                    Descripción profesional del mentor.
+                </p>
+
+                <div class="modal-stats">
+
+                    <div>
+                        <strong id="modalExperience">
+                            0 años
+                        </strong>
+
+                        <span>
+                            Experiencia
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong id="modalCompany">
+                            Empresa
+                        </strong>
+
+                        <span>
+                            Trayectoria
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="mentor-tags" id="modalTags"></div>
+
+                <button class="mentor-modal-btn" id="modalSelectBtn">
+                    Seleccionar mentor
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="app-toast">
+
+        <span id="appToastMessage">
+            Mensaje
+        </span>
+
+    </div>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/student-select-mentor.js"></script>
+
+</body>
+
+</html>

@@ -1,4 +1,3 @@
-
 const appToast =
     document.querySelector(".app-toast");
 
@@ -15,7 +14,9 @@ function showToast(message) {
     appToast.classList.add("show-toast");
 
     setTimeout(() => {
+
         appToast.classList.remove("show-toast");
+
     }, 3000);
 
 }
@@ -29,6 +30,8 @@ if (!user || user.role !== "mentor") {
         "../login.html";
 
 }
+
+/* BASIC PROFILE */
 
 const profileAvatar =
     document.getElementById("profileAvatar");
@@ -48,6 +51,31 @@ const email =
 const profileForm =
     document.getElementById("profileForm");
 
+/* PROFESSIONAL PROFILE */
+
+const photoUrl =
+    document.getElementById("photoUrl");
+
+const position =
+    document.getElementById("position");
+
+const company =
+    document.getElementById("company");
+
+const experienceYears =
+    document.getElementById("experienceYears");
+
+const specialties =
+    document.getElementById("specialties");
+
+const description =
+    document.getElementById("description");
+
+const areas =
+    document.getElementById("areas");
+
+/* SET USER DATA */
+
 profileAvatar.textContent =
     user.full_name.charAt(0);
 
@@ -63,48 +91,150 @@ fullName.value =
 email.value =
     user.email;
 
-profileForm.addEventListener("submit", async (e) => {
+/* LOAD MENTOR PROFESSIONAL PROFILE */
 
-    e.preventDefault();
+async function loadMentorProfile() {
 
-    await fetch(
-        `${API_URL}/api/users/${user.id}`,
-        {
-            method: "PUT",
+    const response =
+        await fetch(
+            `${API_URL}/api/mentor-profiles`
+        );
 
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
+    const mentors =
+        await response.json();
 
-            body:
-                JSON.stringify({
-                    full_name:
-                        fullName.value,
+    const currentMentor =
+        mentors.find(
+            mentor =>
+                mentor.id === user.id
+        );
 
-                    role:
-                        user.role,
+    if (!currentMentor || !currentMentor.profile) {
 
-                    status:
-                        user.status || "active"
-                })
-        }
-    );
+        return;
 
-    user.full_name =
-        fullName.value;
+    }
 
-    localStorage.setItem(
-        "user",
-        JSON.stringify(user)
-    );
+    const profile =
+        currentMentor.profile;
 
-    profileName.textContent =
-        fullName.value;
+    photoUrl.value =
+        profile.photo_url || "";
 
-    profileAvatar.textContent =
-        fullName.value.charAt(0);
+    position.value =
+        profile.position || "";
 
-    showToast("Perfil actualizado correctamente");
+    company.value =
+        profile.company || "";
 
-});
+    experienceYears.value =
+        profile.experience_years || "";
+
+    specialties.value =
+        profile.specialties || "";
+
+    description.value =
+        profile.description || "";
+
+    areas.value =
+        profile.areas || "";
+
+}
+
+/* SAVE PROFILE */
+
+profileForm.addEventListener(
+    "submit",
+    async (e) => {
+
+        e.preventDefault();
+
+        await fetch(
+            `${API_URL}/api/users/${user.id}`,
+            {
+                method: "PUT",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify({
+                        full_name:
+                            fullName.value,
+
+                        role:
+                            user.role,
+
+                        status:
+                            user.status || "active"
+                    })
+            }
+        );
+
+        await fetch(
+            `${API_URL}/api/mentor-profiles`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify({
+
+                        user_id:
+                            user.id,
+
+                        photo_url:
+                            photoUrl.value,
+
+                        position:
+                            position.value,
+
+                        company:
+                            company.value,
+
+                        experience_years:
+                            experienceYears.value,
+
+                        specialties:
+                            specialties.value,
+
+                        description:
+                            description.value,
+
+                        areas:
+                            areas.value
+
+                    })
+            }
+        );
+
+        user.full_name =
+            fullName.value;
+
+        localStorage.setItem(
+            "user",
+            JSON.stringify(user)
+        );
+
+        profileName.textContent =
+            fullName.value;
+
+        profileAvatar.textContent =
+            fullName.value.charAt(0);
+
+        showToast(
+            "Perfil actualizado correctamente"
+        );
+
+    }
+);
+
+/* INIT */
+
+loadMentorProfile();
