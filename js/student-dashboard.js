@@ -65,7 +65,7 @@ async function loadStudentCourses() {
 
     const courses =
         await response.json();
-    
+
     renderCategoryPanel(courses);
 
     const studentResponse =
