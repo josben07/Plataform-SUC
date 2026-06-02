@@ -861,3 +861,72 @@
 
     transform: translateY(0);
 }
+
+/* ========================= */
+/* CATEGORY SELECT */
+/* ========================= */
+
+.category-admin-box{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+    margin-bottom:18px;
+}
+
+.category-admin-box label{
+
+    font-size:.9rem;
+
+    font-weight:700;
+
+    color:
+    rgba(255,255,255,.85);
+}
+
+.category-admin-box select,
+
+.category-admin-box input{
+
+    width:100%;
+
+    padding:14px 16px;
+
+    border-radius:14px;
+
+    border:
+    1px solid rgba(255,255,255,.08);
+
+    background:
+    rgba(255,255,255,.04);
+
+    color:white;
+
+    font-size:.95rem;
+
+    transition:.3s;
+}
+
+.category-admin-box select:focus,
+
+.category-admin-box input:focus{
+
+    border-color:
+    #6C4DFF;
+
+    box-shadow:
+    0 0 0 4px rgba(108,77,255,.15);
+
+    outline:none;
+}
+
+.category-admin-box select option{
+
+    background:
+    #0F172A;
+
+    color:white;
+}

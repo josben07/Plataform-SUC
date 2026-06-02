@@ -143,24 +143,41 @@
 
                 </div>
 
-                                <div class="student-filters">
-                                
-                                    <button class="student-filter active-student-filter" onclick="changeStudentFilter('all', this)">
-                                        Todos
-                                    </button>
-                                
-                                    <button class="student-filter" onclick="window.location.href='./my-courses.html'">
-                                        Mis cursos
-                                    </button>
-                                
-                                    <button class="student-filter" onclick="changeStudentFilter('locked', this)">
-                                        Bloqueados
-                                    </button>
-                                
-                                </div>
+                <div class="student-filters">
 
-                <div class="student-courses-grid" id="studentCoursesGrid">
+                    <button class="student-filter active-student-filter" onclick="changeStudentFilter('all', this)">
+                        Todos los cursos
+                    </button>
+
+                    <button class="student-filter" onclick="window.location.href='./my-courses.html'">
+                        Mis cursos
+                    </button>
+
+                    <button class="student-filter" onclick="openCategoryPanel()">
+                        Categorías
+                    </button>
+
                 </div>
+
+                <div class="category-panel" id="categoryPanel">
+                
+                    <div class="category-panel-header">
+                
+                        <h3>
+                            Filtrar por categoría
+                        </h3>
+                
+                        <button onclick="closeCategoryPanel()">
+                            ✕
+                        </button>
+                
+                    </div>
+                
+                    <div class="category-list" id="categoryList"></div>
+                
+                </div>
+
+                <div class="student-courses-grid" id="studentCoursesGrid"></div>
 
             </section>
 

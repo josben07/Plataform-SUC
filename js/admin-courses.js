@@ -50,6 +50,16 @@ const courseForm =
         "courseForm"
     );
 
+const categorySelect =
+    document.getElementById(
+        "categorySelect"
+    );
+
+const categoryInput =
+    document.getElementById(
+        "category"
+    );
+
 /* OPEN MODAL */
 
 openModalBtn.addEventListener(
@@ -106,6 +116,7 @@ window.addEventListener(
 async function loadCourses() {
     const response = await fetch(`${API_URL}/api/courses`);
     const courses = await response.json();
+    loadCategoryOptions(courses);
 
     grid.innerHTML = "";
 
@@ -158,6 +169,53 @@ async function loadCourses() {
             </div>
         `;
     });
+}
+
+function loadCategoryOptions(courses) {
+
+    if (!categorySelect) return;
+
+    const baseCategories = [
+        "Marketing",
+        "Administración",
+        "Tecnología",
+        "Finanzas",
+        "Diseño",
+        "Ventas",
+        "Productividad"
+    ];
+
+    const courseCategories =
+        courses
+            .map(course => course.category)
+            .filter(category => category);
+
+    const categories =
+        [...new Set([
+            ...baseCategories,
+            ...courseCategories
+        ])];
+
+    categorySelect.innerHTML = `
+
+        <option value="">
+            Seleccionar categoría
+        </option>
+
+    `;
+
+    categories.forEach(category => {
+
+        categorySelect.innerHTML += `
+
+            <option value="${category}">
+                ${category}
+            </option>
+
+        `;
+
+    });
+
 }
 
 loadCourses();
@@ -236,8 +294,11 @@ async function editCourse(id) {
     description.value =
         course.description;
 
-    category.value =
-        course.category;
+    categoryInput.value =
+        "";
+
+    categorySelect.value =
+        course.category || "";
 
     level.value =
         course.level;
@@ -279,6 +340,11 @@ courseForm.addEventListener(
 
         e.preventDefault();
 
+        const finalCategory =
+            categoryInput.value.trim() !== ""
+                ? categoryInput.value.trim()
+                : categorySelect.value;
+
         const course = {
 
             title:
@@ -288,7 +354,7 @@ courseForm.addEventListener(
                 description.value,
 
             category:
-                category.value,
+                finalCategory,
 
             level:
                 level.value,

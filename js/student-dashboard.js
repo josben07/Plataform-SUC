@@ -55,6 +55,8 @@ const studentCoursesGrid =
     document.getElementById("studentCoursesGrid");
 let studentFilter =
     "all";
+let selectedCategory =
+    "all";
 
 async function loadStudentCourses() {
 
@@ -63,6 +65,8 @@ async function loadStudentCourses() {
 
     const courses =
         await response.json();
+    
+    renderCategoryPanel(courses);
 
     const studentResponse =
         await fetch(
@@ -80,6 +84,21 @@ async function loadStudentCourses() {
     let filteredCourses =
         courses;
 
+
+    if (selectedCategory !== "all") {
+
+        filteredCourses =
+            filteredCourses.filter(course =>
+                (course.category || "")
+                    .toLowerCase()
+                    .trim() ===
+                selectedCategory
+                    .toLowerCase()
+                    .trim()
+            );
+
+    }
+
     if (studentFilter === "myCourses") {
 
         filteredCourses =
@@ -94,6 +113,20 @@ async function loadStudentCourses() {
                 return !isCourseLocked || isPaidUnlocked;
 
             });
+
+    }
+
+    if (selectedCategory !== "all") {
+
+        filteredCourses =
+            filteredCourses.filter(course =>
+                (course.category || "")
+                    .toLowerCase()
+                    .trim() ===
+                selectedCategory
+                    .toLowerCase()
+                    .trim()
+            );
 
     }
 
@@ -311,6 +344,119 @@ function changeStudentFilter(filter, element) {
     element.classList.add(
         "active-student-filter"
     );
+
+    loadStudentCourses();
+
+}
+
+function openCategoryPanel() {
+
+    document
+        .getElementById("categoryPanel")
+        .classList.add("active-category-panel");
+
+}
+
+function closeCategoryPanel() {
+
+    document
+        .getElementById("categoryPanel")
+        .classList.remove("active-category-panel");
+
+}
+
+function filterByCategory(category) {
+
+    selectedCategory =
+        category;
+
+    studentFilter =
+        "all";
+
+    closeCategoryPanel();
+
+    loadStudentCourses();
+
+}
+
+function renderCategoryPanel(courses) {
+
+    const categoryList =
+        document.getElementById("categoryList");
+
+    if (!categoryList) return;
+
+    const baseCategories = [
+        "Marketing",
+        "Administración",
+        "Tecnología",
+        "Finanzas",
+        "Diseño",
+        "Ventas",
+        "Productividad"
+    ];
+
+    const courseCategories =
+        courses
+            .map(course => course.category)
+            .filter(category => category);
+
+    const categories =
+        [...new Set([
+            ...baseCategories,
+            ...courseCategories
+        ])];
+
+    categoryList.innerHTML = "";
+
+    categories.forEach(category => {
+
+        categoryList.innerHTML += `
+
+            <button onclick="filterByCategory('${category}')">
+                ${category}
+            </button>
+
+        `;
+
+    });
+
+    categoryList.innerHTML += `
+
+        <button onclick="filterByCategory('all')">
+            Ver todas
+        </button>
+
+    `;
+
+}
+
+
+function openCategoryPanel() {
+
+    document
+        .getElementById("categoryPanel")
+        .classList.add("active-category-panel");
+
+}
+
+function closeCategoryPanel() {
+
+    document
+        .getElementById("categoryPanel")
+        .classList.remove("active-category-panel");
+
+}
+
+function filterByCategory(category) {
+
+    selectedCategory =
+        category;
+
+    studentFilter =
+        "all";
+
+    closeCategoryPanel();
 
     loadStudentCourses();
 
