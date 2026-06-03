@@ -49,6 +49,18 @@ const completeLessonBtn =
         "completeLessonBtn"
     );
 
+const resourcesPanel =
+    document.querySelector(".resources-panel");
+
+const commentsPanel =
+    document.querySelector(".comments-panel");
+
+let allModulesData =
+    [];
+
+let allLessonsData =
+    [];
+
 let currentLessonId =
     null;
 
@@ -92,6 +104,9 @@ async function loadModules() {
     const modules =
         await response.json();
 
+    allModulesData =
+        modules;
+
     modulesList.innerHTML = "";
 
     modules.forEach((module, index) => {
@@ -131,6 +146,12 @@ async function loadLessons(moduleId, moduleIndex) {
     const lessons =
         await response.json();
 
+    allLessonsData =
+        [
+            ...allLessonsData,
+            ...lessons
+        ];
+
     const container =
         document.getElementById(`lessons-${moduleId}`);
 
@@ -162,6 +183,8 @@ async function openLesson(lesson) {
 
     currentLessonId =
         lesson.id;
+
+    showLessonView();
 
     document
         .querySelectorAll(".player-lesson")
@@ -621,10 +644,145 @@ async function reactToComment(
 
 }
 
+function showWelcomeView() {
+
+    currentLessonId =
+        null;
+
+    lessonTitle.textContent =
+        "Bienvenido al curso";
+
+    completeLessonBtn.style.display =
+        "none";
+
+    if (resourcesPanel) {
+        resourcesPanel.style.display =
+            "none";
+    }
+
+    if (commentsPanel) {
+        commentsPanel.style.display =
+            "none";
+    }
+
+    const completedCount =
+        completedLessons.filter(
+            item => item.completed === true
+        ).length;
+
+    const totalLessons =
+        allLessonsData.length;
+
+    const progressPercent =
+        totalLessons > 0
+            ? Math.round((completedCount / totalLessons) * 100)
+            : 0;
+
+    videoBox.innerHTML = `
+
+        <div class="course-welcome-box">
+
+            <div class="welcome-icon">
+                🚀
+            </div>
+
+            <h2>
+                Empieza tu ruta de aprendizaje
+            </h2>
+
+            <p>
+                Este curso cuenta con
+                <strong>${allModulesData.length}</strong>
+                módulos y
+                <strong>${totalLessons}</strong>
+                clases disponibles.
+            </p>
+
+            <div class="welcome-progress">
+
+                <div class="welcome-progress-info">
+
+                    <span>
+                        Progreso actual
+                    </span>
+
+                    <strong>
+                        ${progressPercent}%
+                    </strong>
+
+                </div>
+
+                <div class="welcome-progress-bar">
+
+                    <div
+                        class="welcome-progress-fill"
+                        style="width:${progressPercent}%;"
+                    ></div>
+
+                </div>
+
+            </div>
+
+            <button
+                class="welcome-start-btn"
+                onclick="startFirstLesson()"
+            >
+                Comenzar primera clase
+            </button>
+
+        </div>
+
+    `;
+
+}
+
+function showLessonView() {
+
+    completeLessonBtn.style.display =
+        "inline-flex";
+
+    if (resourcesPanel) {
+        resourcesPanel.style.display =
+            "block";
+    }
+
+    if (commentsPanel) {
+        commentsPanel.style.display =
+            "block";
+    }
+
+}
+
+function startFirstLesson() {
+
+    if (allLessonsData.length === 0) {
+
+        return;
+
+    }
+
+    openLesson(
+        allLessonsData[0]
+    );
+
+}
+
 /* INIT */
 
-loadCourse();
+async function initCoursePlayer() {
 
-loadProgress();
+    await loadCourse();
 
-loadModules();
+    await loadProgress();
+
+    await loadModules();
+
+    setTimeout(() => {
+
+        showWelcomeView();
+
+    }, 500);
+
+}
+
+initCoursePlayer();

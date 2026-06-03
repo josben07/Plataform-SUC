@@ -159,3 +159,102 @@ body{
     opacity:1;
     transform:translateY(0);
 }
+
+.locked-mentorship{
+
+    opacity:.55;
+
+    filter:grayscale(.35);
+}
+
+.locked-message{
+
+    margin:
+    14px 0;
+
+    padding:
+    12px 14px;
+
+    border-radius:
+    14px;
+
+    background:
+    rgba(255,255,255,.05);
+
+    color:
+    rgba(255,255,255,.65);
+
+    font-size:
+    .88rem;
+
+    line-height:
+    1.5;
+}
+
+.locked-mentorship .mentor-btn:disabled{
+
+    cursor:not-allowed;
+
+    background:
+    rgba(255,255,255,.08);
+
+    color:
+    rgba(255,255,255,.45);
+}
+
+.assigned-mentors-banner{
+
+    grid-column:1 / -1;
+
+    padding:28px;
+
+    border-radius:24px;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(108,77,255,.22),
+        rgba(139,124,255,.08)
+    );
+
+    border:
+    1px solid rgba(139,124,255,.22);
+
+    margin-bottom:12px;
+}
+
+.assigned-mentors-banner h3{
+
+    color:white;
+
+    margin-bottom:10px;
+}
+
+.assigned-mentors-banner p{
+
+    color:rgba(255,255,255,.65);
+
+    margin-bottom:18px;
+}
+
+.assigned-mentor-list{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+}
+
+.assigned-mentor-list span{
+
+    padding:10px 14px;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.08);
+
+    color:#A89BFF;
+
+    font-weight:800;
+}

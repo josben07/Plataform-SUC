@@ -485,3 +485,53 @@ body{
 
     transform: translateY(0);
 }
+
+#mentorSelect{
+
+    width:100%;
+
+    padding:
+    15px 16px;
+
+    border:none;
+    border-radius:16px;
+
+    background:
+    rgba(255,255,255,.06);
+
+    color:white;
+
+    font-size:.95rem;
+    font-weight:600;
+
+    outline:none;
+
+    cursor:pointer;
+
+    transition:.3s ease;
+}
+
+#mentorSelect:focus{
+
+    box-shadow:
+    0 0 0 4px rgba(108,77,255,.18);
+
+    border:
+    1px solid rgba(139,124,255,.45);
+}
+
+#mentorSelect option{
+
+    background:#0F172A;
+
+    color:white;
+}
+
+#mentorForm{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:16px;
+}

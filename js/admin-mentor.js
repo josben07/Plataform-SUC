@@ -1,371 +1,311 @@
-
 const adminToast =
-    document.querySelector(
-        ".admin-toast"
-    );
+    document.querySelector(".admin-toast");
 
 const adminToastMessage =
-    document.getElementById(
-        "adminToastMessage"
-    );
+    document.getElementById("adminToastMessage");
 
 function showAdminToast(message) {
 
-    if (
-        !adminToast ||
-        !adminToastMessage
-    ) return;
+    if (!adminToast || !adminToastMessage) return;
 
     adminToastMessage.textContent =
         message;
 
-    adminToast.classList.add(
-        "show-toast"
-    );
+    adminToast.classList.add("show-toast");
 
     setTimeout(() => {
-
-        adminToast.classList.remove(
-            "show-toast"
-        );
-
+        adminToast.classList.remove("show-toast");
     }, 3000);
 
 }
 
 const deleteModal =
-    document.querySelector(
-        ".delete-modal"
-    );
+    document.querySelector(".delete-modal");
 
 const confirmDeleteMentor =
-    document.getElementById(
-        "confirmDeleteMentor"
-    );
+    document.getElementById("confirmDeleteMentor");
 
 const cancelDeleteMentor =
-    document.getElementById(
-        "cancelDeleteMentor"
-    );
+    document.getElementById("cancelDeleteMentor");
 
 let deletingMentorId =
     null;
 
 const mentorGrid =
-    document.getElementById(
-        "mentorGrid"
-    );
-
-/* MODAL */
+    document.getElementById("mentorGrid");
 
 const mentorModal =
-    document.querySelector(
-        ".mentor-modal"
-    );
+    document.querySelector(".mentor-modal");
 
 const openMentorModal =
-    document.getElementById(
-        "openMentorModal"
-    );
+    document.getElementById("openMentorModal");
 
 const closeMentorModal =
-    document.querySelector(
-        ".close-mentor-modal"
-    );
-
-/* FORM */
+    document.querySelector(".close-mentor-modal");
 
 const mentorForm =
-    document.getElementById(
-        "mentorForm"
-    );
+    document.getElementById("mentorForm");
 
-/* OPEN */
+const mentorSelect =
+    document.getElementById("mentorSelect");
 
-openMentorModal.addEventListener(
+let mentorsUsers =
+    [];
 
-    "click",
+let editingMentorId =
+    null;
 
-    () => {
+/* LOAD USERS WITH ROLE MENTOR */
 
-        /* RESET */
+async function loadMentorUsers() {
 
-        mentorForm.reset();
+    const response =
+        await fetch(`${API_URL}/api/mentor-profiles`);
 
-        editingMentorId =
-            null;
+    mentorsUsers =
+        await response.json();
 
-        mentorModal.classList.add(
-            "active-modal"
-        );
+    mentorSelect.innerHTML = `
 
-    }
+        <option value="">
+            Seleccionar mentor
+        </option>
 
-);
+    `;
+
+    mentorsUsers.forEach(mentor => {
+
+        mentorSelect.innerHTML += `
+
+            <option value="${mentor.id}">
+                ${mentor.full_name}
+            </option>
+
+        `;
+
+    });
+
+}
+
+/* OPEN MODAL */
+
+openMentorModal.addEventListener("click", () => {
+
+    mentorForm.reset();
+
+    editingMentorId =
+        null;
+
+    mentorModal.classList.add("active-modal");
+
+});
 
 /* CLOSE */
 
-closeMentorModal.addEventListener(
+closeMentorModal.addEventListener("click", () => {
 
-    "click",
+    mentorModal.classList.remove("active-modal");
 
-    () => {
+});
 
-        mentorModal.classList.remove(
-            "active-modal"
-        );
-
-    }
-
-);
-
-/* LOAD */
+/* LOAD MENTOR SESSIONS */
 
 async function loadMentors() {
 
     const response =
-        await fetch(
-
-            `${API_URL}/api/mentor`
-
-        );
+        await fetch(`${API_URL}/api/mentor`);
 
     const mentors =
         await response.json();
 
     mentorGrid.innerHTML = "";
 
-    mentors.forEach(
-
-        (mentor) => {
-
-            mentorGrid.innerHTML += `
-
-                <div class="mentor-card">
-
-                    <h3>
-
-                        ${mentor.session_title}
-
-                    </h3>
-
-                    <p>
-
-                        Mentor:
-                        ${mentor.mentor_name}
-
-                    </p>
-
-                    <p>
-
-                        ${mentor.mentor_specialty}
-
-                    </p>
-
-                    <p>
-
-                        ${mentor.session_date}
-
-                    </p>
-
-                    <p>
-
-                        ${mentor.session_time}
-
-                    </p>
-
-                    <div class="mentor-status">
-
-                        ${mentor.status === "available"
-
-                    ? "Disponible"
-
-                    : mentor.status
-
-                }
-
-                    </div>
-
-                    <div class="mentor-actions">
-
-                        <button
-
-                            class="edit-mentor-btn"
-
-                            onclick="
-                                openEditMentorModal(
-                                    '${mentor.id}',
-                                    '${mentor.mentor_name}',
-                                    '${mentor.mentor_specialty}',
-                                    '${mentor.session_title}',
-                                    '${mentor.session_description || ""}',
-                                    '${mentor.session_date || ""}',
-                                    '${mentor.session_time || ""}',
-                                    '${mentor.meet_link || ""}'
-                                )
-                            "
-                        >
-
-                            Editar
-
-                        </button>
-
-                        <button
-
-                            class="delete-mentor-btn"
-
-                            onclick="
-                                deleteMentor(
-                                    '${mentor.id}'
-                                )
-                            "
-                        >
-
-                            Eliminar
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            `;
-
-        }
-
-    );
-
     if (mentors.length === 0) {
 
         mentorGrid.innerHTML = `
 
-        <div class="empty-state">
+            <div class="empty-state">
 
-            <div class="empty-icon">
+                <div class="empty-icon">
+                    🎓
+                </div>
 
-                🎓
+                <h3>
+                    No hay mentorías
+                </h3>
+
+                <p>
+                    Aún no existen mentorías creadas.
+                </p>
 
             </div>
 
-            <h3>
-
-                No hay mentorías
-
-            </h3>
-
-            <p>
-
-                Aún no existen mentorías creadas.
-
-            </p>
-
-        </div>
-
-    `;
+        `;
 
         return;
 
     }
 
+    mentors.forEach(mentor => {
+
+        mentorGrid.innerHTML += `
+
+            <div class="mentor-card">
+
+                <h3>
+                    ${mentor.session_title}
+                </h3>
+
+                <p>
+                    Mentor:
+                    ${mentor.mentor_name}
+                </p>
+
+                <p>
+                    ${mentor.mentor_specialty || ""}
+                </p>
+
+                <p>
+                    ${mentor.session_date || "Sin fecha"}
+                </p>
+
+                <p>
+                    ${mentor.session_time || "Sin hora"}
+                </p>
+
+                <div class="mentor-status">
+                    ${mentor.status === "available"
+                ? "Disponible"
+                : mentor.status
+            }
+                </div>
+
+                <div class="mentor-actions">
+
+                    <button
+                        class="edit-mentor-btn"
+                        onclick="
+                            openEditMentorModal(
+                                '${mentor.id}',
+                                '${mentor.mentor_id || ""}',
+                                '${mentor.mentor_specialty || ""}',
+                                '${mentor.session_title}',
+                                '${mentor.session_description || ""}',
+                                '${mentor.session_date || ""}',
+                                '${mentor.session_time || ""}',
+                                '${mentor.meet_link || ""}'
+                            )
+                        "
+                    >
+                        Editar
+                    </button>
+
+                    <button
+                        class="delete-mentor-btn"
+                        onclick="deleteMentor('${mentor.id}')"
+                    >
+                        Eliminar
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+    });
+
 }
 
-/* CREATE */
+/* CREATE / UPDATE */
 
-let editingMentorId =
-    null;
+mentorForm.addEventListener("submit", async (e) => {
 
-mentorForm.addEventListener(
+    e.preventDefault();
 
-    "submit",
-
-    async (e) => {
-
-        e.preventDefault();
-
-        const url =
-            editingMentorId
-
-                ? `${API_URL}/api/mentor/${editingMentorId}`
-
-                : `${API_URL}/api/mentor`;
-
-        const method =
-            editingMentorId
-
-                ? "PUT"
-
-                : "POST";
-
-        await fetch(
-
-            url,
-
-            {
-
-                method,
-
-                headers: {
-
-                    "Content-Type":
-                        "application/json"
-
-                },
-
-                body:
-                    JSON.stringify({
-
-                        mentor_name:
-                            mentorName.value,
-
-                        mentor_specialty:
-                            mentorSpecialty.value,
-
-                        session_title:
-                            sessionTitle.value,
-
-                        session_description:
-                            sessionDescription.value,
-
-                        session_date:
-                            sessionDate.value,
-
-                        session_time:
-                            sessionTime.value,
-
-                        meet_link:
-                            meetLink.value
-
-                    })
-
-            }
-
+    const selectedMentor =
+        mentorsUsers.find(
+            mentor => mentor.id === mentorSelect.value
         );
 
-        mentorModal.classList.remove(
-            "active-modal"
-        );
+    if (!selectedMentor) {
 
-        mentorForm.reset();
+        showAdminToast("Selecciona un mentor");
 
-        editingMentorId =
-            null;
-
-        loadMentors();
+        return;
 
     }
 
-);
+    const url =
+        editingMentorId
+            ? `${API_URL}/api/mentor/${editingMentorId}`
+            : `${API_URL}/api/mentor`;
 
-loadMentors();
+    const method =
+        editingMentorId
+            ? "PUT"
+            : "POST";
 
-/* ========================= */
-/* EDIT MENTOR */
-/* ========================= */
+    await fetch(
+        url,
+        {
+            method,
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:
+                JSON.stringify({
+
+                    mentor_id:
+                        selectedMentor.id,
+
+                    mentor_name:
+                        selectedMentor.full_name,
+
+                    mentor_specialty:
+                        mentorSpecialty.value,
+
+                    session_title:
+                        sessionTitle.value,
+
+                    session_description:
+                        sessionDescription.value,
+
+                    session_date:
+                        sessionDate.value,
+
+                    session_time:
+                        sessionTime.value,
+
+                    meet_link:
+                        meetLink.value
+
+                })
+        }
+    );
+
+    mentorModal.classList.remove("active-modal");
+
+    mentorForm.reset();
+
+    editingMentorId =
+        null;
+
+    showAdminToast("Mentoría guardada correctamente");
+
+    loadMentors();
+
+});
+
+/* EDIT */
 
 function openEditMentorModal(
 
     id,
-    mentor_name,
+    mentor_id,
     mentor_specialty,
     session_title,
     session_description,
@@ -375,10 +315,11 @@ function openEditMentorModal(
 
 ) {
 
-    editingMentorId = id;
+    editingMentorId =
+        id;
 
-    mentorName.value =
-        mentor_name;
+    mentorSelect.value =
+        mentor_id;
 
     mentorSpecialty.value =
         mentor_specialty;
@@ -398,73 +339,49 @@ function openEditMentorModal(
     meetLink.value =
         meet_link;
 
-    mentorModal.classList.add(
-        "active-modal"
-    );
+    mentorModal.classList.add("active-modal");
 
 }
 
-/* ========================= */
 /* DELETE */
-/* ========================= */
 
-function deleteMentor(
-
-    mentorId
-
-) {
+function deleteMentor(mentorId) {
 
     deletingMentorId =
         mentorId;
 
-    deleteModal.classList.add(
-        "active-delete-modal"
-    );
+    deleteModal.classList.add("active-delete-modal");
 
 }
 
 /* CONFIRM DELETE */
 
-confirmDeleteMentor.addEventListener(
+confirmDeleteMentor.addEventListener("click", async () => {
 
-    "click",
+    await fetch(
+        `${API_URL}/api/mentor/${deletingMentorId}`,
+        {
+            method: "DELETE"
+        }
+    );
 
-    async () => {
+    deleteModal.classList.remove("active-delete-modal");
 
-        await fetch(
+    showAdminToast("Mentoría eliminada correctamente");
 
-            `${API_URL}/api/mentor/${deletingMentorId}`,
+    loadMentors();
 
-            {
+});
 
-                method: "DELETE"
+/* CANCEL DELETE */
 
-            }
+cancelDeleteMentor.addEventListener("click", () => {
 
-        );
+    deleteModal.classList.remove("active-delete-modal");
 
-        deleteModal.classList.remove(
-            "active-delete-modal"
-        );
+});
 
-        loadMentors();
+/* INIT */
 
-    }
-
-);
-
-/* CANCEL */
-
-cancelDeleteMentor.addEventListener(
-
-    "click",
-
-    () => {
-
-        deleteModal.classList.remove(
-            "active-delete-modal"
-        );
-
-    }
-
-);
+loadMentorUsers();
+loadMentors();

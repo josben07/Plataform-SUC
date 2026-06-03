@@ -48,6 +48,7 @@ const createMentorSession =
 
             const {
 
+                mentor_id,
                 mentor_name,
                 mentor_specialty,
                 session_title,
@@ -63,6 +64,7 @@ const createMentorSession =
                     .from("mentor_sessions")
                     .insert([{
 
+                        mentor_id,
                         mentor_name,
                         mentor_specialty,
                         session_title,

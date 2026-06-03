@@ -151,14 +151,35 @@ body {
 }
 
 .lesson-actions button {
-  height: 54px;
-  padding: 0 26px;
-  border: none;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #6c4dff, #8b7cff);
-  color: white;
-  font-weight: 800;
-  cursor: pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    height:54px;
+
+    padding:0 26px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #6c4dff,
+        #8b7cff
+    );
+
+    color:white;
+
+    font-weight:800;
+
+    cursor:pointer;
 }
 
 /* RESOURCES */
@@ -394,4 +415,166 @@ body {
   background: rgba(108, 77, 255, 0.18);
 
   color: white;
+}
+
+
+/* ========================= */
+/* COURSE WELCOME */
+/* ========================= */
+
+.course-welcome-box{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    min-height:420px;
+
+    padding:40px;
+}
+
+.welcome-icon{
+
+    font-size:4rem;
+
+    margin-bottom:20px;
+
+    animation:
+    floatWelcome 3s ease-in-out infinite;
+}
+
+.course-welcome-box h2{
+
+    font-size:2rem;
+
+    color:white;
+
+    margin-bottom:16px;
+
+    font-weight:800;
+}
+
+.course-welcome-box p{
+
+    max-width:650px;
+
+    color:
+    rgba(255,255,255,.72);
+
+    line-height:1.8;
+
+    margin-bottom:28px;
+
+    font-size:1rem;
+}
+
+.welcome-progress{
+
+    width:100%;
+
+    max-width:500px;
+
+    margin-bottom:32px;
+}
+
+.welcome-progress-info{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:10px;
+
+    color:white;
+
+    font-weight:700;
+}
+
+.welcome-progress-bar{
+
+    height:12px;
+
+    border-radius:999px;
+
+    overflow:hidden;
+
+    background:
+    rgba(255,255,255,.08);
+}
+
+.welcome-progress-fill{
+
+    height:100%;
+
+    border-radius:999px;
+
+    background:
+    linear-gradient(
+        90deg,
+        #6C4DFF,
+        #8B7CFF
+    );
+
+    transition:.4s ease;
+}
+
+.welcome-start-btn{
+
+    border:none;
+
+    padding:
+    15px 28px;
+
+    border-radius:16px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #6C4DFF,
+        #8B7CFF
+    );
+
+    color:white;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.3s ease;
+
+    box-shadow:
+    0 12px 35px rgba(108,77,255,.35);
+}
+
+.welcome-start-btn:hover{
+
+    transform:
+    translateY(-3px);
+
+    box-shadow:
+    0 20px 40px rgba(108,77,255,.45);
+}
+
+@keyframes floatWelcome{
+
+    0%{
+        transform:
+        translateY(0px);
+    }
+
+    50%{
+        transform:
+        translateY(-8px);
+    }
+
+    100%{
+        transform:
+        translateY(0px);
+    }
 }
