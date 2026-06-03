@@ -151,35 +151,29 @@ body {
 }
 
 .lesson-actions button {
+  display: flex;
 
-    display:flex;
+  align-items: center;
 
-    align-items:center;
+  justify-content: center;
 
-    justify-content:center;
+  text-align: center;
 
-    text-align:center;
+  height: 54px;
 
-    height:54px;
+  padding: 0 26px;
 
-    padding:0 26px;
+  border: none;
 
-    border:none;
+  border-radius: 16px;
 
-    border-radius:16px;
+  background: linear-gradient(135deg, #6c4dff, #8b7cff);
 
-    background:
-    linear-gradient(
-        135deg,
-        #6c4dff,
-        #8b7cff
-    );
+  color: white;
 
-    color:white;
+  font-weight: 800;
 
-    font-weight:800;
-
-    cursor:pointer;
+  cursor: pointer;
 }
 
 /* RESOURCES */
@@ -417,164 +411,132 @@ body {
   color: white;
 }
 
-
 /* ========================= */
 /* COURSE WELCOME */
 /* ========================= */
 
-.course-welcome-box{
+.course-welcome-box {
+  display: flex;
 
-    display:flex;
+  flex-direction: column;
 
-    flex-direction:column;
+  align-items: center;
 
-    align-items:center;
+  justify-content: center;
 
-    justify-content:center;
+  text-align: center;
 
-    text-align:center;
+  min-height: 420px;
 
-    min-height:420px;
-
-    padding:40px;
+  padding: 40px;
 }
 
-.welcome-icon{
+.welcome-icon {
+  font-size: 4rem;
 
-    font-size:4rem;
+  margin-bottom: 20px;
 
-    margin-bottom:20px;
-
-    animation:
-    floatWelcome 3s ease-in-out infinite;
+  animation: floatWelcome 3s ease-in-out infinite;
 }
 
-.course-welcome-box h2{
+.course-welcome-box h2 {
+  font-size: 2rem;
 
-    font-size:2rem;
+  color: white;
 
-    color:white;
+  margin-bottom: 16px;
 
-    margin-bottom:16px;
-
-    font-weight:800;
+  font-weight: 800;
 }
 
-.course-welcome-box p{
+.course-welcome-box p {
+  max-width: 650px;
 
-    max-width:650px;
+  color: rgba(255, 255, 255, 0.72);
 
-    color:
-    rgba(255,255,255,.72);
+  line-height: 1.8;
 
-    line-height:1.8;
+  margin-bottom: 28px;
 
-    margin-bottom:28px;
-
-    font-size:1rem;
+  font-size: 1rem;
 }
 
-.welcome-progress{
+.welcome-progress {
+  width: 100%;
 
-    width:100%;
+  max-width: 500px;
 
-    max-width:500px;
-
-    margin-bottom:32px;
+  margin-bottom: 32px;
 }
 
-.welcome-progress-info{
+.welcome-progress-info {
+  display: flex;
 
-    display:flex;
+  justify-content: space-between;
 
-    justify-content:space-between;
+  margin-bottom: 10px;
 
-    margin-bottom:10px;
+  color: white;
 
-    color:white;
-
-    font-weight:700;
+  font-weight: 700;
 }
 
-.welcome-progress-bar{
+.welcome-progress-bar {
+  height: 12px;
 
-    height:12px;
+  border-radius: 999px;
 
-    border-radius:999px;
+  overflow: hidden;
 
-    overflow:hidden;
-
-    background:
-    rgba(255,255,255,.08);
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.welcome-progress-fill{
+.welcome-progress-fill {
+  height: 100%;
 
-    height:100%;
+  border-radius: 999px;
 
-    border-radius:999px;
+  background: linear-gradient(90deg, #6c4dff, #8b7cff);
 
-    background:
-    linear-gradient(
-        90deg,
-        #6C4DFF,
-        #8B7CFF
-    );
-
-    transition:.4s ease;
+  transition: 0.4s ease;
 }
 
-.welcome-start-btn{
+.welcome-start-btn {
+  border: none;
 
-    border:none;
+  padding: 15px 28px;
 
-    padding:
-    15px 28px;
+  border-radius: 16px;
 
-    border-radius:16px;
+  background: linear-gradient(135deg, #6c4dff, #8b7cff);
 
-    background:
-    linear-gradient(
-        135deg,
-        #6C4DFF,
-        #8B7CFF
-    );
+  color: white;
 
-    color:white;
+  font-weight: 700;
 
-    font-weight:700;
+  cursor: pointer;
 
-    cursor:pointer;
+  transition: 0.3s ease;
 
-    transition:.3s ease;
-
-    box-shadow:
-    0 12px 35px rgba(108,77,255,.35);
+  box-shadow: 0 12px 35px rgba(108, 77, 255, 0.35);
 }
 
-.welcome-start-btn:hover{
+.welcome-start-btn:hover {
+  transform: translateY(-3px);
 
-    transform:
-    translateY(-3px);
-
-    box-shadow:
-    0 20px 40px rgba(108,77,255,.45);
+  box-shadow: 0 20px 40px rgba(108, 77, 255, 0.45);
 }
 
-@keyframes floatWelcome{
+@keyframes floatWelcome {
+  0% {
+    transform: translateY(0px);
+  }
 
-    0%{
-        transform:
-        translateY(0px);
-    }
+  50% {
+    transform: translateY(-8px);
+  }
 
-    50%{
-        transform:
-        translateY(-8px);
-    }
-
-    100%{
-        transform:
-        translateY(0px);
-    }
+  100% {
+    transform: translateY(0px);
+  }
 }
