@@ -541,162 +541,146 @@ body {
   }
 }
 
-.locked-lesson{
+.locked-lesson {
+  opacity: 0.45;
 
-    opacity:.45;
+  cursor: not-allowed;
 
-    cursor:not-allowed;
-
-    filter:grayscale(.4);
+  filter: grayscale(0.4);
 }
 
-.locked-lesson:hover{
+.locked-lesson:hover {
+  transform: none !important;
 
-    transform:none !important;
-
-    background:rgba(255,255,255,.04) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
 }
 
-.lesson-lock{
+.lesson-lock {
+  margin-left: auto;
 
-    margin-left:auto;
+  font-size: 0.9rem;
 
-    font-size:.9rem;
-
-    opacity:.8;
+  opacity: 0.8;
 }
 
 /* ========================= */
 /* LESSON PROJECT PANEL */
 /* ========================= */
 
-.lesson-project-panel{
-    margin-top:28px;
-    background:#0F172A;
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:28px;
-    padding:30px;
+.lesson-project-panel {
+  margin-top: 28px;
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  padding: 30px;
 }
 
-.lesson-project-panel h3{
-    color:white;
-    margin-bottom:10px;
+.lesson-project-panel h3 {
+  color: white;
+  margin-bottom: 10px;
 }
 
-.lesson-project-panel p{
-    color:rgba(255,255,255,.62);
-    line-height:1.7;
-    margin-bottom:20px;
+.lesson-project-panel p {
+  color: rgba(255, 255, 255, 0.62);
+  line-height: 1.7;
+  margin-bottom: 20px;
 }
 
-#lessonProjectForm{
-    display:flex;
-    flex-direction:column;
-    gap:14px;
+#lessonProjectForm {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 #lessonProjectForm input,
-#lessonProjectForm textarea{
-    width:100%;
-    border:none;
-    border-radius:16px;
-    padding:16px 18px;
-    background:rgba(255,255,255,.05);
-    color:white;
-    outline:none;
+#lessonProjectForm textarea {
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  outline: none;
 }
 
-#lessonProjectForm textarea{
-    min-height:110px;
-    resize:none;
+#lessonProjectForm textarea {
+  min-height: 110px;
+  resize: none;
 }
 
 #lessonProjectForm input:focus,
-#lessonProjectForm textarea:focus{
-    box-shadow:0 0 0 4px rgba(108,77,255,.16);
+#lessonProjectForm textarea:focus {
+  box-shadow: 0 0 0 4px rgba(108, 77, 255, 0.16);
 }
 
-#lessonProjectForm button{
-    align-self:flex-end;
-    height:48px;
-    padding:0 24px;
-    border:none;
-    border-radius:14px;
-    background:linear-gradient(135deg,#6C4DFF,#8B7CFF);
-    color:white;
-    font-weight:800;
-    cursor:pointer;
+#lessonProjectForm button {
+  align-self: flex-end;
+  height: 48px;
+  padding: 0 24px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #6c4dff, #8b7cff);
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 /* ========================= */
 /* APP TOAST */
 /* ========================= */
 
-.app-toast{
+.app-toast {
+  position: fixed;
 
-    position:fixed;
+  top: 28px;
+  right: 28px;
 
-    top:28px;
-    right:28px;
+  min-width: 320px;
+  max-width: 420px;
 
-    min-width:320px;
-    max-width:420px;
+  padding: 18px 22px;
 
-    padding:18px 22px;
+  background: linear-gradient(135deg, #111827, #1e293b);
 
-    background:
-    linear-gradient(
-        135deg,
-        #111827,
-        #1E293B
-    );
+  color: white;
 
-    color:white;
+  border: 1px solid rgba(139, 124, 255, 0.28);
 
-    border:
-    1px solid rgba(139,124,255,.28);
+  border-left: 5px solid #8b7cff;
 
-    border-left:
-    5px solid #8B7CFF;
+  border-radius: 18px;
 
-    border-radius:18px;
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.45),
+    0 0 35px rgba(108, 77, 255, 0.18);
 
-    box-shadow:
-    0 24px 70px rgba(0,0,0,.45),
-    0 0 35px rgba(108,77,255,.18);
+  font-weight: 800;
 
-    font-weight:800;
+  z-index: 999999;
 
-    z-index:999999;
+  opacity: 0;
 
-    opacity:0;
+  visibility: hidden;
 
-    visibility:hidden;
+  transform: translateY(-18px);
 
-    transform:
-    translateY(-18px);
+  pointer-events: none;
 
-    pointer-events:none;
-
-    transition:
-    .3s ease;
+  transition: 0.3s ease;
 }
 
-.app-toast.show-toast{
+.app-toast.show-toast {
+  opacity: 1;
 
-    opacity:1;
+  visibility: visible;
 
-    visibility:visible;
-
-    transform:
-    translateY(0);
+  transform: translateY(0);
 }
 
-#appToastMessage{
+#appToastMessage {
+  display: block;
 
-    display:block;
+  line-height: 1.5;
 
-    line-height:1.5;
-
-    font-size:.95rem;
+  font-size: 0.95rem;
 }
