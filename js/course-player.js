@@ -1,3 +1,15 @@
+const lessonProjectForm =
+    document.getElementById("lessonProjectForm");
+
+const lessonProjectTitle =
+    document.getElementById("lessonProjectTitle");
+
+const lessonProjectDescription =
+    document.getElementById("lessonProjectDescription");
+
+const lessonProjectUrl =
+    document.getElementById("lessonProjectUrl");
+
 const commentForm =
     document.getElementById("commentForm");
 
@@ -55,6 +67,9 @@ const resourcesPanel =
 const commentsPanel =
     document.querySelector(".comments-panel");
 
+const lessonProjectPanel =
+    document.querySelector(".lesson-project-panel");
+
 let allModulesData =
     [];
 
@@ -66,6 +81,47 @@ let currentLessonId =
 
 let completedLessons =
     [];
+let unlockedLessonIds =
+    [];
+let currentCourseRelation =
+    null;
+
+
+async function validateCourseAccess() {
+
+    const response =
+        await fetch(
+            `${API_URL}/api/student-courses/${user.id}`
+        );
+
+    const studentCourses =
+        await response.json();
+
+    currentCourseRelation =
+        studentCourses.find(
+            item =>
+                item.course_id === courseId
+        );
+
+    if (
+        !currentCourseRelation ||
+        currentCourseRelation.status === "Bloqueado"
+    ) {
+
+        showCourseMessage(
+            "Ya tienes un curso en progreso. Completa el actual para acceder a otros."
+        );
+
+        window.location.href =
+            "./dashboard.html";
+
+        return false;
+
+    }
+
+    return true;
+
+}
 
 /* LOAD COURSE */
 
@@ -87,6 +143,45 @@ async function loadCourse() {
 
         courseDescription.textContent =
             course.description || "";
+
+    }
+
+}
+
+function calculateUnlockedLessons() {
+
+    unlockedLessonIds =
+        [];
+
+    if (allLessonsData.length === 0) {
+
+        return;
+
+    }
+
+    unlockedLessonIds.push(
+        allLessonsData[0].id
+    );
+
+    for (let i = 0; i < allLessonsData.length; i++) {
+
+        const lesson =
+            allLessonsData[i];
+
+        const isCompleted =
+            completedLessons.some(
+                item =>
+                    item.lesson_id === lesson.id &&
+                    item.completed === true
+            );
+
+        if (isCompleted && allLessonsData[i + 1]) {
+
+            unlockedLessonIds.push(
+                allLessonsData[i + 1].id
+            );
+
+        }
 
     }
 
@@ -159,11 +254,12 @@ async function loadLessons(moduleId, moduleIndex) {
 
         container.innerHTML += `
 
-    <button
-        class="player-lesson"
-        id="lesson-${lesson.id}"
-        onclick='openLesson(${JSON.stringify(lesson)})'
-    >
+<button
+    class="player-lesson"
+    id="lesson-${lesson.id}"
+    data-lesson-id="${lesson.id}"
+    onclick='handleLessonClick(${JSON.stringify(lesson)})'
+>
         <span>
             ${moduleIndex + 1}.${index}
         </span>
@@ -174,6 +270,85 @@ async function loadLessons(moduleId, moduleIndex) {
 `;
 
     });
+
+}
+
+async function validateLessonRequirements() {
+
+    const mentorsResponse =
+        await fetch(
+            `${API_URL}/api/student-mentors/${user.id}`
+        );
+
+    const mentors =
+        await mentorsResponse.json();
+
+    const hasMentor =
+        mentors.some(
+            item => item.course_id === courseId
+        );
+
+    if (!hasMentor) {
+
+        showCourseMessage(
+            "Debes seleccionar un mentor antes de completar esta clase."
+        );
+
+        return false;
+
+    }
+
+    const paymentsResponse =
+        await fetch(
+            `${API_URL}/api/payments`
+        );
+
+    const payments =
+        await paymentsResponse.json();
+
+    const hasApprovedPayment =
+        payments.some(payment =>
+            payment.student_id === user.id &&
+            payment.course_id === courseId &&
+            payment.status === "aprobado"
+        );
+
+    if (!hasApprovedPayment) {
+
+        showCourseMessage(
+            "Debes realizar el pago antes de completar esta clase."
+        );
+
+        return false;
+
+    }
+
+    const projectsResponse =
+        await fetch(
+            `${API_URL}/api/projects`
+        );
+
+    const projects =
+        await projectsResponse.json();
+
+    const hasProject =
+        projects.some(project =>
+            project.user_id === user.id &&
+            project.course_id === courseId &&
+            project.lesson_id === currentLessonId
+        );
+
+    if (!hasProject) {
+
+        showCourseMessage(
+            "Debes subir el entregable de esta clase antes de completarla."
+        );
+
+        return false;
+
+    }
+
+    return true;
 
 }
 
@@ -427,6 +602,15 @@ completeLessonBtn.addEventListener(
 
         }
 
+        const canComplete =
+            await validateLessonRequirements();
+
+        if (!canComplete) {
+
+            return;
+
+        }
+
         await fetch(
             `${API_URL}/api/progress/complete`,
             {
@@ -452,6 +636,7 @@ completeLessonBtn.addEventListener(
         );
 
         await loadProgress();
+        refreshLessonLocks();
 
         completeLessonBtn.textContent =
             "Clase completada";
@@ -665,6 +850,11 @@ function showWelcomeView() {
             "none";
     }
 
+    if (lessonProjectPanel) {
+        lessonProjectPanel.style.display =
+            "none";
+    }
+
     const completedCount =
         completedLessons.filter(
             item => item.completed === true
@@ -746,6 +936,11 @@ function showLessonView() {
             "block";
     }
 
+    if (lessonProjectPanel) {
+        lessonProjectPanel.style.display =
+            "block";
+    }
+
     if (commentsPanel) {
         commentsPanel.style.display =
             "block";
@@ -767,9 +962,180 @@ function startFirstLesson() {
 
 }
 
+function refreshLessonLocks() {
+
+    calculateUnlockedLessons();
+
+    document
+        .querySelectorAll(".player-lesson")
+        .forEach(button => {
+
+            const lessonId =
+                button.dataset.lessonId;
+
+            const isUnlocked =
+                unlockedLessonIds.includes(
+                    lessonId
+                );
+
+            button.classList.toggle(
+                "locked-lesson",
+                !isUnlocked
+            );
+
+            const existingLock =
+                button.querySelector(".lesson-lock");
+
+            if (existingLock) {
+
+                existingLock.remove();
+
+            }
+
+            if (!isUnlocked) {
+
+                button.innerHTML += `
+        <small class="lesson-lock">
+            🔒
+        </small>
+    `;
+
+            }
+
+        });
+
+}
+
+function handleLessonClick(lesson) {
+
+    const isUnlocked =
+        unlockedLessonIds.includes(
+            lesson.id
+        );
+
+    if (!isUnlocked) {
+
+        showCourseMessage(
+            "Esta clase está bloqueada. Completa la clase anterior para desbloquearla."
+        );
+
+        return;
+
+    }
+
+    openLesson(lesson);
+
+}
+
+function showCourseMessage(message) {
+
+    const toast =
+        document.querySelector(".app-toast");
+
+    const toastMessage =
+        document.getElementById("appToastMessage");
+
+    if (!toast || !toastMessage) {
+
+        alert(message);
+        return;
+
+    }
+
+    toastMessage.textContent =
+        message;
+
+    toast.classList.add(
+        "show-toast"
+    );
+
+    setTimeout(() => {
+
+        toast.classList.remove(
+            "show-toast"
+        );
+
+    }, 3000);
+
+}
+
+lessonProjectForm.addEventListener(
+    "submit",
+    async (e) => {
+
+        e.preventDefault();
+
+        if (!currentLessonId) {
+
+            showCourseMessage(
+                "Selecciona una clase antes de enviar un entregable."
+            );
+
+            return;
+
+        }
+
+        await fetch(
+            `${API_URL}/api/projects`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify({
+
+                        user_id:
+                            user.id,
+
+                        course_id:
+                            courseId,
+
+                        lesson_id:
+                            currentLessonId,
+
+                        title:
+                            lessonProjectTitle.value,
+
+                        description:
+                            lessonProjectDescription.value,
+
+                        project_url:
+                            lessonProjectUrl.value,
+
+                        status:
+                            "pending"
+
+                    })
+            }
+        );
+
+        lessonProjectForm.reset();
+
+        showCourseMessage(
+            "Entregable enviado correctamente."
+        );
+        
+        refreshLessonLocks();
+
+    }
+);
+
 /* INIT */
 
 async function initCoursePlayer() {
+
+    const canAccess =
+        await validateCourseAccess();
+
+    if (!canAccess) {
+
+        return;
+
+    }
 
     await loadCourse();
 
@@ -778,6 +1144,8 @@ async function initCoursePlayer() {
     await loadModules();
 
     setTimeout(() => {
+
+        refreshLessonLocks();
 
         showWelcomeView();
 

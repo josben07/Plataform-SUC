@@ -169,9 +169,122 @@ const buyCourse =
 
     };
 
+/* ENROLL COURSE */
+
+const enrollCourse =
+    async (req, res) => {
+
+        try {
+
+            const {
+                student_id,
+                course_id,
+                course_name
+            } = req.body;
+
+            /* VERIFY ACTIVE COURSE */
+
+            const {
+                data: activeCourse
+            } =
+                await supabase
+                    .from("student_courses")
+                    .select("*")
+                    .eq("student_id", student_id)
+                    .eq("status", "Activo")
+                    .single();
+
+            if (activeCourse) {
+
+                return res.status(400).json({
+                    error:
+                        "Ya tienes un curso en progreso. Completa el actual para acceder a otros."
+                });
+
+            }
+
+            /* VERIFY EXISTING RELATION */
+
+            const {
+                data: existing
+            } =
+                await supabase
+                    .from("student_courses")
+                    .select("*")
+                    .eq("student_id", student_id)
+                    .eq("course_id", course_id)
+                    .single();
+
+            if (existing) {
+
+                const { data, error } =
+                    await supabase
+                        .from("student_courses")
+                        .update({
+                            status:
+                                "Activo",
+
+                            unlocked:
+                                true,
+
+                            course_name
+                        })
+                        .eq("id", existing.id)
+                        .select()
+                        .single();
+
+                if (error) {
+
+                    return res.status(400).json(error);
+
+                }
+
+                return res.json(data);
+
+            }
+
+            /* CREATE ACTIVE COURSE */
+
+            const { data, error } =
+                await supabase
+                    .from("student_courses")
+                    .insert([{
+                        student_id,
+                        course_id,
+                        course_name,
+                        status:
+                            "Activo",
+                        unlocked:
+                            true,
+                        progress:
+                            0
+                    }])
+                    .select()
+                    .single();
+
+            if (error) {
+
+                return res.status(400).json(error);
+
+            }
+
+            res.json(data);
+
+        } catch (err) {
+
+            res.status(500).json({
+                error:
+                    err.message
+            });
+
+        }
+
+    };
+
 module.exports = {
 
     getStudentCourses,
-    buyCourse
+    buyCourse,
+    enrollCourse
 
 };

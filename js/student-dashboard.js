@@ -1,9 +1,3 @@
-
-const progressText =
-    document.querySelector(
-        ".student-stat-card h2:nth-of-type(3)"
-    );
-
 const token =
     localStorage.getItem("token");
 
@@ -12,14 +6,7 @@ const user =
         localStorage.getItem("user")
     );
 
-if (!token || !user) {
-
-    window.location.href =
-        "../login.html";
-
-}
-
-if (user.role !== "student") {
+if (!token || !user || user.role !== "student") {
 
     window.location.href =
         "../login.html";
@@ -49,19 +36,53 @@ document.getElementById("logoutBtn").addEventListener(
     }
 );
 
-/* LOAD COURSES */
+/* ELEMENTS */
 
 const studentCoursesGrid =
     document.getElementById("studentCoursesGrid");
+
 let studentFilter =
     "all";
+
 let selectedCategory =
     "all";
+
+let selectedEnrollCourse =
+    null;
+
+/* TOAST */
+
+function showStudentToast(message) {
+
+    const toast =
+        document.querySelector(".app-toast");
+
+    const toastMessage =
+        document.getElementById("appToastMessage");
+
+    if (!toast || !toastMessage) return;
+
+    toastMessage.textContent =
+        message;
+
+    toast.classList.add("show-toast");
+
+    setTimeout(() => {
+
+        toast.classList.remove("show-toast");
+
+    }, 3000);
+
+}
+
+/* LOAD COURSES */
 
 async function loadStudentCourses() {
 
     const response =
-        await fetch(`${API_URL}/api/courses`);
+        await fetch(
+            `${API_URL}/api/courses`
+        );
 
     const courses =
         await response.json();
@@ -76,14 +97,21 @@ async function loadStudentCourses() {
     const studentCourses =
         await studentResponse.json();
 
-    const unlockedIds =
-        studentCourses
-            .filter(item => item.unlocked === true)
-            .map(item => item.course_id);
+    const activeCourse =
+        studentCourses.find(
+            item => item.status === "Activo"
+        );
+
+    const studentCourseMap =
+        new Map(
+            studentCourses.map(item => [
+                item.course_id,
+                item
+            ])
+        );
 
     let filteredCourses =
-        courses;
-
+        [...courses];
 
     if (selectedCategory !== "all") {
 
@@ -104,29 +132,16 @@ async function loadStudentCourses() {
         filteredCourses =
             courses.filter(course => {
 
-                const isCourseLocked =
-                    course.is_locked === true;
+                const relation =
+                    studentCourseMap.get(course.id);
 
-                const isPaidUnlocked =
-                    unlockedIds.includes(course.id);
-
-                return !isCourseLocked || isPaidUnlocked;
+                return relation &&
+                    (
+                        relation.status === "Activo" ||
+                        relation.status === "Completed"
+                    );
 
             });
-
-    }
-
-    if (selectedCategory !== "all") {
-
-        filteredCourses =
-            filteredCourses.filter(course =>
-                (course.category || "")
-                    .toLowerCase()
-                    .trim() ===
-                selectedCategory
-                    .toLowerCase()
-                    .trim()
-            );
 
     }
 
@@ -135,89 +150,144 @@ async function loadStudentCourses() {
         filteredCourses =
             courses.filter(course => {
 
-                const isCourseLocked =
-                    course.is_locked === true;
+                if (!activeCourse) return false;
 
-                const isPaidUnlocked =
-                    unlockedIds.includes(course.id);
-
-                return isCourseLocked && !isPaidUnlocked;
+                return course.id !== activeCourse.course_id;
 
             });
 
     }
 
-    const availableCourses =
-        courses.filter(course => {
+    const availableCount =
+        activeCourse
+            ? 0
+            : courses.length;
 
-            const isCourseLocked =
-                course.is_locked === true;
-
-            const isPaidUnlocked =
-                unlockedIds.includes(course.id);
-
-            return !isCourseLocked || isPaidUnlocked;
-
-        });
-
-    const lockedCourses =
-        courses.filter(course => {
-
-            const isCourseLocked =
-                course.is_locked === true;
-
-            const isPaidUnlocked =
-                unlockedIds.includes(course.id);
-
-            return isCourseLocked && !isPaidUnlocked;
-
-        });
+    const lockedCount =
+        activeCourse
+            ? courses.filter(
+                course =>
+                    course.id !== activeCourse.course_id
+            ).length
+            : 0;
 
     document.getElementById("availableCourses").textContent =
-        availableCourses.length;
+        availableCount;
 
     document.getElementById("lockedCourses").textContent =
-        lockedCourses.length;
+        lockedCount;
 
-    studentCoursesGrid.innerHTML = "";
+    studentCoursesGrid.innerHTML =
+        "";
+
+    if (filteredCourses.length === 0) {
+
+        studentCoursesGrid.innerHTML = `
+
+            <div class="empty-state">
+
+                <h3>
+                    No hay cursos para mostrar
+                </h3>
+
+                <p>
+                    Prueba con otro filtro o categoría.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
 
     filteredCourses.forEach(course => {
 
-        const isCourseLocked =
-            course.is_locked === true;
+        const relation =
+            studentCourseMap.get(course.id);
 
-        const isPaidUnlocked =
-            unlockedIds.includes(course.id);
+        let courseStatus =
+            "Disponible";
 
-        const canAccess =
-            !isCourseLocked || isPaidUnlocked;
+        if (relation && relation.status) {
+
+            courseStatus =
+                relation.status;
+
+        }
+
+        if (
+            activeCourse &&
+            course.id !== activeCourse.course_id &&
+            courseStatus !== "Completed"
+        ) {
+
+            courseStatus =
+                "Bloqueado";
+
+        }
+
+        const isActive =
+            courseStatus === "Activo";
+
+        const isCompleted =
+            courseStatus === "Completed";
+
+        const isBlocked =
+            courseStatus === "Bloqueado";
+
+        const isAvailable =
+            courseStatus === "Disponible";
 
         studentCoursesGrid.innerHTML += `
 
-            <div class="student-course-card ${!canAccess ? "locked-course" : ""}">
+            <div class="
+                student-course-card
+                ${isBlocked ? "locked-course" : ""}
+            ">
 
                 <img
-                    src="${course.thumbnail || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3"}"
+                    src="${course.thumbnail ||
+            "https://images.unsplash.com/photo-1516321318423-f06f85e504b3"
+            }"
+                    alt="${course.title}"
                 >
 
                 <div class="student-course-info">
 
-                    <span>${course.category || "Curso"}</span>
+                    <span>
+                        ${course.category || "Curso"}
+                    </span>
 
-                    <h3>${course.title}</h3>
+                    <h3>
+                        ${course.title}
+                    </h3>
 
-                    <p>${course.description || ""}</p>
+                    <p>
+                        ${course.description || ""}
+                    </p>
+
+                    <div class="student-course-status ${courseStatus.toLowerCase()}">
+                        ${courseStatus}
+                    </div>
 
                     <button
-                        class="student-course-btn ${!canAccess ? "locked-btn" : ""}"
-                        onclick="${canAccess
-                ? `window.location.href='./course-player.html?id=${course.id}'`
-                : `buyCourse('${course.id}','${course.title}')`
+                        class="student-course-btn ${isBlocked ? "locked-btn" : ""}"
+                        onclick="${isActive || isCompleted
+                ? `handleCourseAccess('${course.id}')`
+                : isAvailable
+                    ? `openEnrollModal('${course.id}','${course.title}')`
+                    : `showStudentToast('Ya tienes un curso en progreso. Completa el actual para acceder a otros.')`
             }"
                     >
-                        ${canAccess
+                        ${isActive
                 ? "Continuar"
-                : "Comprar curso"
+                : isCompleted
+                    ? "Ver curso"
+                    : isAvailable
+                        ? "Inscribirme"
+                        : "Bloqueado"
             }
                     </button>
 
@@ -231,33 +301,42 @@ async function loadStudentCourses() {
 
 }
 
-function showStudentToast(message) {
+/* ENROLL MODAL */
 
-    alert(message);
+function openEnrollModal(courseId, courseName) {
+
+    selectedEnrollCourse = {
+        id: courseId,
+        name: courseName
+    };
+
+    document
+        .querySelector(".enroll-modal")
+        .classList.add("active-modal");
 
 }
 
-async function buyCourse(
+function closeEnrollModal() {
 
-    courseId,
-    courseName
+    document
+        .querySelector(".enroll-modal")
+        .classList.remove("active-modal");
 
-) {
+}
+
+async function confirmEnrollCourse() {
+
+    if (!selectedEnrollCourse) return;
 
     const response =
         await fetch(
-
-            `${API_URL}/api/student-courses/buy`,
-
+            `${API_URL}/api/student-courses/enroll`,
             {
-
                 method: "POST",
 
                 headers: {
-
                     "Content-Type":
                         "application/json"
-
                 },
 
                 body:
@@ -266,33 +345,26 @@ async function buyCourse(
                         student_id:
                             user.id,
 
-                        student_name:
-                            user.full_name,
-
                         course_id:
-                            courseId,
+                            selectedEnrollCourse.id,
 
                         course_name:
-                            courseName
+                            selectedEnrollCourse.name
 
                     })
-
             }
-
         );
 
     const result =
         await response.json();
 
-    console.log(result);
+    closeEnrollModal();
 
     if (!response.ok) {
 
         showStudentToast(
-
             result.error ||
-            "No se pudo solicitar el curso"
-
+            "No se pudo inscribir al curso"
         );
 
         return;
@@ -300,16 +372,52 @@ async function buyCourse(
     }
 
     showStudentToast(
-
-        "Solicitud enviada al administrador"
-
+        "Curso inscrito correctamente"
     );
+
+    selectedEnrollCourse =
+        null;
 
     loadStudentCourses();
 
 }
 
-/* LOAD STUDENT STATS */
+/* ACCESS COURSE */
+
+async function handleCourseAccess(courseId) {
+
+    const response =
+        await fetch(
+            `${API_URL}/api/student-courses/${user.id}`
+        );
+
+    const studentCourses =
+        await response.json();
+
+    const activeCourse =
+        studentCourses.find(
+            item => item.status === "Activo"
+        );
+
+    if (
+        activeCourse &&
+        activeCourse.course_id !== courseId
+    ) {
+
+        showStudentToast(
+            "Ya tienes un curso en progreso. Completa el actual para acceder a otros."
+        );
+
+        return;
+
+    }
+
+    window.location.href =
+        `./course-player.html?id=${courseId}`;
+
+}
+
+/* STATS */
 
 async function loadStudentStats() {
 
@@ -325,6 +433,8 @@ async function loadStudentStats() {
         `${stats.progress}%`;
 
 }
+
+/* FILTERS */
 
 function changeStudentFilter(filter, element) {
 
@@ -348,6 +458,8 @@ function changeStudentFilter(filter, element) {
     loadStudentCourses();
 
 }
+
+/* CATEGORY PANEL */
 
 function openCategoryPanel() {
 
@@ -407,7 +519,8 @@ function renderCategoryPanel(courses) {
             ...courseCategories
         ])];
 
-    categoryList.innerHTML = "";
+    categoryList.innerHTML =
+        "";
 
     categories.forEach(category => {
 
@@ -431,36 +544,7 @@ function renderCategoryPanel(courses) {
 
 }
 
-
-function openCategoryPanel() {
-
-    document
-        .getElementById("categoryPanel")
-        .classList.add("active-category-panel");
-
-}
-
-function closeCategoryPanel() {
-
-    document
-        .getElementById("categoryPanel")
-        .classList.remove("active-category-panel");
-
-}
-
-function filterByCategory(category) {
-
-    selectedCategory =
-        category;
-
-    studentFilter =
-        "all";
-
-    closeCategoryPanel();
-
-    loadStudentCourses();
-
-}
+/* INIT */  
 
 loadStudentStats();
 

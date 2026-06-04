@@ -7,7 +7,8 @@ const router =
 const {
 
     getStudentCourses,
-    buyCourse
+    buyCourse,
+    enrollCourse
 
 } = require(
     "../controllers/student-courses.controller"
@@ -29,3 +30,9 @@ router.post(
 
 module.exports =
     router;
+
+/* ENROLL */
+router.post(
+    "/enroll",
+    enrollCourse
+);

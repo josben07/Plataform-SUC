@@ -18,6 +18,13 @@ async function loadMyCourses() {
     const studentCourses =
         await studentResponse.json();
 
+    const visibleStudentCourses =
+        studentCourses.filter(
+            relation =>
+                relation.status === "Activo" ||
+                relation.status === "Completed"
+        );
+
     const courseResponse =
         await fetch(
             `${API_URL}/api/courses`
@@ -44,18 +51,18 @@ async function loadMyCourses() {
 
     myCoursesGrid.innerHTML = "";
 
-    if (studentCourses.length === 0) {
+    if (visibleStudentCourses.length === 0) {
 
         myCoursesGrid.innerHTML = `
 
             <div class="empty-state">
 
                 <h3>
-                    Aún no tienes cursos solicitados
+                    Aún no tienes cursos activos
                 </h3>
 
                 <p>
-                    Compra un curso desde el dashboard para empezar.
+                    Inscríbete en un curso desde el dashboard para empezar.
                 </p>
 
             </div>
@@ -65,7 +72,7 @@ async function loadMyCourses() {
         return;
     }
 
-    for (const relation of studentCourses) {
+    for (const relation of visibleStudentCourses) {
 
         const course =
             courses.find(
@@ -76,8 +83,14 @@ async function loadMyCourses() {
             continue;
         }
 
-        const isUnlocked =
-            relation.unlocked === true;
+        const courseStatus =
+            relation.status || "Disponible";
+
+        const isActive =
+            courseStatus === "Activo";
+
+        const isCompleted =
+            courseStatus === "Completed";
 
         const assignedMentor =
             assignedMentors.find(
@@ -95,9 +108,10 @@ async function loadMyCourses() {
                 :
                 null;
 
-        let progressPercent = 0;
+        let progressPercent =
+            Number(relation.progress || 0);
 
-        if (isUnlocked) {
+        if (progressPercent === 0) {
 
             const progressResponse =
                 await fetch(
@@ -124,7 +138,7 @@ async function loadMyCourses() {
 
             <div class="
                 my-course-card
-                ${!isUnlocked ? "pending-course" : ""}
+                ${isCompleted ? "completed-course" : ""}
             ">
 
                 <img
@@ -146,12 +160,15 @@ async function loadMyCourses() {
 
                     <div class="
                         course-status
-                        ${isUnlocked ? "approved-status" : "pending-status"}
+                        ${isActive
+                ? "approved-status"
+                : "completed-status"
+            }
                     ">
 
-                        ${isUnlocked
-                ? "Desbloqueado"
-                : "Pendiente de aprobación"
+                        ${isActive
+                ? "Activo"
+                : "Completado"
             }
 
                     </div>
@@ -190,31 +207,37 @@ async function loadMyCourses() {
 
                     <button
                         class="continue-btn"
-                        ${!isUnlocked ? "disabled" : ""}
-                        onclick="${isUnlocked
-                ? `window.location.href='./course-player.html?id=${course.id}'`
-                : ""
-            }"
+                        onclick="
+                            window.location.href =
+                            './course-player.html?id=${course.id}'
+                        "
                     >
 
-                        ${isUnlocked
+                        ${isActive
                 ? "Continuar"
-                : "Esperando aprobación"
+                : "Ver curso"
             }
 
                     </button>
 
-                    <button
-                        class="mentor-select-btn"
-                        onclick="
-                            window.location.href=
-                            './select-mentor.html?courseId=${course.id}'
-                        "
-                    >
+                    ${isActive
+                ?
+                `
+                        <button
+                            class="mentor-select-btn"
+                            onclick="
+                                window.location.href =
+                                './select-mentor.html?courseId=${course.id}'
+                            "
+                        >
 
-                        Elegir mentor
+                            Elegir mentor
 
-                    </button>
+                        </button>
+                        `
+                :
+                ""
+            }
 
                 </div>
 

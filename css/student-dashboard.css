@@ -412,3 +412,85 @@ body{
 
     transform:translateX(6px);
 }
+/* ========================= */
+/* ENROLL MODAL */
+/* ========================= */
+
+.enroll-modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(10px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    opacity:0;
+    visibility:hidden;
+    transition:.35s ease;
+    z-index:9999;
+}
+
+.enroll-modal.active-modal{
+    opacity:1;
+    visibility:visible;
+}
+
+.enroll-modal-content{
+    width:100%;
+    max-width:480px;
+    background:#0F172A;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:28px;
+    padding:36px;
+    text-align:center;
+    box-shadow:0 30px 90px rgba(0,0,0,.45);
+    transform:translateY(24px) scale(.96);
+    transition:.35s ease;
+}
+
+.enroll-modal.active-modal .enroll-modal-content{
+    transform:translateY(0) scale(1);
+}
+
+.enroll-modal-content h3{
+    color:white;
+    font-size:1.7rem;
+    margin-bottom:14px;
+}
+
+.enroll-modal-content p{
+    color:rgba(255,255,255,.65);
+    line-height:1.7;
+    margin-bottom:28px;
+}
+
+.enroll-modal-actions{
+    display:flex;
+    gap:14px;
+    justify-content:center;
+}
+
+.enroll-modal-actions button{
+    height:48px;
+    padding:0 22px;
+    border:none;
+    border-radius:14px;
+    font-weight:800;
+    cursor:pointer;
+    transition:.3s ease;
+}
+
+.cancel-enroll-btn{
+    background:rgba(255,255,255,.08);
+    color:rgba(255,255,255,.78);
+}
+
+.confirm-enroll-btn{
+    background:linear-gradient(135deg,#6C4DFF,#8B7CFF);
+    color:white;
+}
+
+.enroll-modal-actions button:hover{
+    transform:translateY(-2px);
+}

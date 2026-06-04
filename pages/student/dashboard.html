@@ -183,11 +183,41 @@
 
         </main>
 
+        <div class="enroll-modal">
+        
+            <div class="enroll-modal-content">
+        
+                <h3>
+                    ¿Quieres inscribirte en este curso?
+                </h3>
+        
+                <p>
+                    Los demás cursos se bloquearán hasta que completes este.
+                </p>
+        
+                <div class="enroll-modal-actions">
+        
+                    <button onclick="closeEnrollModal()" class="cancel-enroll-btn">
+                        Cancelar
+                    </button>
+        
+                    <button onclick="confirmEnrollCourse()" class="confirm-enroll-btn">
+                        Sí, inscribirme
+                    </button>
+        
+                </div>
+        
+            </div>
+        
+        </div>
+
     </div>
 
     <div class="app-toast">
         <span id="appToastMessage">Acción realizada</span>
     </div>
+
+    
 
     <script src="../../js/config.js"></script>
 
