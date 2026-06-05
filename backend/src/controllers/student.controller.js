@@ -1,6 +1,10 @@
 const supabase =
     require("../config/supabase");
 
+const {
+    syncStudentCourseProgress
+} = require("../utils/course-progress");
+
 const getStudentStats =
     async (req, res) => {
 
@@ -23,55 +27,25 @@ const getStudentStats =
                     .from("courses")
                     .select("*");
 
-            /* PROGRESS */
-
             const {
-
-                data: progress
-
+                data: activeCourse
             } =
                 await supabase
-                    .from("lesson_progress")
+                    .from("student_courses")
                     .select("*")
-                    .eq(
-                        "user_id",
-                        userId
+                    .eq("student_id", userId)
+                    .eq("status", "Activo")
+                    .limit(1)
+                    .maybeSingle();
+
+            const progressData =
+                activeCourse
+                    ? await syncStudentCourseProgress(
+                        supabase,
+                        userId,
+                        activeCourse.course_id
                     )
-                    .eq(
-                        "completed",
-                        true
-                    );
-
-            /* TOTAL LESSONS */
-
-            const {
-
-                data: lessons
-
-            } =
-                await supabase
-                    .from("lessons")
-                    .select("*");
-
-            const totalLessons =
-                lessons.length;
-
-            const completedLessons =
-                progress.length;
-
-            const progressPercentage =
-                totalLessons === 0
-
-                    ? 0
-
-                    : Math.round(
-
-                        (
-                            completedLessons /
-                            totalLessons
-                        ) * 100
-
-                    );
+                    : { progress: 0 };
 
             const available =
                 courses.filter(
@@ -98,7 +72,7 @@ const getStudentStats =
                     locked,
 
                 progress:
-                    progressPercentage
+                    progressData.progress
 
             });
 

@@ -1,6 +1,10 @@
 const supabase =
     require("../config/supabase");
 
+const {
+    syncStudentCourseProgress
+} = require("../utils/course-progress");
+
 /* GET PROGRESS */
 
 const getProgress =
@@ -23,6 +27,12 @@ const getProgress =
             if (error) {
                 return res.status(400).json(error);
             }
+
+            await syncStudentCourseProgress(
+                supabase,
+                userId,
+                courseId
+            );
 
             res.json(data);
 
@@ -54,8 +64,10 @@ const completeLesson =
                     .from("lesson_progress")
                     .select("*")
                     .eq("user_id", user_id)
+                    .eq("course_id", course_id)
                     .eq("lesson_id", lesson_id)
-                    .single();
+                    .limit(1)
+                    .maybeSingle();
 
             if (existing) {
 
@@ -72,6 +84,12 @@ const completeLesson =
                 if (error) {
                     return res.status(400).json(error);
                 }
+
+                await syncStudentCourseProgress(
+                    supabase,
+                    user_id,
+                    course_id
+                );
 
                 return res.json(data);
 
@@ -92,6 +110,12 @@ const completeLesson =
             if (error) {
                 return res.status(400).json(error);
             }
+
+            await syncStudentCourseProgress(
+                supabase,
+                user_id,
+                course_id
+            );
 
             res.json(data);
 

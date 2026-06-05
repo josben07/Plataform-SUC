@@ -73,9 +73,24 @@ body{background:#020617;color:white}
     color:#22C55E;
 }
 
+.en_revision{
+    background:rgba(139,124,255,.14);
+    color:#A89BFF;
+}
+
 .rechazado{
     background:rgba(239,68,68,.14);
     color:#EF4444;
+}
+
+.payment-waiting-message{
+    margin-top:20px;
+    padding:14px 16px;
+    border-radius:16px;
+    background:rgba(139,124,255,.1);
+    color:#C4B8FF;
+    font-weight:800;
+    line-height:1.4;
 }
 
 .empty-state{

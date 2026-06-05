@@ -213,6 +213,14 @@ body{
     color:#22C55E;
 }
 
+.en_revision{
+
+    background:
+    rgba(139,124,255,0.14);
+
+    color:#A89BFF;
+}
+
 .rechazado{
 
     background:

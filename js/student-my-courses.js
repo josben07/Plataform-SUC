@@ -8,6 +8,73 @@ const myCoursesGrid =
         "myCoursesGrid"
     );
 
+function calculateProgressPercent(
+    progressData,
+    totalLessons
+) {
+
+    if (totalLessons === 0) {
+
+        return 0;
+
+    }
+
+    const completedLessonIds =
+        new Set(
+            progressData
+                .filter(item => item.completed === true)
+                .map(item => item.lesson_id)
+        );
+
+    return Math.min(
+        100,
+        Math.round(
+            (
+                completedLessonIds.size /
+                totalLessons
+            ) * 100
+        )
+    );
+
+}
+
+async function getCourseLessonCount(courseId) {
+
+    const modulesResponse =
+        await fetch(
+            `${API_URL}/api/modules/${courseId}`
+        );
+
+    const modules =
+        await modulesResponse.json();
+
+    let totalLessons =
+        0;
+
+    for (const module of modules) {
+
+        const lessonsResponse =
+            await fetch(
+                `${API_URL}/api/lessons/${module.id}`
+            );
+
+        const lessons =
+            await lessonsResponse.json();
+
+        const lessonIds =
+            new Set(
+                lessons.map(lesson => lesson.id)
+            );
+
+        totalLessons +=
+            lessonIds.size;
+
+    }
+
+    return totalLessons;
+
+}
+
 async function loadMyCourses() {
 
     const studentResponse =
@@ -108,31 +175,22 @@ async function loadMyCourses() {
                 :
                 null;
 
-        let progressPercent =
-            Number(relation.progress || 0);
+        const progressResponse =
+            await fetch(
+                `${API_URL}/api/progress/${user.id}/${course.id}`
+            );
 
-        if (progressPercent === 0) {
+        const progressData =
+            await progressResponse.json();
 
-            const progressResponse =
-                await fetch(
-                    `${API_URL}/api/progress/${user.id}/${course.id}`
-                );
+        const totalLessons =
+            await getCourseLessonCount(course.id);
 
-            const progressData =
-                await progressResponse.json();
-
-            const completedLessons =
-                progressData.filter(
-                    item =>
-                        item.completed === true
-                );
-
-            progressPercent =
-                completedLessons.length > 0
-                    ? 100
-                    : 0;
-
-        }
+        const progressPercent =
+            calculateProgressPercent(
+                progressData,
+                totalLessons
+            );
 
         myCoursesGrid.innerHTML += `
 

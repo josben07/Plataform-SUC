@@ -61,6 +61,11 @@ const completeLessonBtn =
         "completeLessonBtn"
     );
 
+const finishCourseBtn =
+    document.getElementById(
+        "finishCourseBtn"
+    );
+
 const resourcesPanel =
     document.querySelector(".resources-panel");
 
@@ -85,6 +90,76 @@ let unlockedLessonIds =
     [];
 let currentCourseRelation =
     null;
+
+function calculateProgressPercent(
+    progressData,
+    lessonsData
+) {
+
+    const lessonIds =
+        new Set(
+            lessonsData.map(lesson => lesson.id)
+        );
+
+    const totalLessons =
+        lessonIds.size;
+
+    if (totalLessons === 0) {
+
+        return 0;
+
+    }
+
+    const completedLessonIds =
+        new Set(
+            progressData
+                .filter(item =>
+                    item.completed === true &&
+                    lessonIds.has(item.lesson_id)
+                )
+                .map(item => item.lesson_id)
+        );
+
+    return Math.min(
+        100,
+        Math.round(
+            (
+                completedLessonIds.size /
+                totalLessons
+            ) * 100
+        )
+    );
+
+}
+
+function getCurrentProgressPercent() {
+
+    return calculateProgressPercent(
+        completedLessons,
+        allLessonsData
+    );
+
+}
+
+function updateFinishCourseButton() {
+
+    if (!finishCourseBtn) {
+
+        return;
+
+    }
+
+    const canFinishCourse =
+        getCurrentProgressPercent() === 100 &&
+        currentCourseRelation &&
+        currentCourseRelation.status !== "Completed";
+
+    finishCourseBtn.classList.toggle(
+        "visible-finish-btn",
+        canFinishCourse
+    );
+
+}
 
 
 async function validateCourseAccess() {
@@ -331,17 +406,47 @@ async function validateLessonRequirements() {
     const projects =
         await projectsResponse.json();
 
-    const hasProject =
-        projects.some(project =>
+    const lessonProject =
+        projects.find(project =>
             project.user_id === user.id &&
             project.course_id === courseId &&
             project.lesson_id === currentLessonId
         );
 
-    if (!hasProject) {
+    if (!lessonProject) {
 
         showCourseMessage(
             "Debes subir el entregable de esta clase antes de completarla."
+        );
+
+        return false;
+
+    }
+
+    if (lessonProject.status === "pending") {
+
+        showCourseMessage(
+            "Tu entregable está pendiente de revisión por el mentor."
+        );
+
+        return false;
+
+    }
+
+    if (lessonProject.status === "rejected") {
+
+        showCourseMessage(
+            "Tu entregable fue rechazado. Revisa el feedback y vuelve a enviarlo."
+        );
+
+        return false;
+
+    }
+
+    if (lessonProject.status !== "approved") {
+
+        showCourseMessage(
+            "Tu entregable está pendiente de revisión por el mentor."
         );
 
         return false;
@@ -410,6 +515,8 @@ async function openLesson(lesson) {
         );
 
     }
+
+    updateFinishCourseButton();
 
     lessonTitle.textContent =
         lesson.title;
@@ -590,6 +697,8 @@ async function loadProgress() {
     completedLessons =
         await response.json();
 
+    updateFinishCourseButton();
+
 }
 
 completeLessonBtn.addEventListener(
@@ -637,6 +746,7 @@ completeLessonBtn.addEventListener(
 
         await loadProgress();
         refreshLessonLocks();
+        updateFinishCourseButton();
 
         completeLessonBtn.textContent =
             "Clase completada";
@@ -855,18 +965,15 @@ function showWelcomeView() {
             "none";
     }
 
-    const completedCount =
-        completedLessons.filter(
-            item => item.completed === true
-        ).length;
-
     const totalLessons =
-        allLessonsData.length;
+        new Set(
+            allLessonsData.map(lesson => lesson.id)
+        ).size;
 
     const progressPercent =
-        totalLessons > 0
-            ? Math.round((completedCount / totalLessons) * 100)
-            : 0;
+        getCurrentProgressPercent();
+
+    updateFinishCourseButton();
 
     videoBox.innerHTML = `
 
@@ -945,6 +1052,72 @@ function showLessonView() {
         commentsPanel.style.display =
             "block";
     }
+
+}
+
+if (finishCourseBtn) {
+
+    finishCourseBtn.addEventListener(
+        "click",
+        async () => {
+
+            if (getCurrentProgressPercent() < 100) {
+
+                showCourseMessage(
+                    "Completa todas las clases antes de finalizar el curso."
+                );
+
+                return;
+
+            }
+
+            const response =
+                await fetch(
+                    `${API_URL}/api/student-courses/complete`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                student_id:
+                                    user.id,
+
+                                course_id:
+                                    courseId
+                            })
+                    }
+                );
+
+            const result =
+                await response.json();
+
+            if (!response.ok) {
+
+                showCourseMessage(
+                    result.error ||
+                    "No se pudo finalizar el curso."
+                );
+
+                return;
+
+            }
+
+            currentCourseRelation =
+                result;
+
+            updateFinishCourseButton();
+
+            showCourseMessage(
+                "Curso finalizado correctamente."
+            );
+
+        }
+    );
 
 }
 
@@ -1148,6 +1321,7 @@ async function initCoursePlayer() {
         refreshLessonLocks();
 
         showWelcomeView();
+        updateFinishCourseButton();
 
     }, 500);
 

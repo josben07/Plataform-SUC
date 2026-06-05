@@ -8,7 +8,8 @@ const {
 
     getStudentCourses,
     buyCourse,
-    enrollCourse
+    enrollCourse,
+    completeCourse
 
 } = require(
     "../controllers/student-courses.controller"
@@ -28,11 +29,17 @@ router.post(
     buyCourse
 );
 
-module.exports =
-    router;
-
 /* ENROLL */
 router.post(
     "/enroll",
     enrollCourse
 );
+
+/* COMPLETE */
+router.post(
+    "/complete",
+    completeCourse
+);
+
+module.exports =
+    router;

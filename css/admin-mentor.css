@@ -146,6 +146,13 @@ body{
     rgba(255,255,255,0.72);
 }
 
+.mentor-price{
+
+    color:#A89BFF !important;
+
+    font-weight:700;
+}
+
 /* STATUS */
 
 .mentor-status{

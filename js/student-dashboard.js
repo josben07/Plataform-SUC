@@ -50,6 +50,18 @@ let selectedCategory =
 let selectedEnrollCourse =
     null;
 
+function clampProgress(progress) {
+
+    return Math.min(
+        100,
+        Math.max(
+            0,
+            Number(progress) || 0
+        )
+    );
+
+}
+
 /* TOAST */
 
 function showStudentToast(message) {
@@ -429,8 +441,11 @@ async function loadStudentStats() {
     const stats =
         await response.json();
 
+    const progress =
+        clampProgress(stats.progress);
+
     document.getElementById("progressPercentage").textContent =
-        `${stats.progress}%`;
+        `${progress}%`;
 
 }
 

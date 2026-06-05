@@ -147,6 +147,9 @@ body {
 /* FIN DEL CAMBIO HOY ARRIBA*/
 
 .lesson-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
   margin-top: 24px;
 }
 
@@ -174,6 +177,16 @@ body {
   font-weight: 800;
 
   cursor: pointer;
+}
+
+.finish-course-btn {
+  display: none !important;
+
+  background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+}
+
+.finish-course-btn.visible-finish-btn {
+  display: flex !important;
 }
 
 /* RESOURCES */

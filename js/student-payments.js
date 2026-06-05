@@ -1,4 +1,3 @@
-
 const payModal =
     document.querySelector(".pay-modal");
 
@@ -8,6 +7,9 @@ const closePayModal =
 const confirmPayBtn =
     document.getElementById("confirmPayBtn");
 
+const payModalTitle =
+    document.getElementById("payModalTitle");
+
 const payCourseName =
     document.getElementById("payCourseName");
 
@@ -16,6 +18,9 @@ const payAmount =
 
 let currentPaymentId =
     null;
+
+let currentPaymentType =
+    "mentor";
 
 const user =
     JSON.parse(
@@ -33,6 +38,88 @@ const paymentsGrid =
     document.getElementById(
         "paymentsGrid"
     );
+
+function showPaymentToast(message) {
+
+    const toast =
+        document.querySelector(".app-toast");
+
+    const toastMessage =
+        document.getElementById("appToastMessage");
+
+    if (!toast || !toastMessage) {
+
+        alert(message);
+        return;
+
+    }
+
+    toastMessage.textContent =
+        message;
+
+    toast.classList.add("show-toast");
+
+    setTimeout(() => {
+
+        toast.classList.remove("show-toast");
+
+    }, 3000);
+
+}
+
+function escapeInlineValue(value) {
+
+    return String(value || "")
+        .replace(/\\/g, "\\\\")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "\\'")
+        .replace(/\n/g, " ");
+
+}
+
+function getPaymentTitle(payment) {
+
+    if (payment.payment_type === "mentor") {
+
+        return payment.course_name
+            ? `Mentoría - ${payment.course_name}`
+            : "Mentoría";
+
+    }
+
+    return payment.course_name || "Pago";
+
+}
+
+function getPaymentStatusText(status) {
+
+    if (status === "en_revision") {
+
+        return "Esperando aprobación del administrador";
+
+    }
+
+    if (status === "pendiente") {
+
+        return "Pendiente";
+
+    }
+
+    if (status === "aprobado") {
+
+        return "Aprobado";
+
+    }
+
+    if (status === "rechazado") {
+
+        return "Rechazado";
+
+    }
+
+    return status || "Pendiente";
+
+}
 
 async function loadPayments() {
 
@@ -58,7 +145,7 @@ async function loadPayments() {
 
             <div class="empty-state">
                 <h3>No tienes pagos registrados</h3>
-                <p>Cuando solicites un curso, el pago aparecerá aquí.</p>
+                <p>Cuando reserves una mentoría, el pago aparecerá aquí.</p>
             </div>
 
         `;
@@ -68,11 +155,14 @@ async function loadPayments() {
 
     myPayments.forEach(payment => {
 
+        const paymentTitle =
+            getPaymentTitle(payment);
+
         paymentsGrid.innerHTML += `
 
             <div class="payment-card">
 
-                <h3>${payment.course_name}</h3>
+                <h3>${paymentTitle}</h3>
 
                 <p>Alumno: ${payment.user_name}</p>
 
@@ -81,34 +171,54 @@ async function loadPayments() {
                 <p>Monto: S/ ${payment.amount}</p>
 
                 <div class="payment-status ${payment.status}">
-                    ${payment.status}
+                    ${getPaymentStatusText(payment.status)}
                 </div>
 
                 ${
-            payment.status === "pendiente"
-                ?
-                `
-    <button
-        class="pay-action-btn"
-        onclick="openPayModal('${payment.id}', '${payment.course_name}', '${payment.amount}')"
-    >
-        Ir a pagar
-    </button>
-    `
-                :
-                payment.status === "aprobado"
-                    ?
-                    `
-    <button
-        class="continue-course-btn"
-        onclick="window.location.href='./course-player.html?id=${payment.course_id}'"
-    >
-        Continuar curso
-    </button>
-    `
-                    :
-                    ""
-}
+                    payment.status === "pendiente"
+                        ?
+                        `
+                            <button
+                                class="pay-action-btn"
+                                onclick="openPayModal('${payment.id}', '${escapeInlineValue(paymentTitle)}', '${payment.amount}', '${payment.payment_type || "mentor"}')"
+                            >
+                                Ir a pagar
+                            </button>
+                        `
+                        :
+                        payment.status === "en_revision"
+                            ?
+                            `
+                                <div class="payment-waiting-message">
+                                    Pago enviado. Esperando aprobación del administrador.
+                                </div>
+                            `
+                            :
+                            payment.status === "aprobado" &&
+                                payment.payment_type === "mentor"
+                                ?
+                                `
+                                    <button
+                                        class="continue-course-btn"
+                                        onclick="window.location.href='./mentorships.html'"
+                                    >
+                                        Ver mentoría
+                                    </button>
+                                `
+                                :
+                                payment.status === "aprobado"
+                                    ?
+                                    `
+                                        <button
+                                            class="continue-course-btn"
+                                            onclick="window.location.href='./course-player.html?id=${payment.course_id}'"
+                                        >
+                                            Continuar curso
+                                        </button>
+                                    `
+                                    :
+                                    ""
+                }
 
             </div>
 
@@ -121,16 +231,27 @@ async function loadPayments() {
 function openPayModal(
 
     paymentId,
-    courseName,
-    amount
+    paymentTitle,
+    amount,
+    paymentType = "mentor"
 
 ) {
 
     currentPaymentId =
         paymentId;
 
+    currentPaymentType =
+        paymentType;
+
+    payModalTitle.textContent =
+        currentPaymentType === "mentor"
+            ? "Confirmar pago de mentoría"
+            : "Confirmar pago";
+
     payCourseName.textContent =
-        `Curso: ${courseName}`;
+        currentPaymentType === "mentor"
+            ? `Mentoría: ${paymentTitle}`
+            : `Curso: ${paymentTitle}`;
 
     payAmount.textContent =
         `Monto: S/ ${amount}`;
@@ -169,7 +290,7 @@ confirmPayBtn.addEventListener(
                 body:
                     JSON.stringify({
                         status:
-                            "aprobado"
+                            "en_revision"
                     })
             }
         );
@@ -178,7 +299,11 @@ confirmPayBtn.addEventListener(
             "active-modal"
         );
 
-        loadPayments();
+        await loadPayments();
+
+        showPaymentToast(
+            "Pago enviado. Esperando aprobación del administrador."
+        );
 
     }
 );

@@ -49,11 +49,54 @@ const mentorForm =
 const mentorSelect =
     document.getElementById("mentorSelect");
 
+const sessionPrice =
+    document.getElementById("sessionPrice");
+
 let mentorsUsers =
     [];
 
 let editingMentorId =
     null;
+
+function normalizeMentorshipPriceForRequest(price) {
+
+    if (price === "") {
+
+        return null;
+
+    }
+
+    const numericPrice =
+        Number(price);
+
+    return Number.isFinite(numericPrice) &&
+        numericPrice >= 0
+        ? numericPrice
+        : null;
+
+}
+
+function formatMentorshipPrice(price) {
+
+    if (
+        price === null ||
+        price === undefined ||
+        price === ""
+    ) {
+
+        return "Por definir";
+
+    }
+
+    const numericPrice =
+        Number(price);
+
+    return Number.isFinite(numericPrice) &&
+        numericPrice >= 0
+        ? `S/ ${numericPrice.toFixed(2)}`
+        : "Por definir";
+
+}
 
 /* LOAD USERS WITH ROLE MENTOR */
 
@@ -173,6 +216,10 @@ async function loadMentors() {
                     ${mentor.session_time || "Sin hora"}
                 </p>
 
+                <p class="mentor-price">
+                    Precio: ${formatMentorshipPrice(mentor.price)}
+                </p>
+
                 <div class="mentor-status">
                     ${mentor.status === "available"
                 ? "Disponible"
@@ -193,6 +240,7 @@ async function loadMentors() {
                                 '${mentor.session_description || ""}',
                                 '${mentor.session_date || ""}',
                                 '${mentor.session_time || ""}',
+                                '${mentor.price ?? ""}',
                                 '${mentor.meet_link || ""}'
                             )
                         "
@@ -280,6 +328,11 @@ mentorForm.addEventListener("submit", async (e) => {
                     session_time:
                         sessionTime.value,
 
+                    price:
+                        normalizeMentorshipPriceForRequest(
+                            sessionPrice.value
+                        ),
+
                     meet_link:
                         meetLink.value
 
@@ -311,6 +364,7 @@ function openEditMentorModal(
     session_description,
     session_date,
     session_time,
+    price,
     meet_link
 
 ) {
@@ -335,6 +389,9 @@ function openEditMentorModal(
 
     sessionTime.value =
         session_time;
+
+    sessionPrice.value =
+        price;
 
     meetLink.value =
         meet_link;

@@ -11,6 +11,38 @@ const mentorshipGrid =
 let assignedMentors =
     [];
 
+function formatMentorshipPrice(price) {
+
+    if (
+        price === null ||
+        price === undefined ||
+        price === ""
+    ) {
+
+        return "Por definir";
+
+    }
+
+    const numericPrice =
+        Number(price);
+
+    return Number.isFinite(numericPrice) &&
+        numericPrice >= 0
+        ? `S/ ${numericPrice.toFixed(2)}`
+        : "Por definir";
+
+}
+
+function getMentorshipPayment(payments, sessionId) {
+
+    return payments.find(payment =>
+        payment.student_id === user.id &&
+        payment.session_id === sessionId &&
+        payment.payment_type === "mentor"
+    );
+
+}
+
 async function loadMentorships() {
 
     const assignedResponse =
@@ -47,6 +79,14 @@ async function loadMentorships() {
 
     const sessions =
         await response.json();
+
+    const paymentsResponse =
+        await fetch(
+            `${API_URL}/api/payments`
+        );
+
+    const payments =
+        await paymentsResponse.json();
 
     mentorshipGrid.innerHTML = "";
 
@@ -112,6 +152,20 @@ async function loadMentorships() {
                 session.mentor_id
             );
 
+        const payment =
+            getMentorshipPayment(
+                payments,
+                session.id
+            );
+
+        const isOwnReservation =
+            isAssignedMentor &&
+            session.student_id === user.id;
+
+        const isPaymentApproved =
+            payment &&
+            payment.status === "aprobado";
+
         mentorshipGrid.innerHTML += `
 
             <div class="
@@ -139,12 +193,18 @@ async function loadMentorships() {
                     Hora: ${session.session_time || "Por definir"}
                 </p>
 
+                <p class="mentor-price">
+                    Precio: ${formatMentorshipPrice(session.price)}
+                </p>
+
                 <div class="mentor-status">
 
                     ${!isAssignedMentor
                 ? "Bloqueada"
                 : session.status === "available"
                     ? "Disponible"
+                    : isOwnReservation && !isPaymentApproved
+                        ? "Pago pendiente"
                     : session.status
             }
 
@@ -165,7 +225,18 @@ async function loadMentorships() {
                     </button>
                     `
                 :
-                session.meet_link
+                isOwnReservation &&
+                    !isPaymentApproved
+                    ?
+                    `
+                    <div class="locked-message">
+                        Mentoría reservada. Esperando aprobación del pago.
+                    </div>
+                    `
+                    :
+                    isOwnReservation &&
+                    isPaymentApproved &&
+                    session.meet_link
                     ?
                     `
                     <a
