@@ -7,8 +7,17 @@ const lessonProjectTitle =
 const lessonProjectDescription =
     document.getElementById("lessonProjectDescription");
 
-const lessonProjectUrl =
-    document.getElementById("lessonProjectUrl");
+const lessonTaskTitle =
+    document.getElementById("lessonTaskTitle");
+
+const lessonTaskDescription =
+    document.getElementById("lessonTaskDescription");
+
+const lessonProjectFile =
+    document.getElementById("lessonProjectFile");
+
+const lessonProjectFileName =
+    document.getElementById("lessonProjectFileName");
 
 const commentForm =
     document.getElementById("commentForm");
@@ -75,6 +84,24 @@ const commentsPanel =
 const lessonProjectPanel =
     document.querySelector(".lesson-project-panel");
 
+const finalProjectPanel =
+    document.getElementById("finalProjectPanel");
+
+const finalProjectStatus =
+    document.getElementById("finalProjectStatus");
+
+const finalProjectForm =
+    document.getElementById("finalProjectForm");
+
+const finalProjectFile =
+    document.getElementById("finalProjectFile");
+
+const finalProjectFileName =
+    document.getElementById("finalProjectFileName");
+
+const finalProjectSubmitBtn =
+    document.getElementById("finalProjectSubmitBtn");
+
 let allModulesData =
     [];
 
@@ -84,11 +111,17 @@ let allLessonsData =
 let currentLessonId =
     null;
 
+let currentLessonData =
+    null;
+
 let completedLessons =
     [];
 let unlockedLessonIds =
     [];
 let currentCourseRelation =
+    null;
+
+let finalProjectSubmission =
     null;
 
 function calculateProgressPercent(
@@ -141,6 +174,26 @@ function getCurrentProgressPercent() {
 
 }
 
+function getLatestFinalProject(projects) {
+
+    const finalProjects =
+        projects.filter(project =>
+            project.user_id === user.id &&
+            project.course_id === courseId &&
+            project.submission_type === "final_project"
+        );
+
+    const approvedProject =
+        finalProjects.find(project =>
+            project.status === "approved"
+        );
+
+    return approvedProject ||
+        finalProjects[0] ||
+        null;
+
+}
+
 function updateFinishCourseButton() {
 
     if (!finishCourseBtn) {
@@ -149,15 +202,174 @@ function updateFinishCourseButton() {
 
     }
 
-    const canFinishCourse =
+    finishCourseBtn.classList.toggle(
+        "visible-finish-btn",
+        false
+    );
+
+}
+
+function resetFinalProjectFileState() {
+
+    if (finalProjectFileName) {
+
+        finalProjectFileName.textContent =
+            "No hay archivo seleccionado";
+
+    }
+
+    if (finalProjectFile) {
+
+        finalProjectFile.value =
+            "";
+
+    }
+
+}
+
+function renderFinalProjectPanel() {
+
+    if (!finalProjectPanel) {
+
+        return;
+
+    }
+
+    const courseReadyForFinalProject =
         getCurrentProgressPercent() === 100 &&
         currentCourseRelation &&
         currentCourseRelation.status !== "Completed";
 
-    finishCourseBtn.classList.toggle(
-        "visible-finish-btn",
-        canFinishCourse
-    );
+    finalProjectPanel.style.display =
+        courseReadyForFinalProject
+            ? "block"
+            : "none";
+
+    if (!courseReadyForFinalProject) {
+
+        return;
+
+    }
+
+    finalProjectStatus.className =
+        "final-project-status";
+
+    finalProjectStatus.innerHTML =
+        "";
+
+    finalProjectForm.style.display =
+        "flex";
+
+    finalProjectSubmitBtn.textContent =
+        "Enviar proyecto final";
+
+    if (!finalProjectSubmission) {
+
+        return;
+
+    }
+
+    if (finalProjectSubmission.status === "pending") {
+
+        finalProjectStatus.classList.add(
+            "visible-status",
+            "pending"
+        );
+
+        finalProjectStatus.textContent =
+            "Esperando revisión del mentor.";
+
+        finalProjectForm.style.display =
+            "none";
+
+        return;
+
+    }
+
+    if (finalProjectSubmission.status === "rejected") {
+
+        finalProjectStatus.classList.add(
+            "visible-status",
+            "rejected"
+        );
+
+        finalProjectStatus.innerHTML = `
+            Proyecto final rechazado.
+            ${finalProjectSubmission.feedback
+                ? `<br>Feedback: ${finalProjectSubmission.feedback}`
+                : ""}
+        `;
+
+        finalProjectSubmitBtn.textContent =
+            "Reenviar proyecto final";
+
+        return;
+
+    }
+
+    if (finalProjectSubmission.status === "approved") {
+
+        finalProjectStatus.classList.add(
+            "visible-status",
+            "approved"
+        );
+
+        finalProjectStatus.innerHTML = `
+            Proyecto final aprobado.
+            <br>
+            <button
+                class="final-project-action"
+                onclick="window.location.href='./mentorships.html'"
+            >
+                Agendar mentoría
+            </button>
+        `;
+
+        finalProjectForm.style.display =
+            "none";
+
+    }
+
+}
+
+async function loadFinalProjectStatus() {
+
+    if (getCurrentProgressPercent() !== 100) {
+
+        finalProjectSubmission =
+            null;
+
+        renderFinalProjectPanel();
+
+        return;
+
+    }
+
+    const response =
+        await fetch(
+            `${API_URL}/api/projects`
+        );
+
+    const projects =
+        await response.json();
+
+    finalProjectSubmission =
+        getLatestFinalProject(
+            projects
+        );
+
+    if (
+        finalProjectSubmission &&
+        finalProjectSubmission.status === "approved" &&
+        currentCourseRelation
+    ) {
+
+        currentCourseRelation.final_project_approved =
+            true;
+
+    }
+
+    renderFinalProjectPanel();
 
 }
 
@@ -277,16 +489,19 @@ async function loadModules() {
     allModulesData =
         modules;
 
+    allLessonsData =
+        [];
+
     modulesList.innerHTML = "";
 
-    modules.forEach((module, index) => {
+    modules.forEach((module, moduleIndex) => {
 
         modulesList.innerHTML += `
 
             <div class="player-module">
 
                 <div class="player-module-header">
-                    Módulo ${index + 1}: ${module.title}
+                    Módulo ${moduleIndex + 1}: ${module.title}
                 </div>
 
                 <div
@@ -298,7 +513,41 @@ async function loadModules() {
 
         `;
 
-        loadLessons(module.id, index);
+    });
+
+    const lessonsByModule =
+        await Promise.all(
+            modules.map((module, moduleIndex) =>
+                loadLessons(module.id, moduleIndex)
+            )
+        );
+
+    const orderedLessons =
+        lessonsByModule
+            .flat()
+            .sort((a, b) => {
+
+                if (a.moduleIndex !== b.moduleIndex) {
+
+                    return a.moduleIndex - b.moduleIndex;
+
+                }
+
+                return a.lessonIndex - b.lessonIndex;
+
+            });
+
+    allLessonsData =
+        orderedLessons.map(item => item.lesson);
+
+    orderedLessons.forEach(item => {
+
+        renderLessonButton(
+            item.lesson,
+            item.moduleId,
+            item.moduleIndex,
+            item.lessonIndex
+        );
 
     });
 
@@ -316,18 +565,32 @@ async function loadLessons(moduleId, moduleIndex) {
     const lessons =
         await response.json();
 
-    allLessonsData =
-        [
-            ...allLessonsData,
-            ...lessons
-        ];
+    return lessons.map((lesson, lessonIndex) => ({
+        lesson,
+        moduleId,
+        moduleIndex,
+        lessonIndex
+    }));
+
+}
+
+function renderLessonButton(
+    lesson,
+    moduleId,
+    moduleIndex,
+    lessonIndex
+) {
 
     const container =
         document.getElementById(`lessons-${moduleId}`);
 
-    lessons.forEach((lesson, index) => {
+    if (!container) {
 
-        container.innerHTML += `
+        return;
+
+    }
+
+    container.innerHTML += `
 
 <button
     class="player-lesson"
@@ -336,7 +599,7 @@ async function loadLessons(moduleId, moduleIndex) {
     onclick='handleLessonClick(${JSON.stringify(lesson)})'
 >
         <span>
-            ${moduleIndex + 1}.${index}
+            ${moduleIndex + 1}.${lessonIndex + 1}
         </span>
 
         ${lesson.title}
@@ -344,57 +607,16 @@ async function loadLessons(moduleId, moduleIndex) {
 
 `;
 
-    });
-
 }
 
 async function validateLessonRequirements() {
 
-    const mentorsResponse =
-        await fetch(
-            `${API_URL}/api/student-mentors/${user.id}`
-        );
+    if (
+        !currentLessonData ||
+        currentLessonData.requires_task !== true
+    ) {
 
-    const mentors =
-        await mentorsResponse.json();
-
-    const hasMentor =
-        mentors.some(
-            item => item.course_id === courseId
-        );
-
-    if (!hasMentor) {
-
-        showCourseMessage(
-            "Debes seleccionar un mentor antes de completar esta clase."
-        );
-
-        return false;
-
-    }
-
-    const paymentsResponse =
-        await fetch(
-            `${API_URL}/api/payments`
-        );
-
-    const payments =
-        await paymentsResponse.json();
-
-    const hasApprovedPayment =
-        payments.some(payment =>
-            payment.student_id === user.id &&
-            payment.course_id === courseId &&
-            payment.status === "aprobado"
-        );
-
-    if (!hasApprovedPayment) {
-
-        showCourseMessage(
-            "Debes realizar el pago antes de completar esta clase."
-        );
-
-        return false;
+        return true;
 
     }
 
@@ -410,13 +632,14 @@ async function validateLessonRequirements() {
         projects.find(project =>
             project.user_id === user.id &&
             project.course_id === courseId &&
-            project.lesson_id === currentLessonId
+            project.lesson_id === currentLessonId &&
+            project.submission_type === "task"
         );
 
     if (!lessonProject) {
 
         showCourseMessage(
-            "Debes subir el entregable de esta clase antes de completarla."
+            "Debes guardar la tarea de esta clase antes de completarla."
         );
 
         return false;
@@ -426,7 +649,7 @@ async function validateLessonRequirements() {
     if (lessonProject.status === "pending") {
 
         showCourseMessage(
-            "Tu entregable está pendiente de revisión por el mentor."
+            "Tu tarea está pendiente de revisión por el mentor."
         );
 
         return false;
@@ -436,7 +659,7 @@ async function validateLessonRequirements() {
     if (lessonProject.status === "rejected") {
 
         showCourseMessage(
-            "Tu entregable fue rechazado. Revisa el feedback y vuelve a enviarlo."
+            "Tu tarea fue rechazada. Revisa el feedback y vuelve a guardarla."
         );
 
         return false;
@@ -446,7 +669,7 @@ async function validateLessonRequirements() {
     if (lessonProject.status !== "approved") {
 
         showCourseMessage(
-            "Tu entregable está pendiente de revisión por el mentor."
+            "Tu tarea está pendiente de revisión por el mentor."
         );
 
         return false;
@@ -457,12 +680,49 @@ async function validateLessonRequirements() {
 
 }
 
+function updateLessonTaskPanel(lesson) {
+
+    const requiresTask =
+        lesson.requires_task === true;
+
+    if (!lessonProjectPanel) {
+
+        return;
+
+    }
+
+    lessonProjectPanel.style.display =
+        requiresTask
+            ? "block"
+            : "none";
+
+    if (!requiresTask) {
+
+        lessonProjectForm.reset();
+        resetLessonProjectFileState();
+        return;
+
+    }
+
+    lessonTaskTitle.textContent =
+        lesson.task_title ||
+        "Tarea de la clase";
+
+    lessonTaskDescription.textContent =
+        lesson.task_description ||
+        "Sube el archivo de tu tarea para poder avanzar a la siguiente clase.";
+
+}
+
 /* OPEN LESSON */
 
 async function openLesson(lesson) {
 
     currentLessonId =
         lesson.id;
+
+    currentLessonData =
+        lesson;
 
     showLessonView();
 
@@ -520,6 +780,10 @@ async function openLesson(lesson) {
 
     lessonTitle.textContent =
         lesson.title;
+
+    updateLessonTaskPanel(
+        lesson
+    );
 
     if (lesson.video_url) {
 
@@ -644,6 +908,13 @@ async function openLesson(lesson) {
 
 async function loadResources(lessonId) {
 
+    if (resourcesPanel) {
+
+        resourcesPanel.style.display =
+            "none";
+
+    }
+
     const response =
         await fetch(
             `${API_URL}/api/resources/${lessonId}`
@@ -656,10 +927,14 @@ async function loadResources(lessonId) {
 
     if (resources.length === 0) {
 
-        lessonResources.innerHTML =
-            "<p style='color:rgba(255,255,255,0.6);margin-top:14px;'>Esta clase aún no tiene recursos.</p>";
-
         return;
+
+    }
+
+    if (resourcesPanel) {
+
+        resourcesPanel.style.display =
+            "block";
 
     }
 
@@ -698,6 +973,12 @@ async function loadProgress() {
         await response.json();
 
     updateFinishCourseButton();
+
+    if (allLessonsData.length > 0) {
+
+        await loadFinalProjectStatus();
+
+    }
 
 }
 
@@ -944,6 +1225,9 @@ function showWelcomeView() {
     currentLessonId =
         null;
 
+    currentLessonData =
+        null;
+
     lessonTitle.textContent =
         "Bienvenido al curso";
 
@@ -964,6 +1248,8 @@ function showWelcomeView() {
         lessonProjectPanel.style.display =
             "none";
     }
+
+    renderFinalProjectPanel();
 
     const totalLessons =
         new Set(
@@ -1040,12 +1326,7 @@ function showLessonView() {
 
     if (resourcesPanel) {
         resourcesPanel.style.display =
-            "block";
-    }
-
-    if (lessonProjectPanel) {
-        lessonProjectPanel.style.display =
-            "block";
+            "none";
     }
 
     if (commentsPanel) {
@@ -1060,6 +1341,12 @@ if (finishCourseBtn) {
     finishCourseBtn.addEventListener(
         "click",
         async () => {
+
+            showCourseMessage(
+                "Primero debes completar el flujo de proyecto final y mentoría."
+            );
+
+            return;
 
             if (getCurrentProgressPercent() < 100) {
 
@@ -1137,23 +1424,17 @@ function startFirstLesson() {
 
 function refreshLessonLocks() {
 
-    calculateUnlockedLessons();
+    unlockedLessonIds =
+        allLessonsData.map(
+            lesson => lesson.id
+        );
 
     document
         .querySelectorAll(".player-lesson")
         .forEach(button => {
 
-            const lessonId =
-                button.dataset.lessonId;
-
-            const isUnlocked =
-                unlockedLessonIds.includes(
-                    lessonId
-                );
-
-            button.classList.toggle(
-                "locked-lesson",
-                !isUnlocked
+            button.classList.remove(
+                "locked-lesson"
             );
 
             const existingLock =
@@ -1165,36 +1446,11 @@ function refreshLessonLocks() {
 
             }
 
-            if (!isUnlocked) {
-
-                button.innerHTML += `
-        <small class="lesson-lock">
-            🔒
-        </small>
-    `;
-
-            }
-
         });
 
 }
 
 function handleLessonClick(lesson) {
-
-    const isUnlocked =
-        unlockedLessonIds.includes(
-            lesson.id
-        );
-
-    if (!isUnlocked) {
-
-        showCourseMessage(
-            "Esta clase está bloqueada. Completa la clase anterior para desbloquearla."
-        );
-
-        return;
-
-    }
 
     openLesson(lesson);
 
@@ -1232,6 +1488,221 @@ function showCourseMessage(message) {
 
 }
 
+function resetLessonProjectFileState() {
+
+    if (lessonProjectFileName) {
+
+        lessonProjectFileName.textContent =
+            "No hay archivo seleccionado";
+
+    }
+
+}
+
+async function uploadLessonProjectFile(file) {
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "file",
+        file
+    );
+
+    const response =
+        await fetch(
+            `${API_URL}/api/uploads/submissions`,
+            {
+                method:
+                    "POST",
+                body:
+                    formData
+            }
+        );
+
+    const result =
+        await response.json();
+
+    if (
+        !response.ok ||
+        !result.url
+    ) {
+
+        const message =
+            typeof result.error === "string"
+                ? result.error
+                : "No se pudo subir el archivo.";
+
+        throw new Error(message);
+
+    }
+
+    return result.url;
+
+}
+
+lessonProjectFile.addEventListener(
+    "change",
+    () => {
+
+        const file =
+            lessonProjectFile.files[0];
+
+        lessonProjectFileName.textContent =
+            file
+                ? file.name
+                : "No hay archivo seleccionado";
+
+    }
+);
+
+if (finalProjectFile) {
+
+    finalProjectFile.addEventListener(
+        "change",
+        () => {
+
+            const file =
+                finalProjectFile.files[0];
+
+            finalProjectFileName.textContent =
+                file
+                    ? file.name
+                    : "No hay archivo seleccionado";
+
+        }
+    );
+
+}
+
+if (finalProjectForm) {
+
+    finalProjectForm.addEventListener(
+        "submit",
+        async (e) => {
+
+            e.preventDefault();
+
+            if (getCurrentProgressPercent() !== 100) {
+
+                showCourseMessage(
+                    "Completa todas las clases antes de enviar el proyecto final."
+                );
+
+                return;
+
+            }
+
+            const file =
+                finalProjectFile.files[0];
+
+            if (!file) {
+
+                showCourseMessage(
+                    "Selecciona un archivo antes de enviar el proyecto final."
+                );
+
+                return;
+
+            }
+
+            const originalText =
+                finalProjectSubmitBtn.textContent;
+
+            finalProjectSubmitBtn.disabled =
+                true;
+
+            finalProjectSubmitBtn.textContent =
+                "Subiendo proyecto final...";
+
+            try {
+
+                const uploadedUrl =
+                    await uploadLessonProjectFile(
+                        file
+                    );
+
+                const response =
+                    await fetch(
+                        `${API_URL}/api/projects`,
+                        {
+                            method:
+                                "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    user_id:
+                                        user.id,
+                                    course_id:
+                                        courseId,
+                                    lesson_id:
+                                        null,
+                                    title:
+                                        "Proyecto Final del Curso",
+                                    description:
+                                        "Proyecto final enviado desde el curso.",
+                                    project_url:
+                                        uploadedUrl,
+                                    submission_type:
+                                        "final_project",
+                                    status:
+                                        "pending"
+                                })
+                        }
+                    );
+
+                const result =
+                    await response.json();
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        result.error ||
+                        "No se pudo guardar el proyecto final."
+                    );
+
+                }
+
+                currentCourseRelation.final_project_submitted =
+                    true;
+
+                resetFinalProjectFileState();
+
+                showCourseMessage(
+                    "Proyecto final enviado correctamente."
+                );
+
+                await loadFinalProjectStatus();
+
+            } catch (error) {
+
+                console.error(error);
+
+                showCourseMessage(
+                    error.message ||
+                    "No se pudo enviar el proyecto final."
+                );
+
+            } finally {
+
+                finalProjectSubmitBtn.disabled =
+                    false;
+
+                finalProjectSubmitBtn.textContent =
+                    originalText;
+
+            }
+
+        }
+    );
+
+}
+
 lessonProjectForm.addEventListener(
     "submit",
     async (e) => {
@@ -1241,58 +1712,142 @@ lessonProjectForm.addEventListener(
         if (!currentLessonId) {
 
             showCourseMessage(
-                "Selecciona una clase antes de enviar un entregable."
+                "Selecciona una clase antes de guardar una tarea."
             );
 
             return;
 
         }
 
-        await fetch(
-            `${API_URL}/api/projects`,
-            {
-                method: "POST",
+        if (
+            !currentLessonData ||
+            currentLessonData.requires_task !== true
+        ) {
 
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
+            showCourseMessage(
+                "Esta clase no requiere tarea."
+            );
 
-                body:
-                    JSON.stringify({
+            return;
 
-                        user_id:
-                            user.id,
+        }
 
-                        course_id:
-                            courseId,
+        const file =
+            lessonProjectFile.files[0];
 
-                        lesson_id:
-                            currentLessonId,
+        if (!file) {
 
-                        title:
-                            lessonProjectTitle.value,
+            showCourseMessage(
+                "Selecciona un archivo antes de guardar la tarea."
+            );
 
-                        description:
-                            lessonProjectDescription.value,
+            return;
 
-                        project_url:
-                            lessonProjectUrl.value,
+        }
 
-                        status:
-                            "pending"
+        const submitButton =
+            lessonProjectForm.querySelector(
+                "button"
+            );
 
-                    })
+        const originalText =
+            submitButton.textContent;
+
+        submitButton.disabled =
+            true;
+
+        submitButton.textContent =
+            "Guardando tarea...";
+
+        try {
+
+            const uploadedUrl =
+                await uploadLessonProjectFile(
+                    file
+                );
+
+            const response =
+                await fetch(
+                    `${API_URL}/api/projects`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                user_id:
+                                    user.id,
+
+                                course_id:
+                                    courseId,
+
+                                lesson_id:
+                                    currentLessonId,
+
+                                title:
+                                    lessonProjectTitle.value,
+
+                                description:
+                                    lessonProjectDescription.value,
+
+                                project_url:
+                                    uploadedUrl,
+
+                                submission_type:
+                                    "task",
+
+                                status:
+                                    "pending"
+
+                            })
+                    }
+                );
+
+            const result =
+                await response.json();
+
+            if (!response.ok) {
+
+                throw new Error(
+                    result.error ||
+                    "No se pudo guardar la tarea."
+                );
+
             }
-        );
 
-        lessonProjectForm.reset();
+            lessonProjectForm.reset();
 
-        showCourseMessage(
-            "Entregable enviado correctamente."
-        );
-        
-        refreshLessonLocks();
+            resetLessonProjectFileState();
+
+            showCourseMessage(
+                "Tarea guardada correctamente."
+            );
+
+            refreshLessonLocks();
+
+        } catch (error) {
+
+            console.error(error);
+
+            showCourseMessage(
+                error.message ||
+                "No se pudo guardar la tarea."
+            );
+
+        } finally {
+
+            submitButton.disabled =
+                false;
+
+            submitButton.textContent =
+                originalText;
+
+        }
 
     }
 );
@@ -1316,14 +1871,11 @@ async function initCoursePlayer() {
 
     await loadModules();
 
-    setTimeout(() => {
+    refreshLessonLocks();
 
-        refreshLessonLocks();
-
-        showWelcomeView();
-        updateFinishCourseButton();
-
-    }, 500);
+    showWelcomeView();
+    await loadFinalProjectStatus();
+    updateFinishCourseButton();
 
 }
 

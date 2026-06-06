@@ -101,9 +101,27 @@ const createProject =
                 lesson_id,
                 title,
                 description,
-                project_url
+                project_url,
+                submission_type,
+                status
 
             } = req.body;
+
+            const allowedSubmissionTypes =
+                [
+                    "task",
+                    "final_project"
+                ];
+
+            const normalizedSubmissionType =
+                allowedSubmissionTypes.includes(
+                    submission_type
+                )
+                    ? submission_type
+                    : "task";
+
+            const normalizedStatus =
+                status || "pending";
 
             const { data: assignedMentor } =
                 await supabase
@@ -136,7 +154,11 @@ const createProject =
 
                         title,
                         description,
-                        project_url
+                        project_url,
+                        status:
+                            normalizedStatus,
+                        submission_type:
+                            normalizedSubmissionType
 
                     }])
                     .select();
@@ -144,6 +166,26 @@ const createProject =
             if (error) {
 
                 return res.status(400).json(error);
+
+            }
+
+            if (normalizedSubmissionType === "final_project") {
+
+                const { error: courseError } =
+                    await supabase
+                        .from("student_courses")
+                        .update({
+                            final_project_submitted:
+                                true
+                        })
+                        .eq("student_id", user_id)
+                        .eq("course_id", course_id);
+
+                if (courseError) {
+
+                    return res.status(400).json(courseError);
+
+                }
 
             }
 
@@ -191,11 +233,35 @@ const updateProjectStatus =
 
                     })
                     .eq("id", id)
-                    .select();
+                    .select()
+                    .single();
 
             if (error) {
 
                 return res.status(400).json(error);
+
+            }
+
+            if (
+                data.submission_type === "final_project" &&
+                status === "approved"
+            ) {
+
+                const { error: courseError } =
+                    await supabase
+                        .from("student_courses")
+                        .update({
+                            final_project_approved:
+                                true
+                        })
+                        .eq("student_id", data.user_id)
+                        .eq("course_id", data.course_id);
+
+                if (courseError) {
+
+                    return res.status(400).json(courseError);
+
+                }
 
             }
 

@@ -152,6 +152,9 @@ async function loadMentorships() {
                 session.mentor_id
             );
 
+        const sessionStatus =
+            session.status || "available";
+
         const payment =
             getMentorshipPayment(
                 payments,
@@ -201,11 +204,11 @@ async function loadMentorships() {
 
                     ${!isAssignedMentor
                 ? "Bloqueada"
-                : session.status === "available"
+                : sessionStatus === "available"
                     ? "Disponible"
                     : isOwnReservation && !isPaymentApproved
                         ? "Pago pendiente"
-                    : session.status
+                    : "Reservada"
             }
 
                 </div>
@@ -251,7 +254,7 @@ async function loadMentorships() {
                     ""
             }
 
-                ${isAssignedMentor && session.status === "available"
+                ${isAssignedMentor && sessionStatus === "available"
                 ?
                 `
                     <button

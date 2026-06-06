@@ -43,6 +43,9 @@ const projectsRoutes =
 const resourcesRoutes =
     require("./src/routes/resources.routes");
 
+const uploadsRoutes =
+    require("./src/routes/uploads.routes");
+
 const lessonsRoutes =
     require(
         "./src/routes/lessons.routes"
@@ -118,6 +121,11 @@ app.use(
 app.use(
     "/api/resources",
     resourcesRoutes
+);
+
+app.use(
+    "/api/uploads",
+    uploadsRoutes
 );
 
 app.use(

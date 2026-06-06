@@ -78,7 +78,10 @@ async (req,res) => {
             video_url,
             duration,
             position,
-            is_preview
+            is_preview,
+            requires_task,
+            task_title,
+            task_description
 
         } = req.body;
 
@@ -98,7 +101,13 @@ async (req,res) => {
             video_url,
             duration,
             position,
-            is_preview
+            is_preview,
+            requires_task:
+                requires_task === true,
+            task_title:
+                task_title || null,
+            task_description:
+                task_description || null
 
         }])
 
@@ -147,7 +156,10 @@ const updateLesson =
                 title,
                 duration,
                 video_url,
-                is_preview
+                is_preview,
+                requires_task,
+                task_title,
+                task_description
 
             } = req.body;
 
@@ -159,7 +171,13 @@ const updateLesson =
                         title,
                         duration,
                         video_url,
-                        is_preview
+                        is_preview,
+                        requires_task:
+                            requires_task === true,
+                        task_title:
+                            task_title || null,
+                        task_description:
+                            task_description || null
 
                     })
                     .eq("id", id)

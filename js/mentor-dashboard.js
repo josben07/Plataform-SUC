@@ -52,7 +52,7 @@ async function loadMentorDashboard() {
 
     const sessionResponse =
         await fetch(
-            `${API_URL}/api/mentor`
+            `${API_URL}/api/mentor/sessions/${user.id}`
         );
 
     const sessions =

@@ -27,6 +27,22 @@ const projectFeedback =
 let currentProjectId =
     null;
 
+function getSubmissionTypeLabel(project) {
+
+    return project.submission_type === "final_project"
+        ? "Proyecto Final"
+        : "Tarea";
+
+}
+
+function getSubmissionTypeClass(project) {
+
+    return project.submission_type === "final_project"
+        ? "final-project-type"
+        : "task-type";
+
+}
+
 async function loadMentorProjects() {
 
     const response =
@@ -56,6 +72,10 @@ async function loadMentorProjects() {
         mentorProjectsGrid.innerHTML += `
 
             <div class="project-card">
+
+                <span class="submission-type ${getSubmissionTypeClass(project)}">
+                    ${getSubmissionTypeLabel(project)}
+                </span>
 
                 <h3>${project.title}</h3>
 

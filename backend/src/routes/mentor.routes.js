@@ -7,6 +7,7 @@ const router =
 const {
 
     getMentorSessions,
+    getMentorSessionsByMentor,
     createMentorSession,
     updateMentorSession,
     deleteMentorSession,
@@ -22,6 +23,11 @@ const {
 router.get(
     "/",
     getMentorSessions
+);
+
+router.get(
+    "/sessions/:mentorId",
+    getMentorSessionsByMentor
 );
 
 /* CREATE */

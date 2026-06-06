@@ -188,6 +188,46 @@ const getMentorSessions =
 
     };
 
+const getMentorSessionsByMentor =
+    async (req, res) => {
+
+        try {
+
+            const { mentorId } =
+                req.params;
+
+            const { data, error } =
+                await supabase
+                    .from("mentor_sessions")
+                    .select("*")
+                    .eq("mentor_id", mentorId)
+                    .order("created_at", {
+
+                        ascending: false
+
+                    });
+
+            if (error) {
+
+                return res.status(400).json(error);
+
+            }
+
+            res.json(data);
+
+        } catch (err) {
+
+            res.status(500).json({
+
+                error:
+                    err.message
+
+            });
+
+        }
+
+    };
+
 /* CREATE */
 
 const createMentorSession =
@@ -225,6 +265,8 @@ const createMentorSession =
                             normalizeMentorSessionPrice(
                                 price
                             ),
+                        status:
+                            "available",
                         meet_link
 
                     }])
@@ -385,6 +427,21 @@ const requestMentorship =
 
             }
 
+            const sessionStatus =
+                session.status || "available";
+
+            if (
+                sessionStatus !== "available" ||
+                session.student_id
+            ) {
+
+                return res.status(400).json({
+                    error:
+                        "Esta mentoría ya fue reservada."
+                });
+
+            }
+
             const activeCourse =
                 await getActiveStudentCourse(
                     student_id
@@ -492,6 +549,7 @@ const cancelMentorship =
 module.exports = {
 
     getMentorSessions,
+    getMentorSessionsByMentor,
     createMentorSession,
     updateMentorSession,
     deleteMentorSession,

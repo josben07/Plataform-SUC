@@ -42,6 +42,39 @@ const filterButtons =
 let currentFilter =
     "all";
 
+function escapeInlineValue(value) {
+
+    return String(value || "")
+        .replace(/\\/g, "\\\\")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "\\'")
+        .replace(/\n/g, " ");
+
+}
+
+function getPaymentProofCell(payment) {
+
+    if (!payment.proof_url) {
+
+        return `
+            <span class="no-proof">
+                Sin comprobante
+            </span>
+        `;
+
+    }
+
+    return `
+        <button
+            class="proof-btn"
+            onclick="window.open('${escapeInlineValue(payment.proof_url)}', '_blank')"
+        >
+            Ver comprobante
+        </button>
+    `;
+
+}
+
 /* LOAD */
 
 async function loadPayments() {
@@ -142,6 +175,12 @@ async function loadPayments() {
 
                     <td>
 
+                        ${getPaymentProofCell(payment)}
+
+                    </td>
+
+                    <td>
+
                         <div class="payment-actions">
 
                             <button
@@ -210,7 +249,7 @@ async function loadPayments() {
 
         <tr>
 
-            <td colspan="6">
+            <td colspan="7">
 
                 <div class="empty-state">
 

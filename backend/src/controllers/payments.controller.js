@@ -100,7 +100,8 @@ const updatePayment =
                 req.params;
 
             const {
-                status
+                status,
+                proof_url
             } = req.body;
 
             /* PAYMENT */
@@ -114,15 +115,35 @@ const updatePayment =
                     .eq("id", id)
                     .single();
 
+            const updateData =
+                {};
+
+            if (status) {
+
+                updateData.status =
+                    status;
+
+            }
+
+            if (
+                Object.prototype.hasOwnProperty.call(
+                    req.body,
+                    "proof_url"
+                )
+            ) {
+
+                updateData.proof_url =
+                    proof_url;
+
+            }
+
             const {
                 data,
                 error
             } =
                 await supabase
                     .from("payments")
-                    .update({
-                        status
-                    })
+                    .update(updateData)
                     .eq("id", id)
                     .select()
                     .single();

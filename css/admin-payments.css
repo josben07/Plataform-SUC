@@ -278,6 +278,33 @@ body{
     color:#F59E0B;
 }
 
+.proof-btn{
+
+    border:none;
+
+    border-radius:12px;
+
+    padding:
+    10px 14px;
+
+    background:
+    rgba(139,124,255,0.14);
+
+    color:#A89BFF;
+
+    font-weight:700;
+
+    cursor:pointer;
+}
+
+.no-proof{
+
+    color:
+    rgba(255,255,255,0.48);
+
+    font-size:13px;
+}
+
 /* EMPTY STATE */
 
 .empty-state{

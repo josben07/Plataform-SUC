@@ -478,10 +478,62 @@ const lessonPreview =
         "lessonPreview"
     );
 
+const lessonRequiresTask =
+    document.getElementById(
+        "lessonRequiresTask"
+    );
+
+const lessonTaskFields =
+    document.getElementById(
+        "lessonTaskFields"
+    );
+
+const lessonTaskTitle =
+    document.getElementById(
+        "lessonTaskTitle"
+    );
+
+const lessonTaskDescription =
+    document.getElementById(
+        "lessonTaskDescription"
+    );
+
 /* ACTIVE MODULE */
 
 let activeModuleId =
     null;
+
+function updateTaskFieldsVisibility(
+    checkbox,
+    fields
+) {
+
+    const inputs =
+        fields.querySelectorAll(
+            "input, textarea"
+        );
+
+    fields.classList.toggle(
+        "visible-task-fields",
+        checkbox.checked
+    );
+
+    inputs.forEach(input => {
+
+        input.required =
+            checkbox.checked &&
+            input.tagName === "INPUT";
+
+        if (!checkbox.checked) {
+
+            input.value =
+                "";
+
+        }
+
+    });
+
+}
 
 /* OPEN LESSON MODAL */
 
@@ -489,6 +541,13 @@ function openLessonModal(moduleId) {
 
     activeModuleId =
         moduleId;
+
+    lessonForm.reset();
+
+    updateTaskFieldsVisibility(
+        lessonRequiresTask,
+        lessonTaskFields
+    );
 
     lessonModal.classList.add(
         "active-modal"
@@ -502,8 +561,27 @@ closeLessonModal.addEventListener(
     "click",
     () => {
 
+        lessonForm.reset();
+
+        updateTaskFieldsVisibility(
+            lessonRequiresTask,
+            lessonTaskFields
+        );
+
         lessonModal.classList.remove(
             "active-modal"
+        );
+
+    }
+);
+
+lessonRequiresTask.addEventListener(
+    "change",
+    () => {
+
+        updateTaskFieldsVisibility(
+            lessonRequiresTask,
+            lessonTaskFields
         );
 
     }
@@ -535,7 +613,20 @@ lessonForm.addEventListener(
                 lessonVideo.value,
 
             is_preview:
-                lessonPreview.checked
+                lessonPreview.checked,
+
+            requires_task:
+                lessonRequiresTask.checked,
+
+            task_title:
+                lessonRequiresTask.checked
+                    ? lessonTaskTitle.value
+                    : null,
+
+            task_description:
+                lessonRequiresTask.checked
+                    ? lessonTaskDescription.value
+                    : null
 
         };
 
@@ -564,6 +655,11 @@ lessonForm.addEventListener(
         );
 
         lessonForm.reset();
+
+        updateTaskFieldsVisibility(
+            lessonRequiresTask,
+            lessonTaskFields
+        );
 
         lessonModal.classList.remove(
             "active-modal"
@@ -837,6 +933,26 @@ const editLessonPreview =
         "editLessonPreview"
     );
 
+const editLessonRequiresTask =
+    document.getElementById(
+        "editLessonRequiresTask"
+    );
+
+const editLessonTaskFields =
+    document.getElementById(
+        "editLessonTaskFields"
+    );
+
+const editLessonTaskTitle =
+    document.getElementById(
+        "editLessonTaskTitle"
+    );
+
+const editLessonTaskDescription =
+    document.getElementById(
+        "editLessonTaskDescription"
+    );
+
 let currentLesson =
     null;
 
@@ -862,6 +978,20 @@ function editLesson(
 
     editLessonPreview.checked =
         lesson.is_preview;
+
+    editLessonRequiresTask.checked =
+        lesson.requires_task === true;
+
+    editLessonTaskTitle.value =
+        lesson.task_title || "";
+
+    editLessonTaskDescription.value =
+        lesson.task_description || "";
+
+    updateTaskFieldsVisibility(
+        editLessonRequiresTask,
+        editLessonTaskFields
+    );
 
     editLessonModal.classList.add(
         "active-modal"
@@ -918,7 +1048,20 @@ editLessonForm.addEventListener(
                             editLessonVideo.value,
 
                         is_preview:
-                            editLessonPreview.checked
+                            editLessonPreview.checked,
+
+                        requires_task:
+                            editLessonRequiresTask.checked,
+
+                        task_title:
+                            editLessonRequiresTask.checked
+                                ? editLessonTaskTitle.value
+                                : null,
+
+                        task_description:
+                            editLessonRequiresTask.checked
+                                ? editLessonTaskDescription.value
+                                : null
 
                     })
 
@@ -961,9 +1104,19 @@ const resourceTitle =
         "resourceTitle"
     );
 
-const resourceUrl =
+const resourceFile =
     document.getElementById(
-        "resourceUrl"
+        "resourceFile"
+    );
+
+const resourceFileName =
+    document.getElementById(
+        "resourceFileName"
+    );
+
+const resourceUploadMessage =
+    document.getElementById(
+        "resourceUploadMessage"
     );
 
 const resourceType =
@@ -973,6 +1126,73 @@ const resourceType =
 
 let currentLessonResource =
     null;
+
+function resetResourceUploadState() {
+
+    resourceFileName.textContent =
+        "No hay archivo seleccionado";
+
+    resourceUploadMessage.textContent =
+        "";
+
+    resourceUploadMessage.classList.remove(
+        "is-error"
+    );
+
+}
+
+function showResourceUploadError(message) {
+
+    resourceUploadMessage.textContent =
+        message;
+
+    resourceUploadMessage.classList.add(
+        "is-error"
+    );
+
+}
+
+async function uploadResourceFile(file) {
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "file",
+        file
+    );
+
+    const response =
+        await fetch(
+            `${API_URL}/api/uploads/resources`,
+            {
+                method:
+                    "POST",
+                body:
+                    formData
+            }
+        );
+
+    const result =
+        await response.json();
+
+    if (
+        !response.ok ||
+        !result.url
+    ) {
+
+        const message =
+            typeof result.error === "string"
+                ? result.error
+                : "No se pudo subir el archivo.";
+
+        throw new Error(message);
+
+    }
+
+    return result.url;
+
+}
 
 /* OPEN */
 
@@ -984,6 +1204,10 @@ function openResourceModal(
 
     currentLessonResource =
         lessonId;
+
+    resourceForm.reset();
+
+    resetResourceUploadState();
 
     resourceModal.classList.add(
         "active-modal"
@@ -997,8 +1221,46 @@ closeResourceModal.addEventListener(
     "click",
     () => {
 
+        resourceForm.reset();
+
+        resetResourceUploadState();
+
         resourceModal.classList.remove(
             "active-modal"
+        );
+
+    }
+);
+
+resourceFile.addEventListener(
+    "change",
+    () => {
+
+        const file =
+            resourceFile.files[0];
+
+        resourceFileName.textContent =
+            file
+                ? file.name
+                : "No hay archivo seleccionado";
+
+        resourceUploadMessage.textContent =
+            "";
+
+        resourceUploadMessage.classList.remove(
+            "is-error"
+        );
+
+    }
+);
+
+editLessonRequiresTask.addEventListener(
+    "change",
+    () => {
+
+        updateTaskFieldsVisibility(
+            editLessonRequiresTask,
+            editLessonTaskFields
         );
 
     }
@@ -1012,49 +1274,115 @@ resourceForm.addEventListener(
 
         e.preventDefault();
 
-        await fetch(
+        const file =
+            resourceFile.files[0];
 
-            `${API_URL}/api/resources`,
+        if (!file) {
 
-            {
+            showResourceUploadError(
+                "Selecciona un archivo para subir."
+            );
 
-                method: "POST",
+            return;
 
-                headers: {
+        }
 
-                    "Content-Type":
-                        "application/json"
+        const submitButton =
+            resourceForm.querySelector(
+                "button"
+            );
 
-                },
+        const originalText =
+            submitButton.textContent;
 
-                body:
-                    JSON.stringify({
+        submitButton.disabled =
+            true;
 
-                        lesson_id:
-                            currentLessonResource,
+        submitButton.textContent =
+            "Subiendo archivo...";
 
-                        title:
-                            resourceTitle.value,
+        try {
 
-                        file_url:
-                            resourceUrl.value,
+            const uploadedUrl =
+                await uploadResourceFile(
+                    file
+                );
 
-                        file_type:
-                            resourceType.value
+            const response =
+                await fetch(
 
-                    })
+                    `${API_URL}/api/resources`,
+
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                lesson_id:
+                                    currentLessonResource,
+
+                                title:
+                                    resourceTitle.value,
+
+                                file_url:
+                                    uploadedUrl,
+
+                                file_type:
+                                    resourceType.value
+
+                            })
+
+                    }
+
+                );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "No se pudo guardar el recurso."
+                );
 
             }
 
-        );
+            resourceForm.reset();
 
-        resourceModal.classList.remove(
-            "active-modal"
-        );
+            resetResourceUploadState();
 
-        loadResources(
-            currentLessonResource
-        );
+            resourceModal.classList.remove(
+                "active-modal"
+            );
+
+            loadResources(
+                currentLessonResource
+            );
+
+        } catch (error) {
+
+            console.error(error);
+
+            showResourceUploadError(
+                error.message ||
+                "No se pudo subir el archivo."
+            );
+
+        } finally {
+
+            submitButton.disabled =
+                false;
+
+            submitButton.textContent =
+                originalText;
+
+        }
 
     }
 );

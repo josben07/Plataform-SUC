@@ -70,28 +70,76 @@
 
             <section class="lesson-project-panel">
             
-                <h3>
-                    Entregable de la clase
+                <h3 id="lessonTaskTitle">
+                    Tarea de la clase
                 </h3>
             
-                <p>
-                    Sube el enlace de tu entregable para poder avanzar a la siguiente clase.
+                <p id="lessonTaskDescription">
+                    Sube el archivo de tu tarea para poder avanzar a la siguiente clase.
                 </p>
             
                 <form id="lessonProjectForm">
             
-                    <input type="text" id="lessonProjectTitle" placeholder="Título del entregable" required>
+                    <input type="text" id="lessonProjectTitle" placeholder="Título de la tarea" required>
             
-                    <textarea id="lessonProjectDescription" placeholder="Descripción breve del entregable"></textarea>
+                    <textarea id="lessonProjectDescription" placeholder="Descripción breve de la tarea"></textarea>
             
-                    <input type="text" id="lessonProjectUrl" placeholder="URL del entregable" required>
+                    <label class="lesson-project-file-field" for="lessonProjectFile">
+
+                        Seleccionar archivo
+
+                        <input type="file" id="lessonProjectFile" required>
+
+                    </label>
+
+                    <p class="lesson-project-file-name" id="lessonProjectFileName">
+
+                        No hay archivo seleccionado
+
+                    </p>
             
                     <button type="submit">
-                        Enviar entregable
+                        Guardar tarea
                     </button>
             
                 </form>
             
+            </section>
+
+            <section class="final-project-panel" id="finalProjectPanel">
+
+                <h3>
+                    Proyecto Final del Curso
+                </h3>
+
+                <p>
+                    Sube tu proyecto final cuando hayas completado todas las clases.
+                </p>
+
+                <div class="final-project-status" id="finalProjectStatus"></div>
+
+                <form id="finalProjectForm">
+
+                    <label class="lesson-project-file-field" for="finalProjectFile">
+
+                        Seleccionar archivo
+
+                        <input type="file" id="finalProjectFile" required>
+
+                    </label>
+
+                    <p class="lesson-project-file-name" id="finalProjectFileName">
+
+                        No hay archivo seleccionado
+
+                    </p>
+
+                    <button type="submit" id="finalProjectSubmitBtn">
+                        Enviar proyecto final
+                    </button>
+
+                </form>
+
             </section>
 
             <section class="comments-panel">

@@ -127,6 +127,22 @@
 
                 </label>
 
+                <label class="preview-label">
+
+                    <input type="checkbox" id="lessonRequiresTask">
+
+                    Esta clase requiere tarea
+
+                </label>
+
+                <div class="lesson-task-fields" id="lessonTaskFields">
+
+                    <input type="text" id="lessonTaskTitle" placeholder="Ti­tulo de la tarea">
+
+                    <textarea id="lessonTaskDescription" placeholder="Descripcion de la tarea"></textarea>
+
+                </div>
+
                 <button type="submit">
 
                     Crear clase
@@ -207,6 +223,22 @@
 
                 </label>
 
+                <label class="preview-label">
+
+                    <input type="checkbox" id="editLessonRequiresTask">
+
+                    Esta clase requiere tarea
+
+                </label>
+
+                <div class="lesson-task-fields" id="editLessonTaskFields">
+
+                    <input type="text" id="editLessonTaskTitle" placeholder="Ti­tulo de la tarea">
+
+                    <textarea id="editLessonTaskDescription" placeholder="Descripcion de la tarea"></textarea>
+
+                </div>
+
                 <button type="submit">
 
                     Guardar cambios
@@ -280,7 +312,23 @@
     
                 <input type="text" id="resourceTitle" placeholder="Nombre del recurso" required>
     
-                <input type="text" id="resourceUrl" placeholder="URL del archivo" required>
+                <label class="resource-file-field" for="resourceFile">
+
+                    Seleccionar archivo
+
+                    <input type="file" id="resourceFile" required>
+
+                </label>
+
+                <p class="resource-file-name" id="resourceFileName">
+
+                    No hay archivo seleccionado
+
+                </p>
+
+                <p class="resource-upload-message" id="resourceUploadMessage">
+
+                </p>
     
                 <select id="resourceType">
     

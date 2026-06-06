@@ -16,6 +16,12 @@ const payCourseName =
 const payAmount =
     document.getElementById("payAmount");
 
+const paymentProofFile =
+    document.getElementById("paymentProofFile");
+
+const paymentProofFileName =
+    document.getElementById("paymentProofFileName");
+
 let currentPaymentId =
     null;
 
@@ -118,6 +124,66 @@ function getPaymentStatusText(status) {
     }
 
     return status || "Pendiente";
+
+}
+
+function resetPaymentProofState() {
+
+    if (paymentProofFileName) {
+
+        paymentProofFileName.textContent =
+            "No hay archivo seleccionado";
+
+    }
+
+    if (paymentProofFile) {
+
+        paymentProofFile.value =
+            "";
+
+    }
+
+}
+
+async function uploadPaymentProof(file) {
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "file",
+        file
+    );
+
+    const response =
+        await fetch(
+            `${API_URL}/api/uploads/payments`,
+            {
+                method:
+                    "POST",
+                body:
+                    formData
+            }
+        );
+
+    const result =
+        await response.json();
+
+    if (
+        !response.ok ||
+        !result.url
+    ) {
+
+        const message =
+            typeof result.error === "string"
+                ? result.error
+                : "No se pudo subir el comprobante.";
+
+        throw new Error(message);
+
+    }
+
+    return result.url;
 
 }
 
@@ -256,6 +322,8 @@ function openPayModal(
     payAmount.textContent =
         `Monto: S/ ${amount}`;
 
+    resetPaymentProofState();
+
     payModal.classList.add(
         "active-modal"
     );
@@ -266,11 +334,134 @@ closePayModal.addEventListener(
     "click",
     () => {
 
+        resetPaymentProofState();
+
         payModal.classList.remove(
             "active-modal"
         );
 
     }
+);
+
+paymentProofFile.addEventListener(
+    "change",
+    () => {
+
+        const file =
+            paymentProofFile.files[0];
+
+        paymentProofFileName.textContent =
+            file
+                ? file.name
+                : "No hay archivo seleccionado";
+
+    }
+);
+
+async function confirmPaymentWithProof(event) {
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    const file =
+        paymentProofFile.files[0];
+
+    if (!file) {
+
+        showPaymentToast(
+            "Sube tu comprobante antes de confirmar el pago."
+        );
+
+        return;
+
+    }
+
+    const originalText =
+        confirmPayBtn.textContent;
+
+    confirmPayBtn.disabled =
+        true;
+
+    confirmPayBtn.textContent =
+        "Subiendo comprobante...";
+
+    try {
+
+        const proofUrl =
+            await uploadPaymentProof(
+                file
+            );
+
+        const response =
+            await fetch(
+                `${API_URL}/api/payments/${currentPaymentId}`,
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            status:
+                                "en_revision",
+                            proof_url:
+                                proofUrl
+                        })
+                }
+            );
+
+        const result =
+            await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                result.error ||
+                "No se pudo actualizar el pago."
+            );
+
+        }
+
+        resetPaymentProofState();
+
+        payModal.classList.remove(
+            "active-modal"
+        );
+
+        await loadPayments();
+
+        showPaymentToast(
+            "Pago enviado. Esperando aprobaciÃ³n del administrador."
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        showPaymentToast(
+            error.message ||
+            "No se pudo enviar el pago."
+        );
+
+    } finally {
+
+        confirmPayBtn.disabled =
+            false;
+
+        confirmPayBtn.textContent =
+            originalText;
+
+    }
+
+}
+
+confirmPayBtn.addEventListener(
+    "click",
+    confirmPaymentWithProof,
+    true
 );
 
 confirmPayBtn.addEventListener(
