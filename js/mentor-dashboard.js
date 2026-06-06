@@ -44,7 +44,7 @@ async function loadMentorDashboard() {
 
     const projectResponse =
         await fetch(
-            `${API_URL}/api/projects`
+            `${API_URL}/api/projects/mentor/${user.id}`
         );
 
     const projects =

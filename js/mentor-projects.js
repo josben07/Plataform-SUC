@@ -30,7 +30,9 @@ let currentProjectId =
 async function loadMentorProjects() {
 
     const response =
-        await fetch(`${API_URL}/api/projects`);
+        await fetch(
+            `${API_URL}/api/projects/mentor/${user.id}`
+        );
 
     const projects =
         await response.json();

@@ -42,6 +42,50 @@ const getProjects =
     };
 
 /* ========================= */
+/* GET PROJECTS BY MENTOR */
+/* ========================= */
+
+const getProjectsByMentor =
+    async (req, res) => {
+
+        try {
+
+            const { mentorId } =
+                req.params;
+
+            const { data, error } =
+                await supabase
+                    .from("project_submissions")
+                    .select("*")
+                    .eq("mentor_id", mentorId)
+                    .order("created_at", {
+
+                        ascending: false
+
+                    });
+
+            if (error) {
+
+                return res.status(400).json(error);
+
+            }
+
+            res.json(data);
+
+        } catch (err) {
+
+            res.status(500).json({
+
+                error:
+                    err.message
+
+            });
+
+        }
+
+    };
+
+/* ========================= */
 /* CREATE PROJECT */
 /* ========================= */
 
@@ -61,6 +105,24 @@ const createProject =
 
             } = req.body;
 
+            const { data: assignedMentor } =
+                await supabase
+                    .from("student_mentors")
+                    .select("mentor_id")
+                    .eq("student_id", user_id)
+                    .eq("course_id", course_id)
+                    .eq("status", "active")
+                    .maybeSingle();
+
+            if (!assignedMentor) {
+
+                return res.status(400).json({
+                    error:
+                        "Debes seleccionar un mentor antes de enviar entregables."
+                });
+
+            }
+
             const { data, error } =
                 await supabase
                     .from("project_submissions")
@@ -69,6 +131,8 @@ const createProject =
                         user_id,
                         course_id,
                         lesson_id,
+                        mentor_id:
+                            assignedMentor.mentor_id,
 
                         title,
                         description,
@@ -193,6 +257,7 @@ const deleteProject =
 module.exports = {
 
     getProjects,
+    getProjectsByMentor,
     createProject,
     updateProjectStatus,
     deleteProject

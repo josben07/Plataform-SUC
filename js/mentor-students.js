@@ -18,7 +18,9 @@ async function loadStudents() {
         await usersResponse.json();
 
     const projectsResponse =
-        await fetch(`${API_URL}/api/projects`);
+        await fetch(
+            `${API_URL}/api/projects/mentor/${user.id}`
+        );
 
     const projects =
         await projectsResponse.json();
@@ -29,9 +31,27 @@ async function loadStudents() {
     const sessions =
         await sessionsResponse.json();
 
+    const mentorStudentIds =
+        new Set([
+            ...projects.map(
+                project => project.user_id
+            ),
+            ...sessions
+                .filter(
+                    session =>
+                        session.mentor_id === user.id
+                )
+                .map(
+                    session => session.student_id
+                )
+                .filter(Boolean)
+        ]);
+
     const students =
         users.filter(
-            item => item.role === "student"
+            item =>
+                item.role === "student" &&
+                mentorStudentIds.has(item.id)
         );
 
     studentsGrid.innerHTML = "";

@@ -7,6 +7,7 @@ const router =
 const {
 
     getProjects,
+    getProjectsByMentor,
     createProject,
     updateProjectStatus,
     deleteProject
@@ -20,6 +21,13 @@ const {
 router.get(
     "/",
     getProjects
+);
+
+/* GET BY MENTOR */
+
+router.get(
+    "/mentor/:mentorId",
+    getProjectsByMentor
 );
 
 /* CREATE */
