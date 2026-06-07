@@ -2,6 +2,9 @@
 const adminToast =
     document.querySelector(".admin-toast");
 
+const token =
+    localStorage.getItem("token");
+
 const adminToastMessage =
     document.getElementById("adminToastMessage");
 
@@ -294,7 +297,8 @@ async function updatePaymentStatus(
 
 ) {
 
-    await fetch(
+    const response =
+        await fetch(
 
         `${API_URL}/api/payments/${paymentId}`,
 
@@ -305,19 +309,41 @@ async function updatePaymentStatus(
             headers: {
 
                 "Content-Type":
-                    "application/json"
+                    "application/json",
+                Authorization:
+                    `Bearer ${token}`
 
             },
 
             body:
                 JSON.stringify({
 
-                    status
+                    status,
+                    actor_role:
+                        "admin"
 
                 })
 
         }
 
+    );
+
+    const result =
+        await response.json();
+
+    if (!response.ok) {
+
+        showAdminToast(
+            result.error ||
+            "No se pudo actualizar el pago"
+        );
+
+        return;
+
+    }
+
+    showAdminToast(
+        "Pago actualizado correctamente"
     );
 
     loadPayments();

@@ -202,9 +202,16 @@ function updateFinishCourseButton() {
 
     }
 
+    const canFinishCourse =
+        getCurrentProgressPercent() === 100 &&
+        currentCourseRelation &&
+        currentCourseRelation.status !== "Completed" &&
+        currentCourseRelation.final_project_approved === true &&
+        currentCourseRelation.final_mentorship_approved === true;
+
     finishCourseBtn.classList.toggle(
         "visible-finish-btn",
-        false
+        canFinishCourse
     );
 
 }
@@ -235,7 +242,11 @@ function renderFinalProjectPanel() {
 
     }
 
+    const isCourseLevelView =
+        currentLessonId === null;
+
     const courseReadyForFinalProject =
+        isCourseLevelView &&
         getCurrentProgressPercent() === 100 &&
         currentCourseRelation &&
         currentCourseRelation.status !== "Completed";
@@ -277,7 +288,7 @@ function renderFinalProjectPanel() {
         );
 
         finalProjectStatus.textContent =
-            "Esperando revisión del mentor.";
+            "Proyecto final pendiente de revisión.";
 
         finalProjectForm.style.display =
             "none";
@@ -313,6 +324,26 @@ function renderFinalProjectPanel() {
             "visible-status",
             "approved"
         );
+
+        if (
+            currentCourseRelation &&
+            currentCourseRelation.final_mentorship_approved === true
+        ) {
+
+            finalProjectStatus.innerHTML = `
+            Proyecto final aprobado.
+            <br>
+            Mentoria final validada. Ya puedes finalizar el curso.
+        `;
+
+            finalProjectForm.style.display =
+                "none";
+
+            updateFinishCourseButton();
+
+            return;
+
+        }
 
         finalProjectStatus.innerHTML = `
             Proyecto final aprobado.
@@ -373,6 +404,23 @@ async function loadFinalProjectStatus() {
 
 }
 
+function scrollToFinalProjectPanel() {
+
+    if (!finalProjectPanel) {
+
+        return;
+
+    }
+
+    finalProjectPanel.scrollIntoView({
+        behavior:
+            "smooth",
+        block:
+            "start"
+    });
+
+}
+
 
 async function validateCourseAccess() {
 
@@ -407,6 +455,30 @@ async function validateCourseAccess() {
     }
 
     return true;
+
+}
+
+async function getSelectedCourseMentor() {
+
+    const response =
+        await fetch(
+            `${API_URL}/api/student-mentors/${user.id}`
+        );
+
+    if (!response.ok) {
+
+        return null;
+
+    }
+
+    const studentMentors =
+        await response.json();
+
+    return studentMentors.find(item =>
+        String(item.course_id) === String(courseId) &&
+        item.status === "active" &&
+        item.mentor_id
+    );
 
 }
 
@@ -640,36 +712,6 @@ async function validateLessonRequirements() {
 
         showCourseMessage(
             "Debes guardar la tarea de esta clase antes de completarla."
-        );
-
-        return false;
-
-    }
-
-    if (lessonProject.status === "pending") {
-
-        showCourseMessage(
-            "Tu tarea está pendiente de revisión por el mentor."
-        );
-
-        return false;
-
-    }
-
-    if (lessonProject.status === "rejected") {
-
-        showCourseMessage(
-            "Tu tarea fue rechazada. Revisa el feedback y vuelve a guardarla."
-        );
-
-        return false;
-
-    }
-
-    if (lessonProject.status !== "approved") {
-
-        showCourseMessage(
-            "Tu tarea está pendiente de revisión por el mentor."
         );
 
         return false;
@@ -1001,6 +1043,9 @@ completeLessonBtn.addEventListener(
 
         }
 
+        const progressBeforeComplete =
+            getCurrentProgressPercent();
+
         await fetch(
             `${API_URL}/api/progress/complete`,
             {
@@ -1028,6 +1073,29 @@ completeLessonBtn.addEventListener(
         await loadProgress();
         refreshLessonLocks();
         updateFinishCourseButton();
+
+        const progressAfterComplete =
+            getCurrentProgressPercent();
+
+        if (
+            progressBeforeComplete < 100 &&
+            progressAfterComplete === 100
+        ) {
+
+            showWelcomeView();
+
+            await loadFinalProjectStatus();
+
+            showCourseMessage(
+                "Has completado todas las clases. Ahora sube tu proyecto final."
+            );
+
+            setTimeout(
+                scrollToFinalProjectPanel,
+                100
+            );
+
+        }
 
         completeLessonBtn.textContent =
             "Clase completada";
@@ -1324,6 +1392,11 @@ function showLessonView() {
     completeLessonBtn.style.display =
         "inline-flex";
 
+    if (finalProjectPanel) {
+        finalProjectPanel.style.display =
+            "none";
+    }
+
     if (resourcesPanel) {
         resourcesPanel.style.display =
             "none";
@@ -1342,11 +1415,19 @@ if (finishCourseBtn) {
         "click",
         async () => {
 
-            showCourseMessage(
-                "Primero debes completar el flujo de proyecto final y mentoría."
-            );
+            if (
+                !currentCourseRelation ||
+                currentCourseRelation.final_project_approved !== true ||
+                currentCourseRelation.final_mentorship_approved !== true
+            ) {
 
-            return;
+                showCourseMessage(
+                    "Primero debes completar el flujo de proyecto final y mentoría."
+                );
+
+                return;
+
+            }
 
             if (getCurrentProgressPercent() < 100) {
 
@@ -1600,6 +1681,19 @@ if (finalProjectForm) {
 
                 showCourseMessage(
                     "Selecciona un archivo antes de enviar el proyecto final."
+                );
+
+                return;
+
+            }
+
+            const selectedMentor =
+                await getSelectedCourseMentor();
+
+            if (!selectedMentor) {
+
+                showCourseMessage(
+                    "Primero debes elegir un mentor para enviar tu proyecto final."
                 );
 
                 return;

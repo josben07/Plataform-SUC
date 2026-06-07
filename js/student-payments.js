@@ -33,6 +33,9 @@ const user =
         localStorage.getItem("user")
     );
 
+const token =
+    localStorage.getItem("token");
+
 if (!user) {
 
     window.location.href =
@@ -400,7 +403,9 @@ async function confirmPaymentWithProof(event) {
 
                     headers: {
                         "Content-Type":
-                            "application/json"
+                            "application/json",
+                        Authorization:
+                            `Bearer ${token}`
                     },
 
                     body:
@@ -408,7 +413,9 @@ async function confirmPaymentWithProof(event) {
                             status:
                                 "en_revision",
                             proof_url:
-                                proofUrl
+                                proofUrl,
+                            actor_role:
+                                "student"
                         })
                 }
             );
@@ -462,41 +469,6 @@ confirmPayBtn.addEventListener(
     "click",
     confirmPaymentWithProof,
     true
-);
-
-confirmPayBtn.addEventListener(
-    "click",
-    async () => {
-
-        await fetch(
-            `${API_URL}/api/payments/${currentPaymentId}`,
-            {
-                method: "PUT",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body:
-                    JSON.stringify({
-                        status:
-                            "en_revision"
-                    })
-            }
-        );
-
-        payModal.classList.remove(
-            "active-modal"
-        );
-
-        await loadPayments();
-
-        showPaymentToast(
-            "Pago enviado. Esperando aprobación del administrador."
-        );
-
-    }
 );
 
 loadPayments();

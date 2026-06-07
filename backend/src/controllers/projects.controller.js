@@ -132,14 +132,22 @@ const createProject =
                     .eq("status", "active")
                     .maybeSingle();
 
-            if (!assignedMentor) {
+            if (
+                normalizedSubmissionType === "final_project" &&
+                !assignedMentor
+            ) {
 
                 return res.status(400).json({
                     error:
-                        "Debes seleccionar un mentor antes de enviar entregables."
+                        "Primero debes elegir un mentor para enviar tu proyecto final."
                 });
 
             }
+
+            const assignedMentorId =
+                assignedMentor
+                    ? assignedMentor.mentor_id
+                    : null;
 
             const { data, error } =
                 await supabase
@@ -150,7 +158,7 @@ const createProject =
                         course_id,
                         lesson_id,
                         mentor_id:
-                            assignedMentor.mentor_id,
+                            assignedMentorId,
 
                         title,
                         description,
@@ -170,6 +178,23 @@ const createProject =
             }
 
             if (normalizedSubmissionType === "final_project") {
+
+                const { error: taskMentorError } =
+                    await supabase
+                        .from("project_submissions")
+                        .update({
+                            mentor_id:
+                                assignedMentorId
+                        })
+                        .eq("user_id", user_id)
+                        .eq("course_id", course_id)
+                        .eq("submission_type", "task");
+
+                if (taskMentorError) {
+
+                    return res.status(400).json(taskMentorError);
+
+                }
 
                 const { error: courseError } =
                     await supabase

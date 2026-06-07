@@ -313,6 +313,44 @@ const completeCourse =
 
             }
 
+            const {
+                data: studentCourse,
+                error: studentCourseError
+            } =
+                await supabase
+                    .from("student_courses")
+                    .select("*")
+                    .eq("student_id", student_id)
+                    .eq("course_id", course_id)
+                    .single();
+
+            if (studentCourseError || !studentCourse) {
+
+                return res.status(404).json({
+                    error:
+                        "Curso del alumno no encontrado."
+                });
+
+            }
+
+            if (studentCourse.final_project_approved !== true) {
+
+                return res.status(400).json({
+                    error:
+                        "Debes tener el proyecto final aprobado antes de finalizar el curso."
+                });
+
+            }
+
+            if (studentCourse.final_mentorship_approved !== true) {
+
+                return res.status(400).json({
+                    error:
+                        "Debes tener la mentoría final validada antes de finalizar el curso."
+                });
+
+            }
+
             const { data, error } =
                 await supabase
                     .from("student_courses")

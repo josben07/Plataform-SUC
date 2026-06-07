@@ -11,6 +11,74 @@ const mentorshipGrid =
 let assignedMentors =
     [];
 
+let activeStudentCourse =
+    null;
+
+function showMentorshipMessage(message) {
+
+    const toast =
+        document.querySelector(".app-toast");
+
+    const toastMessage =
+        document.getElementById("appToastMessage");
+
+    if (!toast || !toastMessage) {
+
+        return;
+
+    }
+
+    toastMessage.textContent =
+        message;
+
+    toast.classList.add(
+        "show-toast"
+    );
+
+    setTimeout(
+        () => {
+
+            toast.classList.remove(
+                "show-toast"
+            );
+
+        },
+        3000
+    );
+
+}
+
+async function loadActiveStudentCourse() {
+
+    const response =
+        await fetch(
+            `${API_URL}/api/student-courses/${user.id}`
+        );
+
+    if (!response.ok) {
+
+        return null;
+
+    }
+
+    const studentCourses =
+        await response.json();
+
+    return studentCourses.find(course =>
+        course.status === "Activo"
+    ) || null;
+
+}
+
+function canScheduleMentorship() {
+
+    return Boolean(
+        activeStudentCourse &&
+        activeStudentCourse.final_project_approved === true
+    );
+
+}
+
 function formatMentorshipPrice(price) {
 
     if (
@@ -45,6 +113,31 @@ function getMentorshipPayment(payments, sessionId) {
 
 async function loadMentorships() {
 
+    activeStudentCourse =
+        await loadActiveStudentCourse();
+
+    if (!activeStudentCourse) {
+
+        mentorshipGrid.innerHTML = `
+
+            <div class="empty-state">
+
+                <h3>
+                    No hay curso activo
+                </h3>
+
+                <p>
+                    Debes tener un curso activo y tu proyecto final aprobado para agendar una mentoría.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
     const assignedResponse =
         await fetch(
             `${API_URL}/api/student-mentors/${user.id}`
@@ -53,10 +146,18 @@ async function loadMentorships() {
     assignedMentors =
         await assignedResponse.json();
 
+    const activeCourseMentors =
+        assignedMentors.filter(item =>
+            String(item.course_id) === String(activeStudentCourse.course_id)
+        );
+
     const assignedMentorIds =
-        assignedMentors.map(
+        activeCourseMentors.map(
             item => item.mentor_id
         );
+
+    const mentorshipUnlocked =
+        canScheduleMentorship();
 
     const profilesResponse =
         await fetch(
@@ -89,6 +190,26 @@ async function loadMentorships() {
         await paymentsResponse.json();
 
     mentorshipGrid.innerHTML = "";
+
+    if (!mentorshipUnlocked) {
+
+        mentorshipGrid.innerHTML += `
+
+            <div class="assigned-mentors-banner">
+
+                <h3>
+                    Proyecto final pendiente
+                </h3>
+
+                <p>
+                    Debes tener tu proyecto final aprobado para agendar una mentoría.
+                </p>
+
+            </div>
+
+        `;
+
+    }
 
     if (myMentors.length > 0) {
 
@@ -173,7 +294,7 @@ async function loadMentorships() {
 
             <div class="
                 mentor-card
-                ${!isAssignedMentor ? "locked-mentorship" : ""}
+                ${!isAssignedMentor || !mentorshipUnlocked ? "locked-mentorship" : ""}
             ">
 
                 <h3>
@@ -204,6 +325,8 @@ async function loadMentorships() {
 
                     ${!isAssignedMentor
                 ? "Bloqueada"
+                : !mentorshipUnlocked
+                    ? "Bloqueada"
                 : sessionStatus === "available"
                     ? "Disponible"
                     : isOwnReservation && !isPaymentApproved
@@ -225,6 +348,21 @@ async function loadMentorships() {
                         disabled
                     >
                         Mentor no seleccionado
+                    </button>
+                    `
+                :
+                !mentorshipUnlocked
+                    ?
+                    `
+                    <div class="locked-message">
+                        Debes tener tu proyecto final aprobado para agendar una mentoría.
+                    </div>
+
+                    <button
+                        class="mentor-btn"
+                        disabled
+                    >
+                        Solicitar mentoría
                     </button>
                     `
                 :
@@ -254,7 +392,7 @@ async function loadMentorships() {
                     ""
             }
 
-                ${isAssignedMentor && sessionStatus === "available"
+                ${isAssignedMentor && mentorshipUnlocked && sessionStatus === "available"
                 ?
                 `
                     <button
@@ -265,6 +403,10 @@ async function loadMentorships() {
                     </button>
                     `
                 :
+                isAssignedMentor && !mentorshipUnlocked
+                    ?
+                    ""
+                    :
                 isAssignedMentor && session.student_id === user.id
                     ?
                     `
@@ -300,7 +442,31 @@ async function loadMentorships() {
 
 async function requestMentorship(mentorshipId) {
 
-    await fetch(
+    activeStudentCourse =
+        await loadActiveStudentCourse();
+
+    if (!activeStudentCourse) {
+
+        showMentorshipMessage(
+            "Debes tener un curso activo para agendar una mentoría."
+        );
+
+        return;
+
+    }
+
+    if (!canScheduleMentorship()) {
+
+        showMentorshipMessage(
+            "Debes tener tu proyecto final aprobado para agendar una mentoría."
+        );
+
+        return;
+
+    }
+
+    const response =
+        await fetch(
         `${API_URL}/api/mentor/request/${mentorshipId}`,
         {
             method: "PUT",
@@ -322,6 +488,20 @@ async function requestMentorship(mentorshipId) {
                 })
         }
     );
+
+    const result =
+        await response.json();
+
+    if (!response.ok) {
+
+        showMentorshipMessage(
+            result.error ||
+            "No se pudo reservar la mentoría."
+        );
+
+        return;
+
+    }
 
     loadMentorships();
 

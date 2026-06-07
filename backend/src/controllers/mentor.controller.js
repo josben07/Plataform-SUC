@@ -447,6 +447,45 @@ const requestMentorship =
                     student_id
                 );
 
+            if (!activeCourse) {
+
+                return res.status(400).json({
+                    error:
+                        "Debes tener un curso activo para agendar una mentoría."
+                });
+
+            }
+
+            if (activeCourse.final_project_approved !== true) {
+
+                return res.status(400).json({
+                    error:
+                        "Debes tener tu proyecto final aprobado para agendar una mentoría."
+                });
+
+            }
+
+            const {
+                data: assignedMentor
+            } =
+                await supabase
+                    .from("student_mentors")
+                    .select("id")
+                    .eq("student_id", student_id)
+                    .eq("course_id", activeCourse.course_id)
+                    .eq("mentor_id", session.mentor_id)
+                    .eq("status", "active")
+                    .maybeSingle();
+
+            if (!assignedMentor) {
+
+                return res.status(400).json({
+                    error:
+                        "Debes elegir este mentor para tu curso antes de agendar."
+                });
+
+            }
+
             const {
 
                 data,
