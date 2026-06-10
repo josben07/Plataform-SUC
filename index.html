@@ -34,6 +34,68 @@
 
 <body>
 
+    <div id="splashScreen" class="splash-screen">
+
+        <div class="splash-content">
+
+            <div class="splash-logo-wrap">
+
+                <img
+                    src="assets/logos/sucooperative-2.png"
+                    alt="SUCooperative"
+                    class="splash-logo splash-logo-a"
+                >
+
+                <img
+                    src="assets/logos/sucooperative-3.webp"
+                    alt="SUCooperative"
+                    class="splash-logo splash-logo-b"
+                >
+
+            </div>
+
+            <img
+                src="assets/logos/suclassroom.jpg"
+                alt="SUClassroom"
+                class="splash-logo-sub"
+            >
+
+        </div>
+
+    </div>
+
+    <script>
+
+        setTimeout(
+            () => {
+
+                const splash =
+                    document.getElementById(
+                        "splashScreen"
+                    );
+
+                if (splash) {
+
+                    splash.classList.add(
+                        "splash-hidden"
+                    );
+
+                    setTimeout(
+                        () => {
+
+                            splash.remove();
+
+                        },
+                        400
+                    );
+
+                }
+
+            },
+            2500
+        );
+
+    </script>
 
     <header class="navbar">
 

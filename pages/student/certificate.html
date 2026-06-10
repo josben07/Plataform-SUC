@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificado | SUClassroom</title>
+    <link rel="stylesheet" href="../../css/student-certificate.css">
+</head>
+
+<body>
+
+    <div class="cert-page">
+
+        <div class="cert-container" id="certificateContainer">
+
+            <div class="cert-header">
+                <div class="cert-header-bar"></div>
+                <div class="cert-header-wave"></div>
+            </div>
+
+            <div class="cert-inner">
+
+                <div class="cert-logos">
+                    <img src="../../assets/logos/sucooperative-2.jpg" alt="SUC" class="cert-logo-suc">
+                    <img src="../../assets/logos/suclassroom.jpg" alt="SUClassroom" class="cert-logo-suclassroom">
+                </div>
+
+                <div class="cert-divider"></div>
+
+                <p class="cert-label">Certificado de Finalización</p>
+
+                <p class="cert-sub">Este certificado se otorga a</p>
+
+                <h1 class="cert-student-name" id="certStudentName">—</h1>
+
+                <div class="cert-divider"></div>
+
+                <p class="cert-sub">Por haber completado el curso</p>
+
+                <h2 class="cert-course-name" id="certCourseName">—</h2>
+
+                <div class="cert-mentor" id="certMentorRow">
+                    <p class="cert-sub">Bajo la mentoría de</p>
+                    <p class="cert-mentor-name" id="certMentorName">—</p>
+                </div>
+
+                <p class="cert-description" id="certDescription"></p>
+
+                <div class="cert-details">
+                    <div class="cert-detail-item">
+                        <span class="cert-detail-label">Código</span>
+                        <span class="cert-detail-value" id="certNumber">—</span>
+                    </div>
+                    <div class="cert-detail-item">
+                        <span class="cert-detail-label">Fecha de emisión</span>
+                        <span class="cert-detail-value" id="certDate">—</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="cert-footer">
+                <div class="cert-footer-wave"></div>
+                <div class="cert-footer-bar"></div>
+            </div>
+
+        </div>
+
+        <div class="cert-actions">
+            <button class="cert-action-btn cert-action-secondary"                 onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href='./certificates.html'; }">
+                ← Volver
+            </button>
+            <button class="cert-action-btn cert-action-primary" onclick="window.print()">
+                📥 Descargar PDF
+            </button>
+        </div>
+
+    </div>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/student-certificate.js"></script>
+
+</body>
+
+</html>

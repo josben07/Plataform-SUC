@@ -1,0 +1,258 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Inter, sans-serif;
+}
+
+body {
+    background: #020617;
+    color: white;
+}
+
+.student-page {
+    display: flex;
+    min-height: 100vh;
+}
+
+.student-sidebar {
+    width: 270px;
+    background: #0F172A;
+    padding: 28px;
+}
+
+.student-logo {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 24px;
+}
+
+.student-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.student-menu a {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.72);
+    padding: 16px;
+    border-radius: 16px;
+    transition: .25s;
+}
+
+.student-menu a:hover,
+.active-link {
+    background: rgba(108, 77, 255, .16);
+    color: white;
+}
+
+.student-main {
+    flex: 1;
+    padding: 42px;
+}
+
+.student-header span {
+    color: #8B7CFF;
+    font-weight: 800;
+    letter-spacing: 2px;
+    font-size: .8rem;
+}
+
+.student-header h1 {
+    font-size: 3rem;
+    margin-top: 10px;
+}
+
+.student-header p {
+    color: rgba(255, 255, 255, .62);
+    margin-top: 10px;
+}
+
+.certs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    margin-top: 40px;
+}
+
+.cert-card {
+    background: #0F172A;
+    border-radius: 24px;
+    padding: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: 0.25s ease;
+}
+
+.cert-card:hover {
+    border-color: rgba(212, 175, 55, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.cert-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.cert-card-badge {
+    font-size: 2rem;
+}
+
+.cert-card-number {
+    font-size: 0.8rem;
+    color: #d4af37;
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-family: monospace;
+}
+
+.cert-card-course {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 8px;
+}
+
+.cert-card-mentor {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 8px;
+}
+
+.cert-card-date {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 18px;
+}
+
+.cert-card-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 12px;
+    background: #8B7CFF;
+    color: white;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: 0.25s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.cert-card-btn:hover {
+    background: #6C4DFF;
+}
+
+.certs-empty {
+    grid-column: 1 / -1;
+    background: #0F172A;
+    border-radius: 28px;
+    padding: 60px 40px;
+    text-align: center;
+}
+
+.certs-empty-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+}
+
+.certs-empty h3 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+}
+
+.certs-empty p {
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.6;
+}
+
+.cert-generate-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 28px;
+    border-radius: 14px;
+    background: #6C4DFF;
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: .25s ease;
+}
+
+.cert-generate-btn:hover {
+    background: #8B7CFF;
+}
+
+.cert-generate-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.certs-banner {
+    grid-column: 1 / -1;
+    background: #0F172A;
+    border: 1px solid rgba(108, 77, 255, 0.3);
+    border-radius: 16px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.certs-banner p {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.95rem;
+}
+
+.certs-banner .cert-generate-btn {
+    margin-top: 0;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+}
+
+.app-toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: #6C4DFF;
+    color: white;
+    padding: 18px 24px;
+    border-radius: 18px;
+    font-weight: 800;
+    opacity: 0;
+    transform: translateY(30px);
+    pointer-events: none;
+    transition: .3s ease;
+    z-index: 9999;
+}
+
+.app-toast.show-toast {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .student-page {
+        flex-direction: column;
+    }
+
+    .student-sidebar {
+        width: 100%;
+    }
+
+    .student-main {
+        padding: 24px;
+    }
+
+    .student-header h1 {
+        font-size: 2rem;
+    }
+}

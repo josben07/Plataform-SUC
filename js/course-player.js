@@ -102,6 +102,36 @@ const finalProjectFileName =
 const finalProjectSubmitBtn =
     document.getElementById("finalProjectSubmitBtn");
 
+const notesFab =
+    document.getElementById("notesFab");
+
+const notesPanel =
+    document.getElementById("notesPanel");
+
+const notesCloseBtn =
+    document.getElementById("notesCloseBtn");
+
+const notesTextarea =
+    document.getElementById("notesTextarea");
+
+const notesSaveBtn =
+    document.getElementById("notesSaveBtn");
+
+const notesSaveFeedback =
+    document.getElementById("notesSaveFeedback");
+
+const notesLessonLabel =
+    document.getElementById("notesLessonLabel");
+
+const notesList =
+    document.getElementById("notesList");
+
+const notesCurrentLesson =
+    document.getElementById("notesCurrentLesson");
+
+let allCourseNotes =
+    [];
+
 let allModulesData =
     [];
 
@@ -944,6 +974,10 @@ async function openLesson(lesson) {
     loadResources(lesson.id);
     loadComments(lesson.id);
 
+    if (notesPanel.classList.contains("open")) {
+        loadCurrentLessonNote();
+    }
+
 }
 
 /* LOAD RESOURCES */
@@ -1023,6 +1057,358 @@ async function loadProgress() {
     }
 
 }
+
+/* ========================= */
+/* NOTES */
+/* ========================= */
+
+let currentNoteContent =
+    "";
+
+function findLessonTitle(lessonId) {
+
+    const lesson =
+        allLessonsData.find(l => l.id === lessonId);
+
+    if (lesson) {
+
+        return lesson.title;
+
+    }
+
+    return `Clase ${lessonId}`;
+
+}
+
+async function loadCurrentLessonNote() {
+
+    if (!currentLessonId) {
+
+        notesLessonLabel.textContent =
+            "Selecciona una clase para tomar apuntes";
+
+        notesTextarea.value =
+            "";
+
+        notesTextarea.disabled =
+            true;
+
+        notesSaveBtn.style.display =
+            "none";
+
+        currentNoteContent =
+            "";
+
+        return;
+
+    }
+
+    notesLessonLabel.textContent =
+        `Apuntes: ${currentLessonData.title}`;
+
+    notesTextarea.disabled =
+        false;
+
+    notesSaveBtn.style.display =
+        "block";
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/api/notes/${user.id}/${courseId}/${currentLessonId}`
+            );
+
+        const note =
+            await response.json();
+
+        notesTextarea.value =
+            note.content || "";
+
+        currentNoteContent =
+            note.content || "";
+
+        notesSaveFeedback.textContent =
+            "";
+
+    } catch (err) {
+
+        notesTextarea.value =
+            "";
+
+        currentNoteContent =
+            "";
+
+    }
+
+}
+
+async function saveNote() {
+
+    const content =
+        notesTextarea.value.trim();
+
+    if (!currentLessonId) {
+
+        notesSaveFeedback.className =
+            "notes-save-feedback error";
+
+        notesSaveFeedback.textContent =
+            "No hay clase seleccionada.";
+
+        return;
+
+    }
+
+    const originalText =
+        notesSaveBtn.textContent;
+
+    notesSaveBtn.disabled =
+        true;
+
+    notesSaveBtn.textContent =
+        "Guardando...";
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/api/notes/${user.id}/${courseId}/${currentLessonId}`,
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            content
+                        })
+                }
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "No se pudieron guardar los apuntes."
+            );
+
+        }
+
+        await response.json();
+
+        currentNoteContent =
+            content;
+
+        notesSaveFeedback.className =
+            "notes-save-feedback success";
+
+        notesSaveFeedback.textContent =
+            "✓ Apuntes guardados";
+
+        await loadAllCourseNotes();
+
+        setTimeout(() => {
+
+            notesSaveFeedback.textContent =
+                "";
+
+        }, 2000);
+
+    } catch (err) {
+
+        notesSaveFeedback.className =
+            "notes-save-feedback error";
+
+        notesSaveFeedback.textContent =
+            "Error al guardar apuntes.";
+
+    } finally {
+
+        notesSaveBtn.disabled =
+            false;
+
+        notesSaveBtn.textContent =
+            originalText;
+
+    }
+
+}
+
+async function loadAllCourseNotes() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/api/notes/${user.id}/${courseId}`
+            );
+
+        allCourseNotes =
+            await response.json();
+
+        renderAllCourseNotes();
+
+    } catch (err) {
+
+        allCourseNotes =
+            [];
+
+        notesList.innerHTML = `
+            <div class="notes-empty">
+                No se pudieron cargar los apuntes.
+            </div>
+        `;
+
+    }
+
+}
+
+function renderAllCourseNotes() {
+
+    if (!allCourseNotes || allCourseNotes.length === 0) {
+
+        notesList.innerHTML = `
+            <div class="notes-empty">
+                Aún no tienes apuntes en este curso.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    notesList.innerHTML =
+        "";
+
+    allCourseNotes.forEach(note => {
+
+        const date =
+            new Date(note.updated_at || note.created_at);
+
+        const formattedDate =
+            date.toLocaleDateString("es-ES", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+
+        const lessonTitle =
+            findLessonTitle(note.lesson_id);
+
+        const preview =
+            (note.content || "").substring(
+                0,
+                120
+            );
+
+        notesList.innerHTML += `
+            <div
+                class="notes-list-item"
+                data-lesson-id="${note.lesson_id}"
+            >
+                <div class="notes-list-item-title">
+                    ${lessonTitle}
+                </div>
+                <div class="notes-list-item-preview">
+                    ${preview}
+                </div>
+                <div class="notes-list-item-date">
+                    ${formattedDate}
+                </div>
+            </div>
+        `;
+
+    });
+
+    document
+        .querySelectorAll(".notes-list-item")
+        .forEach(item => {
+
+            item.addEventListener(
+                "click",
+                () => {
+
+                    const lessonId =
+                        item.dataset.lessonId;
+
+                    const lesson =
+                        allLessonsData.find(
+                            l => l.id === lessonId
+                        );
+
+                    if (lesson) {
+
+                        openLesson(lesson);
+
+                        notesPanel.classList.remove(
+                            "open"
+                        );
+
+                    }
+
+                }
+            );
+
+        });
+
+}
+
+function toggleNotesPanel() {
+
+    notesPanel.classList.toggle(
+        "open"
+    );
+
+    if (
+        notesPanel.classList.contains(
+            "open"
+        )
+    ) {
+
+        loadCurrentLessonNote();
+        loadAllCourseNotes();
+
+    }
+
+}
+
+notesFab.addEventListener(
+    "click",
+    toggleNotesPanel
+);
+
+notesCloseBtn.addEventListener(
+    "click",
+    toggleNotesPanel
+);
+
+notesSaveBtn.addEventListener(
+    "click",
+    saveNote
+);
+
+document.addEventListener(
+    "keydown",
+    (e) => {
+
+        if (
+            e.key === "Escape" &&
+            notesPanel.classList.contains(
+                "open"
+            )
+        ) {
+
+            toggleNotesPanel();
+
+        }
+
+    }
+);
 
 completeLessonBtn.addEventListener(
     "click",
@@ -1296,8 +1682,14 @@ function showWelcomeView() {
     currentLessonData =
         null;
 
+    const isCompleted =
+        currentCourseRelation &&
+        currentCourseRelation.status === "Completed";
+
     lessonTitle.textContent =
-        "Bienvenido al curso";
+        isCompleted
+            ? "¡Curso completado!"
+            : "Bienvenido al curso";
 
     completeLessonBtn.style.display =
         "none";
@@ -1317,7 +1709,7 @@ function showWelcomeView() {
             "none";
     }
 
-    renderFinalProjectPanel();
+    updateFinishCourseButton();
 
     const totalLessons =
         new Set(
@@ -1327,9 +1719,64 @@ function showWelcomeView() {
     const progressPercent =
         getCurrentProgressPercent();
 
-    updateFinishCourseButton();
+    if (isCompleted && finalProjectPanel) {
+        finalProjectPanel.style.display = "none";
+    } else {
+        renderFinalProjectPanel();
+    }
 
-    videoBox.innerHTML = `
+    videoBox.innerHTML = isCompleted ? `
+
+        <div class="course-welcome-box">
+
+            <div class="welcome-icon">
+                🎉
+            </div>
+
+            <h2>
+                ¡Completaste el curso!
+            </h2>
+
+            <p>
+                Has finalizado todas las etapas del curso.
+                Explora más contenido o revisa tus clases nuevamente.
+            </p>
+
+            <div class="welcome-progress">
+
+                <div class="welcome-progress-info">
+
+                    <span>
+                        Progreso final
+                    </span>
+
+                    <strong>
+                        ${progressPercent}%
+                    </strong>
+
+                </div>
+
+                <div class="welcome-progress-bar">
+
+                    <div
+                        class="welcome-progress-fill"
+                        style="width:${progressPercent}%;"
+                    ></div>
+
+                </div>
+
+            </div>
+
+            <button
+                class="welcome-start-btn"
+                onclick="startFirstLesson()"
+            >
+                Repasar clases
+            </button>
+
+        </div>
+
+    ` : `
 
         <div class="course-welcome-box">
 
@@ -1480,9 +1927,80 @@ if (finishCourseBtn) {
 
             updateFinishCourseButton();
 
+            showWelcomeView();
+
             showCourseMessage(
                 "Curso finalizado correctamente."
             );
+
+            try {
+
+                const mentorRes =
+                    await fetch(
+                        `${API_URL}/api/student-mentors/${user.id}`
+                    );
+
+                const mentors =
+                    await mentorRes.json();
+
+                const mentor =
+                    mentors.find(
+                        m => m.course_id === courseId && m.status === "active"
+                    );
+
+                const certRes =
+                    await fetch(
+                        `${API_URL}/api/certificates/generate`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    student_id:
+                                        user.id,
+                                    course_id:
+                                        courseId,
+                                    mentor_id:
+                                        mentor
+                                            ? mentor.mentor_id
+                                            : null,
+                                    mentor_name:
+                                        mentor
+                                            ? mentor.mentor_name
+                                            : null
+                                })
+                        }
+                    );
+
+                const cert =
+                    await certRes.json();
+
+                if (cert && cert.id) {
+
+                    setTimeout(() => {
+
+                        window.open(
+                            `./certificate.html?id=${cert.id}`,
+                            '_blank'
+                        );
+
+                    }, 1500);
+
+                }
+
+            } catch (e) {
+
+                console.error(
+                    "Error generando certificado:",
+                    e
+                );
+
+            }
 
         }
     );
@@ -1970,6 +2488,17 @@ async function initCoursePlayer() {
     showWelcomeView();
     await loadFinalProjectStatus();
     updateFinishCourseButton();
+
+    const openNotes =
+        new URLSearchParams(window.location.search).get("openNotes") === "true";
+
+    if (openNotes) {
+
+        setTimeout(() => {
+            toggleNotesPanel();
+        }, 500);
+
+    }
 
 }
 

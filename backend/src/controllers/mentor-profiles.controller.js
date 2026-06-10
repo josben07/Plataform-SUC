@@ -83,7 +83,8 @@ const upsertMentorProfile =
                 experience_years,
                 specialties,
                 description,
-                areas
+                areas,
+                base_price
 
             } = req.body;
 
@@ -98,25 +99,37 @@ const upsertMentorProfile =
 
             if (existing) {
 
+                const updateData = {
+                    photo_url,
+                    position,
+                    company,
+                    experience_years,
+                    specialties,
+                    description,
+                    areas
+                };
+
+                if (base_price !== undefined) {
+                    updateData.base_price = base_price;
+                }
+
                 const { data, error } =
                     await supabase
                         .from("mentor_profiles")
-                        .update({
-
-                            photo_url,
-                            position,
-                            company,
-                            experience_years,
-                            specialties,
-                            description,
-                            areas
-
-                        })
+                        .update(updateData)
                         .eq("user_id", user_id)
                         .select()
                         .single();
 
                 if (error) {
+
+                    if (error.message && error.message.includes("column")) {
+                        return res.status(400).json({
+                            error: "La columna base_price no existe. Ejecuta: ALTER TABLE mentor_profiles ADD COLUMN base_price DECIMAL(10,2) DEFAULT NULL;",
+                            needsMigration: true,
+                            sql: "ALTER TABLE public.mentor_profiles ADD COLUMN IF NOT EXISTS base_price DECIMAL(10,2) DEFAULT NULL;"
+                        });
+                    }
 
                     return res.status(400).json(error);
 
@@ -126,25 +139,37 @@ const upsertMentorProfile =
 
             }
 
+            const insertData = {
+                user_id,
+                photo_url,
+                position,
+                company,
+                experience_years,
+                specialties,
+                description,
+                areas
+            };
+
+            if (base_price !== undefined) {
+                insertData.base_price = base_price;
+            }
+
             const { data, error } =
                 await supabase
                     .from("mentor_profiles")
-                    .insert([{
-
-                        user_id,
-                        photo_url,
-                        position,
-                        company,
-                        experience_years,
-                        specialties,
-                        description,
-                        areas
-
-                    }])
+                    .insert([insertData])
                     .select()
                     .single();
 
             if (error) {
+
+                if (error.message && error.message.includes("column")) {
+                    return res.status(400).json({
+                        error: "La columna base_price no existe. Ejecuta: ALTER TABLE mentor_profiles ADD COLUMN base_price DECIMAL(10,2) DEFAULT NULL;",
+                        needsMigration: true,
+                        sql: "ALTER TABLE public.mentor_profiles ADD COLUMN IF NOT EXISTS base_price DECIMAL(10,2) DEFAULT NULL;"
+                    });
+                }
 
                 return res.status(400).json(error);
 

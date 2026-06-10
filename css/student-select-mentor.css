@@ -165,3 +165,97 @@ body{
     transform:
     translateY(0);
 }
+
+/* COURSE MENTOR HIGHLIGHT */
+
+.course-mentor-card{
+
+    background:
+    rgba(108,77,255,0.18) !important;
+
+    border-color:
+    rgba(139,124,255,0.5) !important;
+
+    position:
+    relative;
+}
+
+.course-mentor-card:hover{
+
+    background:
+    rgba(108,77,255,0.25) !important;
+
+    border-color:
+    rgba(139,124,255,0.65) !important;
+
+    box-shadow:
+    0 24px 70px rgba(108,77,255,0.2);
+}
+
+.course-badge{
+
+    position:
+    absolute;
+
+    top: 16px;
+    right: 16px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #6C4DFF,
+        #8B7CFF
+    );
+
+    color:
+    white;
+
+    padding:
+    6px 14px;
+
+    border-radius:
+    999px;
+
+    font-size:
+    0.75rem;
+
+    font-weight:
+    700;
+
+    letter-spacing:
+    0.5px;
+
+    z-index:
+    2;
+
+    box-shadow:
+    0 4px 15px rgba(108,77,255,0.35);
+}
+
+/* NON-COURSE MENTOR (disabled) */
+
+.mentor-card:not(.course-mentor-card){
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.mentor-card:not(.course-mentor-card) .mentor-btn{
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* PRICE DISPLAY */
+
+.mentor-price-display{
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #A89BFF;
+    margin-top: 6px;
+}
+
+.mentor-price-display span{
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.45);
+    margin-right: 4px;
+}

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Precios de Mentores | SUClassroom
+    </title>
+
+    <link rel="stylesheet" href="../../css/reset.css">
+
+    <link rel="stylesheet" href="../../css/global.css">
+
+    <link rel="stylesheet" href="../../css/admin-courses.css">
+
+</head>
+
+<body class="courses-admin-body">
+
+    <aside class="sidebar">
+
+        <div>
+
+            <div class="sidebar-logo">
+
+                SUClassroom
+
+            </div>
+
+            <nav class="sidebar-menu">
+
+                <a href="./dashboard.html">
+
+                    📊 Dashboard
+
+                </a>
+
+                <a href="./users.html">
+
+                    👤 Usuarios
+
+                </a>
+
+                <a href="./courses.html">
+
+                    📚 Cursos
+
+                </a>
+
+                <a href="./mentor.html">
+
+                    🎓 Mentorías
+
+                </a>
+
+                <a href="./mentor-prices.html" class="active-link">
+
+                    💰 Precios
+
+                </a>
+
+                <a href="./payments.html">
+
+                    💳 Pagos
+
+                </a>
+
+                <a href="./assign-mentor-course.html">
+
+                    📋 Asignar Mentores
+
+                </a>
+
+            </nav>
+
+        </div>
+
+    </aside>
+
+    <main class="courses-main">
+
+        <div class="courses-topbar">
+
+            <div>
+
+                <h1>
+
+                    Precio base de mentores
+
+                </h1>
+
+                <p>
+
+                    Define el precio base de cada mentor. Este precio se mostrará al alumno al elegir mentor.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="assign-controls">
+
+            <div class="assign-field">
+
+                <label class="assign-label">
+                    Mentor
+                </label>
+
+                <select id="priceMentorSelect" class="assign-select">
+
+                    <option value="">
+                        Seleccionar mentor
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="assign-field" style="flex:0 0 200px;">
+
+                <label class="assign-label">
+                    Precio base (S/)
+                </label>
+
+                <input type="number" id="priceInput" class="assign-select" placeholder="0.00" min="0" step="0.01">
+
+            </div>
+
+            <button id="savePriceBtn" class="assign-btn">
+
+                Guardar precio
+
+            </button>
+
+        </div>
+
+        <div class="price-list-card">
+
+            <div class="price-list-header">
+
+                <h2>
+                    Mentores y sus precios
+                </h2>
+
+                <span id="mentorCount">
+                    0 mentores
+                </span>
+
+            </div>
+
+            <div id="priceList">
+
+                <div class="price-empty">
+
+                    <div class="price-empty-icon">
+                        💰
+                    </div>
+
+                    <h3>
+                        Selecciona un mentor y guarda su precio
+                    </h3>
+
+                    <p>
+                        Los precios aparecerán aquí una vez asignados.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <style>
+            .assign-controls {
+                display: flex;
+                gap: 16px;
+                margin-bottom: 32px;
+                flex-wrap: wrap;
+            }
+            .assign-field {
+                flex: 1;
+                min-width: 220px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+            .assign-label {
+                font-size: 0.85rem;
+                font-weight: 700;
+                color: rgba(255,255,255,0.7);
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+            }
+            .assign-select {
+                width: 100%;
+                padding: 16px 18px;
+                border: 2px solid rgba(139,124,255,0.25);
+                border-radius: 18px;
+                background: rgba(15,23,42,0.9);
+                color: white;
+                font-size: 1rem;
+                font-weight: 600;
+                outline: none;
+                cursor: pointer;
+                transition: 0.3s ease;
+                appearance: none;
+                -webkit-appearance: none;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238B7CFF' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 18px center;
+                box-sizing: border-box;
+            }
+            input.assign-select {
+                appearance: textfield;
+                -webkit-appearance: textfield;
+                background-image: none;
+                height: 58px;
+            }
+            .assign-select:hover {
+                border-color: rgba(139,124,255,0.5);
+            }
+            .assign-select:focus {
+                border-color: #8B7CFF;
+                box-shadow: 0 0 0 4px rgba(108,77,255,0.2);
+            }
+            .assign-select option {
+                background: #0F172A;
+                color: white;
+                padding: 12px;
+                font-weight: 500;
+            }
+            .assign-btn {
+                height: 58px;
+                padding: 0 32px;
+                border: none;
+                border-radius: 18px;
+                background: linear-gradient(135deg, #6C4DFF, #8B7CFF);
+                color: white;
+                font-weight: 700;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: 0.35s ease;
+                box-shadow: 0 14px 35px rgba(108,77,255,0.35);
+                align-self: flex-end;
+                white-space: nowrap;
+            }
+            .assign-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 20px 45px rgba(108,77,255,0.45);
+            }
+            .price-list-card {
+                background: rgba(15,23,42,0.4);
+                border: 1px solid rgba(255,255,255,0.06);
+                border-radius: 24px;
+                padding: 24px;
+            }
+            .price-list-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 20px;
+            }
+            .price-list-header h2 {
+                color: white;
+                font-size: 1.15rem;
+                font-weight: 700;
+                margin: 0;
+            }
+            .price-list-header span {
+                color: rgba(255,255,255,0.4);
+                font-size: 0.9rem;
+            }
+            .price-empty {
+                text-align: center;
+                padding: 40px 0;
+            }
+            .price-empty-icon {
+                font-size: 2.5rem;
+                margin-bottom: 12px;
+            }
+            .price-empty h3 {
+                color: rgba(255,255,255,0.5);
+                font-weight: 600;
+                font-size: 1rem;
+                margin: 0 0 6px 0;
+            }
+            .price-empty p {
+                color: rgba(255,255,255,0.3);
+                font-size: 0.85rem;
+                margin: 0;
+            }
+            .price-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 16px 20px;
+                border-bottom: 1px solid rgba(255,255,255,0.06);
+                transition: 0.2s;
+                gap: 12px;
+            }
+            .price-row:last-child {
+                border-bottom: none;
+            }
+            .price-row:hover {
+                background: rgba(108,77,255,0.06);
+            }
+            .price-row-left {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                min-width: 0;
+            }
+            .price-avatar {
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                overflow: hidden;
+                background: rgba(108,77,255,0.2);
+                flex-shrink: 0;
+            }
+            .price-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .price-name {
+                color: white;
+                font-weight: 700;
+                font-size: 0.95rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .price-position {
+                color: rgba(255,255,255,0.4);
+                font-size: 0.8rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .price-row-right {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex-shrink: 0;
+            }
+            .price-value {
+                color: #A89BFF;
+                font-weight: 800;
+                font-size: 1.15rem;
+                white-space: nowrap;
+            }
+            .price-btn-clear {
+                padding: 8px 14px;
+                border: none;
+                border-radius: 10px;
+                background: rgba(255,77,77,0.12);
+                color: #FF6B6B;
+                font-size: 0.75rem;
+                font-weight: 700;
+                cursor: pointer;
+                transition: 0.25s;
+            }
+            .price-btn-clear:hover {
+                background: rgba(255,77,77,0.25);
+            }
+        </style>
+
+    </main>
+
+    <div class="admin-toast">
+
+        <span id="adminToastMessage">
+            Acción realizada
+        </span>
+
+    </div>
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/admin-mentor-prices.js"></script>
+
+</body>
+
+</html>

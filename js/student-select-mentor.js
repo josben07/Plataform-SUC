@@ -68,6 +68,11 @@ const modalCompany =
         "modalCompany"
     );
 
+const modalPrice =
+    document.getElementById(
+        "modalPrice"
+    );
+
 const modalTags =
     document.getElementById(
         "modalTags"
@@ -94,6 +99,46 @@ let selectedMentorId =
 let mentorsData =
     [];
 
+let courseMentorIds =
+    [];
+
+/* LOAD COURSE MENTOR ASSIGNMENTS */
+
+async function loadCourseMentors() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/api/course-mentors`
+            );
+
+        if (!response.ok) {
+
+            return;
+
+        }
+
+        const assignments =
+            await response.json();
+
+        courseMentorIds =
+            assignments
+                .filter(item =>
+                    item.course_id === courseId
+                )
+                .map(item =>
+                    item.mentor_id
+                );
+
+    } catch (err) {
+
+        /* table might not exist yet */
+
+    }
+
+}
+
 function showToast(message) {
 
     if (!appToast || !appToastMessage) return;
@@ -115,9 +160,29 @@ function showToast(message) {
 
 }
 
+/* FILTERS */
+
+function setActiveFilter(btn) {
+    document.querySelectorAll(".mentor-filter").forEach(b => b.classList.remove("active-filter"));
+    if (btn) btn.classList.add("active-filter");
+}
+
+function showAllMentors() {
+    setActiveFilter(event.target);
+    renderMentors(mentorsData);
+}
+
+function showCourseMentors() {
+    setActiveFilter(event.target);
+    const filtered = mentorsData.filter(m => courseMentorIds.includes(m.id));
+    renderMentors(filtered);
+}
+
 /* LOAD MENTORS */
 
 async function loadMentors() {
+
+    await loadCourseMentors();
 
     const response =
         await fetch(
@@ -170,9 +235,26 @@ function renderMentors(mentors) {
         const profile =
             mentor.profile || {};
 
+        const isCourseMentor =
+            courseMentorIds.includes(
+                mentor.id
+            );
+
+        const cardClass =
+            isCourseMentor
+                ? "mentor-card course-mentor-card"
+                : "mentor-card";
+
+        const badgeHtml =
+            isCourseMentor
+                ? `<div class="course-badge">Mentor de este curso</div>`
+                : "";
+
         mentorsGrid.innerHTML += `
 
-            <div class="mentor-card">
+            <div class="${cardClass}">
+
+                ${badgeHtml}
 
                 <div class="mentor-image">
 
@@ -226,6 +308,11 @@ function renderMentors(mentors) {
                             años
                         </span>
 
+                    </div>
+
+                    <div class="mentor-price-display" style="margin-top:10px;">
+                        <span>Precio base:</span>
+                        $${profile.base_price ? parseFloat(profile.base_price).toFixed(2) : "0.00"}
                     </div>
 
                     <div class="mentor-footer">
@@ -345,6 +432,26 @@ function openMentorProfile(mentorId) {
         profile.company ||
         "Empresa";
 
+    const isCourseMentor =
+        courseMentorIds.includes(mentor.id);
+
+    modalPrice.textContent =
+        `$${profile.base_price ? parseFloat(profile.base_price).toFixed(2) : "0.00"}`;
+
+    modalSelectBtn.textContent =
+        isCourseMentor
+            ? "Seleccionar mentor"
+            : "No disponible para este curso";
+
+    modalSelectBtn.disabled =
+        !isCourseMentor;
+
+    modalSelectBtn.style.opacity =
+        isCourseMentor ? "1" : "0.45";
+
+    modalSelectBtn.style.cursor =
+        isCourseMentor ? "pointer" : "not-allowed";
+
     modalTags.innerHTML =
         "";
 
@@ -406,6 +513,27 @@ modalSelectBtn.addEventListener(
     "click",
     async () => {
 
+        const mentor =
+            mentorsData.find(
+                item =>
+                    item.id === selectedMentorId
+            );
+
+        if (
+            !mentor ||
+            !courseMentorIds.includes(
+                mentor.id
+            )
+        ) {
+
+            showToast(
+                "Este mentor no está asignado a tu curso."
+            );
+
+            return;
+
+        }
+
         if (
             !selectedMentorId ||
             !courseId
@@ -453,7 +581,7 @@ modalSelectBtn.addEventListener(
             );
 
             showToast(
-                "🎉 Mentor asignado correctamente. Tu proceso de acompañamiento ha comenzado."
+                "Mentor asignado correctamente. Tu proceso de acompañamiento ha comenzado."
             );
 
             setTimeout(() => {

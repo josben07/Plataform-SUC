@@ -166,6 +166,28 @@
 
     </div>
 
+    <button class="notes-fab" id="notesFab" title="Mis apuntes">
+        📝
+    </button>
+
+    <aside class="notes-panel" id="notesPanel">
+        <div class="notes-panel-header">
+            <h3>Mis apuntes</h3>
+            <button class="notes-close-btn" id="notesCloseBtn">✕</button>
+        </div>
+        <div class="notes-panel-body" id="notesPanelBody">
+            <div class="notes-current-lesson" id="notesCurrentLesson">
+                <div class="notes-lesson-label" id="notesLessonLabel">Apuntes de la clase actual</div>
+                <textarea class="notes-textarea" id="notesTextarea" placeholder="Escribe tus apuntes aquí..."></textarea>
+                <button class="notes-save-btn" id="notesSaveBtn">Guardar apuntes</button>
+                <div class="notes-save-feedback" id="notesSaveFeedback"></div>
+            </div>
+            <div class="notes-divider"></div>
+            <div class="notes-all-header">Todos tus apuntes de este curso</div>
+            <div class="notes-list" id="notesList"></div>
+        </div>
+    </aside>
+
     <div class="app-toast">
         <span id="appToastMessage">Acción realizada</span>
     </div>

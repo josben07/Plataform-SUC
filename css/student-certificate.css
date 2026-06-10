@@ -1,0 +1,363 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f0f2f5;
+    color: #1d1d1f;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.cert-page {
+    width: 100%;
+    max-width: 850px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cert-container {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    width: 100%;
+}
+
+.cert-header-bar {
+    background: #1a3a5c;
+    height: 40px;
+}
+
+.cert-header-wave {
+    background: #6C4DFF;
+    height: 22px;
+    clip-path: polygon(
+        0% 0%, 100% 0%,
+        100% 80%,
+        96% 60%, 92% 80%, 88% 100%, 84% 80%, 80% 60%,
+        76% 80%, 72% 100%, 68% 80%, 64% 60%,
+        60% 80%, 56% 100%, 52% 80%, 48% 60%,
+        44% 80%, 40% 100%, 36% 80%, 32% 60%,
+        28% 80%, 24% 100%, 20% 80%, 16% 60%,
+        12% 80%, 8% 100%, 4% 80%,
+        0% 60%
+    );
+}
+
+.cert-footer {
+    display: flex;
+    flex-direction: column;
+}
+
+.cert-footer-wave {
+    background: #6C4DFF;
+    height: 22px;
+    clip-path: polygon(
+        0% 40%, 4% 20%, 8% 0%, 12% 20%, 16% 40%,
+        20% 20%, 24% 0%, 28% 20%, 32% 40%,
+        36% 20%, 40% 0%, 44% 20%, 48% 40%,
+        52% 20%, 56% 0%, 60% 20%, 64% 40%,
+        68% 20%, 72% 0%, 76% 20%, 80% 40%,
+        84% 20%, 88% 0%, 92% 20%, 96% 40%,
+        100% 20%,
+        100% 100%, 0% 100%
+    );
+}
+
+.cert-footer-bar {
+    background: #1a3a5c;
+    height: 40px;
+}
+
+.cert-inner {
+    padding: 48px 56px;
+    text-align: center;
+}
+
+.cert-logos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    margin-bottom: 20px;
+}
+
+.cert-logo-suc {
+    height: 52px;
+    width: auto;
+    object-fit: contain;
+}
+
+.cert-logo-suclassroom {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+}
+
+.cert-divider {
+    width: 60px;
+    height: 3px;
+    background: #1a3a5c;
+    margin: 20px auto;
+}
+
+.cert-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #1a3a5c;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-bottom: 16px;
+}
+
+.cert-sub {
+    font-size: 1rem;
+    color: #6e6e73;
+    font-weight: 400;
+    margin-bottom: 8px;
+}
+
+.cert-student-name {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #1d1d1f;
+    margin: 8px 0;
+    letter-spacing: -0.5px;
+}
+
+.cert-course-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a3a5c;
+    margin: 8px 0 20px;
+}
+
+.cert-mentor {
+    margin: 12px 0 20px;
+}
+
+.cert-mentor-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin-top: 2px;
+}
+
+.cert-description {
+    color: #8e8e93;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    max-width: 520px;
+    margin: 0 auto 24px;
+}
+
+.cert-details {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.cert-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cert-detail-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #aeaeb2;
+    font-weight: 600;
+}
+
+.cert-detail-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1d1d1f;
+}
+
+.cert-signatures {
+    display: flex;
+    justify-content: center;
+    gap: 64px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.cert-signature-box {
+    text-align: center;
+    min-width: 180px;
+}
+
+.cert-sign-line {
+    width: 180px;
+    height: 2px;
+    background: #1d1d1f;
+    margin: 0 auto 10px;
+}
+
+.cert-sign-name {
+    font-weight: 700;
+    color: #1d1d1f;
+    font-size: 0.9rem;
+}
+
+.cert-sign-role {
+    font-size: 0.78rem;
+    color: #8e8e93;
+    font-weight: 400;
+    margin-top: 2px;
+}
+
+.cert-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.cert-action-btn {
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: 0.2s ease;
+    border: none;
+}
+
+.cert-action-primary {
+    background: #1a3a5c;
+    color: #ffffff;
+}
+
+.cert-action-primary:hover {
+    background: #2d5a8c;
+}
+
+.cert-action-secondary {
+    background: transparent;
+    color: #6e6e73;
+    border: 1px solid #d2d2d7;
+}
+
+.cert-action-secondary:hover {
+    background: #f5f5f7;
+    color: #1d1d1f;
+}
+
+@media print {
+    body {
+        background: #ffffff;
+        padding: 0;
+    }
+
+    .cert-actions {
+        display: none !important;
+    }
+
+    .cert-container {
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    .cert-header-bar {
+        height: 32px;
+    }
+
+    .cert-header-wave {
+        height: 18px;
+    }
+
+    .cert-footer-wave {
+        height: 18px;
+    }
+
+    .cert-footer-bar {
+        height: 32px;
+    }
+
+    .cert-inner {
+        padding: 36px 48px;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 16px;
+    }
+
+    .cert-header-bar {
+        height: 32px;
+    }
+
+    .cert-header-wave {
+        height: 16px;
+    }
+
+    .cert-footer-wave {
+        height: 16px;
+    }
+
+    .cert-footer-bar {
+        height: 32px;
+    }
+
+    .cert-inner {
+        padding: 28px 20px;
+    }
+
+    .cert-student-name {
+        font-size: 2rem;
+    }
+
+    .cert-course-name {
+        font-size: 1.2rem;
+    }
+
+    .cert-logos {
+        gap: 16px;
+    }
+
+    .cert-logo-suc {
+        height: 40px;
+    }
+
+    .cert-logo-suclassroom {
+        height: 30px;
+    }
+
+    .cert-details {
+        gap: 24px;
+    }
+
+    .cert-signatures {
+        gap: 32px;
+    }
+
+    .cert-sign-line {
+        width: 140px;
+    }
+
+    .cert-actions {
+        flex-direction: column;
+        width: 100%;
+        padding: 0 20px;
+    }
+
+    .cert-action-btn {
+        width: 100%;
+    }
+}

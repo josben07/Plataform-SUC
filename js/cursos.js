@@ -1,17 +1,15 @@
 /* ========================= */
-/* COURSE MODAL */
+/* COURSES FROM API */
 /* ========================= */
 
 const courseModal =
     document.querySelector(".course-modal");
 
-const courseButtons =
-    document.querySelectorAll(".course-btn");
-
 const closeCourseModal =
     document.querySelector(".close-course-modal");
 
-/* ELEMENTS */
+const coursesGrid =
+    document.querySelector(".courses-grid");
 
 const modalCourseTitle =
     document.getElementById("modalCourseTitle");
@@ -21,10 +19,9 @@ const modalCourseCategory =
 
 const modalCourseDescription =
     document.getElementById("modalCourseDescription");
+
 const modalCourseDuration =
-    document.getElementById(
-        "modalCourseDuration"
-    );
+    document.getElementById("modalCourseDuration");
 
 const modalCourseImage =
     document.getElementById("modalCourseImage");
@@ -35,209 +32,271 @@ const modalCourseModules =
 const modalCourseSkills =
     document.getElementById("modalCourseSkills");
 
-/* OPEN MODAL */
+const courseSearch =
+    document.getElementById("course-search");
 
-courseButtons.forEach(button => {
+const sortSelect =
+    document.getElementById("courses-sort");
 
-    button.addEventListener("click", () => {
+let allCourses = [];
+let activeCategory = "all";
+let searchQuery = "";
+let sortBy = "popular";
 
-        /* GET DATA */
-
-        const title =
-            button.dataset.title;
-
-        const category =
-            button.dataset.category;
-
-        const description =
-            button.dataset.description;
-
-        const duration =
-            button.dataset.duration;
-
-        const image =
-            button.dataset.image;
-
-        const modules =
-            button.dataset.modules.split(",");
-
-        const skills =
-            button.dataset.skills
-                .split(",")
-                .map(skill => skill.trim());
-
-        /* INSERT DATA */
-
-        modalCourseTitle.textContent =
-            title;
-
-        modalCourseCategory.textContent =
-            category;
-
-        modalCourseDescription.textContent =
-            description;
-            
-        modalCourseDuration.textContent =
-            "⏱ " + duration;
-
-        modalCourseImage.src =
-            image;
-
-        modalCourseModules.innerHTML = "";
-
-        /* MODULES */
-
-        modalCourseModules.innerHTML = "";
-
-        modules.forEach((module, moduleIndex) => {
-
-            const parts =
-                module.split(":");
-
-            const moduleTitle =
-                parts[0];
-
-            const lessons =
-                parts[1].split("|");
-
-            let lessonsHTML = "";
-
-            lessons.forEach((lesson, lessonIndex) => {
-
-                lessonsHTML += `
-
+function renderCategories(courses) {
+    const list = document.getElementById("categoryList");
+    const cats = [...new Set(courses.map(c => c.category).filter(Boolean))];
+    cats.forEach(cat => {
+        const norm = cat.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        list.innerHTML += `
             <li>
-
-                ${moduleIndex + 1}.${lessonIndex}
-
-                ${lesson}
-
+                <button class="category-filter" data-filter="${norm}">${cat}</button>
             </li>
+        `;
+    });
+    document.querySelectorAll("#categoryList .category-filter").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll("#categoryList .category-filter").forEach(b => b.classList.remove("active-category"));
+            btn.classList.add("active-category");
+            activeCategory = btn.dataset.filter;
+            renderCourses(allCourses);
+        });
+    });
+}
 
+async function loadCourses() {
+
+    try {
+
+        const res = await fetch(`${API_URL}/api/courses`);
+        const courses = await res.json();
+
+        allCourses = courses;
+
+        renderCategories(courses);
+
+        renderCourses(allCourses);
+
+    } catch (err) {
+
+        coursesGrid.innerHTML = `
+            <div class="empty-state">
+                <h3>Error al cargar cursos</h3>
+                <p>No se pudieron cargar los cursos. Intenta nuevamente.</p>
+            </div>
         `;
 
-            });
+    }
 
-            modalCourseModules.innerHTML += `
+}
 
-        <div class="module-item">
+async function renderCourses(courses) {
 
-            <div class="module-header">
+    let filtered = courses;
 
-                <span class="module-arrow">
+    if (activeCategory !== "all") {
 
-                    ▶
+        const normalize = s =>
+            s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-                </span>
+        filtered = filtered.filter(c =>
+            normalize(c.category || "") === activeCategory
+        );
 
-                <h4>
+    }
 
-                    Módulo ${moduleIndex + 1}:
-                    ${moduleTitle}
+    if (searchQuery) {
 
-                </h4>
+        const q = searchQuery.toLowerCase();
+
+        filtered = filtered.filter(c =>
+            c.title.toLowerCase().includes(q) ||
+            (c.description || "").toLowerCase().includes(q)
+        );
+
+    }
+
+    if (sortBy === "recent") {
+
+        filtered.sort((a, b) =>
+            new Date(b.created_at) - new Date(a.created_at)
+        );
+
+    } else {
+
+        filtered.sort((a, b) =>
+            a.title.localeCompare(b.title)
+        );
+
+    }
+
+    if (filtered.length === 0) {
+
+        coursesGrid.innerHTML = `
+            <div class="empty-state">
+                <h3>No se encontraron cursos</h3>
+                <p>Intenta con otros filtros o términos de búsqueda.</p>
+            </div>
+        `;
+
+        return;
+    }
+
+    coursesGrid.innerHTML = "";
+
+    for (const course of filtered) {
+
+        const category = course.category || "General";
+        const duration = course.duration || "";
+        const level = course.level || "";
+        const thumbnail = course.thumbnail || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3";
+
+        coursesGrid.innerHTML += `
+            <div class="course-card" data-course-id="${course.id}">
+
+                <div class="course-image">
+                    <img src="${thumbnail}" alt="${course.title}">
+                </div>
+
+                <div class="course-info">
+
+                    <span class="course-category">${category}</span>
+
+                    <h3>${course.title}</h3>
+
+                    <p>${course.description || ""}</p>
+
+                    <div class="course-meta">
+                        ${duration ? `<span>${duration}</span>` : ""}
+                        ${level ? `<span>${level}</span>` : ""}
+                    </div>
+
+                    <div class="course-footer">
+
+                        <button class="course-btn">Ver curso</button>
+
+                    </div>
+
+                </div>
 
             </div>
+        `;
 
-            <ul class="module-lessons">
+    }
 
-                ${lessonsHTML}
+    document.querySelectorAll(".course-btn").forEach(btn => {
 
-            </ul>
+        btn.addEventListener("click", (e) => {
 
-        </div>
+            const card = e.target.closest(".course-card");
+            const courseId = card.dataset.courseId;
 
-    `;
-
-        });
-
-        /* SKILLS */
-
-        modalCourseSkills.innerHTML = "";
-
-        skills.forEach(skill => {
-
-            modalCourseSkills.innerHTML += `
-
-        <span>
-
-            ${skill}
-
-        </span>
-
-    `;
+            openCourseModal(courseId);
 
         });
-
-        /* ========================= */
-        /* COLLAPSABLE MODULES */
-        /* ========================= */
-
-        const moduleHeaders =
-            document.querySelectorAll(
-                ".module-header"
-            );
-
-        moduleHeaders.forEach(header => {
-
-            header.addEventListener(
-                "click",
-                () => {
-
-                    const moduleItem =
-                        header.parentElement;
-
-                    moduleItem.classList.toggle(
-                        "active-module"
-                    );
-
-                    const arrow =
-                        header.querySelector(
-                            ".module-arrow"
-                        );
-
-                    if (
-                        moduleItem.classList.contains(
-                            "active-module"
-                        )
-                    ) {
-
-                        arrow.textContent = "▼";
-
-                    } else {
-
-                        arrow.textContent = "▶";
-                    }
-
-                }
-            );
-
-        });
-        /* OPEN */
-
-        courseModal.classList.add(
-            "active-course-modal"
-        );
-
-    });
-
-});
-
-/* CLOSE */
-
-if (closeCourseModal) {
-
-    closeCourseModal.addEventListener("click", () => {
-
-        courseModal.classList.remove(
-            "active-course-modal"
-        );
 
     });
 
 }
 
-/* CLOSE OUTSIDE */
+async function openCourseModal(courseId) {
+
+    const course = allCourses.find(c => c.id === courseId);
+
+    if (!course) return;
+
+    modalCourseTitle.textContent = course.title;
+    modalCourseCategory.textContent = course.category || "General";
+    modalCourseDescription.textContent = course.description || "";
+    modalCourseDuration.textContent = course.duration ? `⏱ ${course.duration}` : "";
+    modalCourseImage.src = course.thumbnail || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3";
+
+    const modSection = document.querySelector(".course-modal-section");
+    modalCourseModules.innerHTML = "";
+
+    try {
+
+        const modRes = await fetch(`${API_URL}/api/modules/${course.id}`);
+        const modules = await modRes.json();
+
+        if (modules.length === 0) {
+            if (modSection) modSection.style.display = "none";
+            return;
+        }
+
+        if (modSection) modSection.style.display = "block";
+
+        for (let mi = 0; mi < modules.length; mi++) {
+
+            const mod = modules[mi];
+            let lessons = [];
+
+            try {
+
+                const lessRes = await fetch(`${API_URL}/api/lessons/${mod.id}`);
+                lessons = await lessRes.json();
+
+            } catch (e) {}
+
+            let lessonsHTML = "";
+
+            lessons.forEach((lesson, li) => {
+
+                lessonsHTML += `
+                    <li>${mi + 1}.${li + 1} ${lesson.title}</li>
+                `;
+
+            });
+
+            modalCourseModules.innerHTML += `
+                <div class="module-item">
+                    <div class="module-header">
+                        <span class="module-arrow">▶</span>
+                        <h4>Módulo ${mi + 1}: ${mod.title}</h4>
+                    </div>
+                    <ul class="module-lessons">${lessonsHTML || "<li style='color:rgba(255,255,255,0.3)'>Sin clases</li>"}</ul>
+                </div>
+            `;
+
+        }
+
+        document.querySelectorAll(".module-header").forEach(header => {
+
+            header.addEventListener("click", () => {
+
+                const item = header.parentElement;
+                item.classList.toggle("active-module");
+
+                const arrow = header.querySelector(".module-arrow");
+
+                arrow.textContent =
+                    item.classList.contains("active-module") ? "▼" : "▶";
+
+            });
+
+        });
+
+    } catch (err) {
+
+        console.error(err);
+
+    }
+
+    courseModal.classList.add("active-course-modal");
+
+}
+
+/* CLOSE MODAL */
+
+if (closeCourseModal) {
+
+    closeCourseModal.addEventListener("click", () => {
+
+        courseModal.classList.remove("active-course-modal");
+
+    });
+
+}
 
 if (courseModal) {
 
@@ -245,9 +304,7 @@ if (courseModal) {
 
         if (e.target === courseModal) {
 
-            courseModal.classList.remove(
-                "active-course-modal"
-            );
+            courseModal.classList.remove("active-course-modal");
 
         }
 
@@ -255,3 +312,24 @@ if (courseModal) {
 
 }
 
+/* SEARCH */
+
+courseSearch.addEventListener("input", (e) => {
+
+    searchQuery = e.target.value;
+    renderCourses(allCourses);
+
+});
+
+/* SORT */
+
+sortSelect.addEventListener("change", (e) => {
+
+    sortBy = e.target.value;
+    renderCourses(allCourses);
+
+});
+
+/* INIT */
+
+loadCourses();

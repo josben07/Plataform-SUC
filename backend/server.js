@@ -7,6 +7,9 @@ const commentReactionsRoutes =
 const commentsRoutes =
     require("./src/routes/comments.routes");
 
+const courseMentorsRoutes =
+    require("./src/routes/course-mentors.routes");
+
 /* agregado para correr backend hoy */
 const path =
     require("path");
@@ -192,6 +195,26 @@ app.use(
 app.use(
     "/api/mentor-profiles",
     mentorProfilesRoutes
+);
+app.use(
+    "/api/course-mentors",
+    courseMentorsRoutes
+);
+
+const notesRoutes =
+    require("./src/routes/notes.routes");
+
+app.use(
+    "/api/notes",
+    notesRoutes
+);
+
+const certificatesRoutes =
+    require("./src/routes/certificates.routes");
+
+app.use(
+    "/api/certificates",
+    certificatesRoutes
 );
 
 /* HOME */

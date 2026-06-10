@@ -52,8 +52,12 @@
 
                     <div class="sidebar-links">
 
-                        <button class="mentor-filter active-filter" onclick="loadMentors()">
-                            Todos los mentores
+                        <button class="mentor-filter active-filter" onclick="showAllMentors()">
+                            Todos
+                        </button>
+
+                        <button class="mentor-filter" onclick="showCourseMentors()">
+                            Asignados al curso
                         </button>
 
                         <button class="mentor-filter" onclick="window.location.href='./my-courses.html'">
@@ -155,6 +159,8 @@
                 </div>
 
                 <div class="mentor-tags" id="modalTags"></div>
+
+                <div id="modalPrice" class="mentor-price-display" style="margin: 10px 0 6px;"></div>
 
                 <button class="mentor-modal-btn" id="modalSelectBtn">
                     Seleccionar mentor

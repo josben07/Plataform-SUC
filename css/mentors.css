@@ -129,12 +129,17 @@
     .mentors-hero{
 
         padding:
-        150px 0 90px;
+        150px 0 80px;
     }
 
     .mentors-hero-content h1{
 
-        font-size: 2.7rem;
+        font-size: 2.5rem;
+    }
+
+    .mentors-hero-content p{
+
+        font-size: 1rem;
     }
 }
 
@@ -164,6 +169,13 @@
     280px 1fr;
 
     gap: 40px;
+
+    align-items: start;
+}
+
+.mentors-content:only-child{
+
+    grid-column: 1 / -1;
 }
 
 /* ========================= */
@@ -319,6 +331,9 @@
 .mentors-grid{
 
     display: grid;
+
+    grid-template-columns:
+    1fr;
 
     gap: 28px;
 }
@@ -752,9 +767,29 @@
         width: 100%;
     }
 
+    .mentors-topbar h2{
+
+        font-size: 1.8rem;
+    }
+
+    .mentor-image{
+
+        min-height: 240px;
+    }
+
+    .mentor-info{
+
+        padding: 28px;
+    }
+
     .mentor-top{
 
         flex-direction: column;
+    }
+
+    .mentor-top h3{
+
+        font-size: 1.5rem;
     }
 
     .mentor-footer{
@@ -763,23 +798,88 @@
 
         align-items: flex-start;
     }
+
+    .mentor-modal-content{
+
+        grid-template-columns: 1fr;
+
+        max-width: 500px;
+    }
+
+    .mentor-modal-image{
+
+        max-height: 260px;
+    }
+
+    .mentor-modal-info{
+
+        padding: 32px;
+    }
+
+    .mentor-modal-info h2{
+
+        font-size: 1.8rem;
+    }
 }
 
 @media (max-width: 480px){
 
+    .mentors-hero{
+
+        padding:
+        140px 0 80px;
+    }
+
+    .mentors-layout{
+
+        padding:
+        30px 0 80px;
+    }
+
     .mentor-info{
 
-        padding: 28px;
+        padding: 22px;
     }
 
     .mentor-top h3{
 
-        font-size: 1.6rem;
+        font-size: 1.3rem;
     }
 
-    .mentor-price{
+    .mentor-top span{
 
-        font-size: 1.6rem;
+        font-size: 0.9rem;
+    }
+
+    .mentor-image{
+
+        min-height: 200px;
+    }
+
+    .mentor-modal{
+
+        padding: 12px;
+    }
+
+    .mentor-modal-info{
+
+        padding: 24px;
+    }
+
+    .mentor-modal-info h2{
+
+        font-size: 1.5rem;
+    }
+
+    .close-modal{
+
+        top: 12px;
+
+        right: 12px;
+
+        width: 40px;
+
+        height: 40px;
     }
 }
 

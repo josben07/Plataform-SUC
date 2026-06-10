@@ -1,3 +1,7 @@
+.menu-toggle{
+    display: none;
+}
+
 @media screen and (max-width: 1100px){
 
     .hero-container{
@@ -27,10 +31,6 @@
 }
 
 @media screen and (max-width: 768px){
-
-    .nav-menu{
-        display: none;
-    }
 
     .hero-content h1{
         font-size: 3rem;
@@ -117,8 +117,25 @@
 @media screen and (max-width: 992px){
 
     .menu-toggle{
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        font-size: 1.5rem;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        cursor: pointer;
+        transition: 0.3s ease;
         z-index: 2000;
+        color: var(--dark);
+    }
+
+    .menu-toggle:hover{
+        border-color: var(--primary);
+        color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(108,77,255,0.1);
     }
 
     .nav-menu{
@@ -127,12 +144,32 @@
         right: -100%;
         width: 280px;
         height: 100vh;
-        background: var(--white);
+        background: var(--card-bg);
+        display: flex;
         flex-direction: column;
-        padding: 120px 40px;
+        padding: 100px 30px 40px;
         transition: 0.4s ease;
+        border-left: 1px solid var(--border);
         box-shadow: -10px 0 40px rgba(0,0,0,0.08);
         z-index: 1500;
+    }
+
+    .nav-menu a{
+        padding: 14px 18px;
+        border-radius: 14px;
+        font-size: 1rem;
+        transition: 0.3s ease;
+        color: var(--dark);
+    }
+
+    .nav-menu a:hover{
+        background: rgba(108,77,255,0.08);
+        color: var(--primary);
+    }
+
+    .nav-menu a.active-link{
+        background: var(--primary);
+        color: white;
     }
 
     .nav-menu.active{
@@ -200,14 +237,6 @@
     }
 
 }
-@media screen and (max-width: 1100px){
-
-    .nav-menu{
-        display: none;
-    }
-
-}
-
 /* ========================= */
 /* TRUST RESPONSIVE */
 /* ========================= */
@@ -225,6 +254,30 @@
         font-size: 2.3rem;
     }
 
+}
+
+body.dark-mode .nav-menu{
+    background: #111827;
+    border-left-color: rgba(255,255,255,0.08);
+}
+
+body.dark-mode .nav-menu a{
+    color: rgba(255,255,255,0.85);
+}
+
+body.dark-mode .nav-menu a:hover{
+    background: rgba(108,77,255,0.15);
+}
+
+body.dark-mode .menu-toggle{
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.85);
+}
+
+body.dark-mode .menu-toggle:hover{
+    border-color: var(--primary);
+    color: var(--primary);
 }
 
 @media screen and (max-width: 600px){

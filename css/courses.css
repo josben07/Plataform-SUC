@@ -276,15 +276,6 @@
     justify-content: space-between;
 }
 
-.course-price{
-
-    font-size: 1.4rem;
-
-    font-weight: 700;
-
-    color: var(--primary);
-}
-
 .course-btn{
 
     padding:
@@ -831,19 +822,6 @@
 .course-category{
 
     letter-spacing: 0.4px;
-}
-
-/* PRICE */
-
-.course-price{
-
-    transition: 0.3s ease;
-}
-
-.course-card:hover
-.course-price{
-
-    transform: scale(1.05);
 }
 
 /* IMAGE */
@@ -1502,6 +1480,26 @@ body.dark-mode
     font-weight: 600;
 
     font-size: 0.9rem;
+}
+
+/* EMPTY */
+
+.empty-state{
+    grid-column:1/-1;
+    background:#0F172A;
+    border-radius:28px;
+    padding:60px 40px;
+    text-align:center;
+}
+
+.empty-state h3{
+    font-size:1.4rem;
+    margin-bottom:10px;
+}
+
+.empty-state p{
+    color:rgba(255,255,255,0.55);
+    line-height:1.6;
 }
 
 /* DARK */

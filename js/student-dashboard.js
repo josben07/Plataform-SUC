@@ -303,6 +303,13 @@ async function loadStudentCourses() {
             }
                     </button>
 
+                    <button
+                        style="margin-top:10px;width:100%;height:42px;border:1px solid rgba(139,124,255,0.3);border-radius:14px;background:rgba(108,77,255,0.1);color:#8B7CFF;font-weight:700;cursor:pointer;"
+                        onclick="openCoursePreview('${course.id}')"
+                    >
+                        Ver temario
+                    </button>
+
                 </div>
 
             </div>
@@ -556,6 +563,139 @@ function renderCategoryPanel(courses) {
         </button>
 
     `;
+
+}
+
+/* PREVIEW MODAL */
+
+const previewModal =
+    document.querySelector(".preview-modal");
+
+const closePreviewModal =
+    document.querySelector(".close-preview-modal");
+
+if (closePreviewModal) {
+
+    closePreviewModal.addEventListener("click", () => {
+
+        previewModal.classList.remove("active-modal");
+
+    });
+
+}
+
+if (previewModal) {
+
+    previewModal.addEventListener("click", (e) => {
+
+        if (e.target === previewModal) {
+
+            previewModal.classList.remove("active-modal");
+
+        }
+
+    });
+
+}
+
+async function openCoursePreview(courseId) {
+
+    try {
+
+        const res =
+            await fetch(
+                `${API_URL}/api/courses`
+            );
+
+        const courses =
+            await res.json();
+
+        const course =
+            courses.find(c => c.id === courseId);
+
+        if (!course) return;
+
+        document.getElementById("previewCourseTitle").textContent =
+            course.title;
+
+        document.getElementById("previewCourseDescription").textContent =
+            course.description || "";
+
+        const container =
+            document.getElementById("previewModules");
+
+        container.innerHTML =
+            "<p style='color:rgba(255,255,255,0.4)'>Cargando...</p>";
+
+        previewModal.classList.add("active-modal");
+
+        const modRes =
+            await fetch(
+                `${API_URL}/api/modules/${course.id}`
+            );
+
+        const modules =
+            await modRes.json();
+
+        container.innerHTML =
+            "";
+
+        if (modules.length === 0) {
+
+            container.innerHTML =
+                "<p style='color:rgba(255,255,255,0.4)'>Este curso aún no tiene módulos.</p>";
+
+            return;
+
+        }
+
+        for (let mi = 0; mi < modules.length; mi++) {
+
+            const mod =
+                modules[mi];
+
+            let lessons =
+                [];
+
+            try {
+
+                const lessRes =
+                    await fetch(
+                        `${API_URL}/api/lessons/${mod.id}`
+                    );
+
+                lessons =
+                    await lessRes.json();
+
+            } catch (e) {}
+
+            let lessonsHTML =
+                lessons.map((l, li) =>
+                    `<li style="color:rgba(255,255,255,0.6);padding:4px 0;">${mi+1}.${li+1} ${l.title}</li>`
+                ).join("");
+
+            container.innerHTML +=
+                `
+                <div style="background:rgba(255,255,255,0.04);border-radius:14px;margin-bottom:12px;overflow:hidden;">
+                    <div style="padding:14px 18px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;"
+                         onclick="this.parentElement.classList.toggle('active-preview-module');const a=this.querySelector('.preview-arrow');a.textContent=a.textContent==='▶'?'▼':'▶'">
+                        <span class="preview-arrow" style="font-size:0.8rem;">▶</span>
+                        Módulo ${mi+1}: ${mod.title}
+                    </div>
+                    <ul style="list-style:none;padding:0 18px 14px;display:block;margin:0;">
+                        ${lessonsHTML || "<li style='color:rgba(255,255,255,0.3)'>Sin clases</li>"}
+                    </ul>
+                </div>
+            `;
+
+        }
+
+    } catch (err) {
+
+        document.getElementById("previewModules").innerHTML =
+            "<p style='color:rgba(255,255,255,0.5)'>Error al cargar.</p>";
+
+    }
 
 }
 

@@ -2,17 +2,10 @@
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>
-        Mis Cursos | SUClassroom
-    </title>
-
+    <title>Cursos | SUClassroom</title>
     <link rel="stylesheet" href="../../css/student-my-courses.css">
-
 </head>
 
 <body>
@@ -22,23 +15,17 @@
         <aside class="student-sidebar">
 
             <div class="student-logo">
-
                 SUClassroom
-
             </div>
 
             <nav class="student-menu">
 
                 <a href="./dashboard.html">
-
                     📊 Dashboard
-
                 </a>
 
                 <a href="./my-courses.html" class="active-link">
-
                     📚 Mis cursos
-
                 </a>
 
                 <a href="./projects.html">
@@ -49,10 +36,16 @@
                     🎓 Mentorías
                 </a>
 
+                <a href="./notes.html">
+                    📝 Mis Apuntes
+                </a>
+
+                <a href="./certificates.html">
+                    🎓 Certificados
+                </a>
+
                 <a href="./payments.html">
-
                     💳 Pagos
-
                 </a>
 
                 <a href="./profile.html">
@@ -72,56 +65,35 @@
                 </span>
 
                 <h1>
-
-                    Continúa aprendiendo
-
+                    Mis cursos
                 </h1>
 
                 <p>
-
-                    Visualiza tu progreso
-                    y sigue estudiando.
-
+                    Cursos en los que estás inscrito.
                 </p>
 
             </div>
 
-            <div class="my-courses-grid" id="myCoursesGrid">
-
-            </div>
+            <div class="my-courses-grid" id="myCoursesGrid"></div>
 
         </main>
 
+    </div>
+
+    <div class="preview-modal" id="previewModal">
+        <div class="preview-modal-content">
+            <span class="close-preview-modal">&times;</span>
+            <h2 id="previewCourseTitle"></h2>
+            <p id="previewCourseDescription" class="preview-desc"></p>
+            <div id="previewModules" class="preview-modules"></div>
+        </div>
     </div>
 
     <div class="app-toast">
         <span id="appToastMessage">Acción realizada</span>
     </div>
 
-    <div class="mentor-modal">
-    
-        <div class="mentor-modal-content">
-    
-            <span class="close-mentor-modal">
-                ✕
-            </span>
-    
-            <h2>
-                Elegir mentor
-            </h2>
-    
-            <p>
-                Selecciona un mentor para acompañarte en este curso.
-            </p>
-    
-            <div class="mentor-list" id="mentorList"></div>
-    
-        </div>
-    
-    </div>
-
     <script src="../../js/config.js"></script>
-
     <script src="../../js/student-my-courses.js"></script>
 
 </body>

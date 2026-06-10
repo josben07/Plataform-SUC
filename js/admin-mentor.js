@@ -130,6 +130,28 @@ async function loadMentorUsers() {
 
 }
 
+/* AUTO-FILL SESSION PRICE WITH BASE PRICE */
+
+mentorSelect.addEventListener("change", () => {
+
+    const mentor =
+        mentorsUsers.find(
+            m => m.id === mentorSelect.value
+        );
+
+    if (
+        mentor &&
+        mentor.profile &&
+        mentor.profile.base_price != null
+    ) {
+
+        sessionPrice.value =
+            mentor.profile.base_price;
+
+    }
+
+});
+
 /* OPEN MODAL */
 
 openMentorModal.addEventListener("click", () => {
@@ -191,6 +213,14 @@ async function loadMentors() {
 
     mentors.forEach(mentor => {
 
+        const mentorUser =
+            mentorsUsers.find(
+                m => m.id === mentor.mentor_id
+            );
+
+        const basePrice =
+            mentorUser?.profile?.base_price;
+
         mentorGrid.innerHTML += `
 
             <div class="mentor-card">
@@ -202,6 +232,11 @@ async function loadMentors() {
                 <p>
                     Mentor:
                     ${mentor.mentor_name}
+                </p>
+
+                <p style="color:#A89BFF; font-weight:700;">
+                    Precio base del mentor:
+                    $${basePrice ? Number(basePrice).toFixed(2) : "0.00"}
                 </p>
 
                 <p>

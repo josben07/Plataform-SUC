@@ -770,3 +770,338 @@ body {
 
   font-size: 0.95rem;
 }
+
+/* ========================= */
+/* NOTES FLOATING BUTTON & PANEL */
+/* ========================= */
+
+.notes-fab {
+  position: fixed;
+
+  bottom: 32px;
+  right: 32px;
+
+  width: 60px;
+  height: 60px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #60a5fa
+  );
+
+  color: white;
+
+  font-size: 1.6rem;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 30px rgba(59, 130, 246, 0.4);
+
+  z-index: 99999;
+
+  transition: 0.25s ease;
+}
+
+.notes-fab:hover {
+  transform: scale(1.1);
+
+  box-shadow:
+    0 12px 40px rgba(59, 130, 246, 0.55);
+}
+
+.notes-panel {
+  position: fixed;
+
+  top: 0;
+  right: -420px;
+
+  width: 400px;
+  height: 100vh;
+
+  background: #0f172a;
+
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+
+  z-index: 999999;
+
+  display: flex;
+
+  flex-direction: column;
+
+  transition: right 0.35s ease;
+
+  box-shadow:
+    -8px 0 40px rgba(0, 0, 0, 0.45);
+}
+
+.notes-panel.open {
+  right: 0;
+}
+
+.notes-panel-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 22px 24px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.notes-panel-header h3 {
+  font-size: 1.2rem;
+
+  color: white;
+}
+
+.notes-close-btn {
+  background: none;
+
+  border: none;
+
+  color: rgba(255, 255, 255, 0.5);
+
+  font-size: 1.3rem;
+
+  cursor: pointer;
+
+  padding: 6px;
+}
+
+.notes-close-btn:hover {
+  color: white;
+}
+
+.notes-panel-body {
+  flex: 1;
+
+  overflow-y: auto;
+
+  padding: 20px 24px;
+}
+
+.notes-current-lesson {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.notes-lesson-label {
+  font-size: 0.85rem;
+
+  color: #8b7cff;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 1px;
+}
+
+.notes-textarea {
+  width: 100%;
+
+  min-height: 150px;
+
+  border: none;
+
+  border-radius: 16px;
+
+  padding: 16px;
+
+  background: rgba(255, 255, 255, 0.05);
+
+  color: white;
+
+  font-size: 0.95rem;
+
+  line-height: 1.6;
+
+  resize: vertical;
+
+  outline: none;
+}
+
+.notes-textarea:focus {
+  box-shadow: 0 0 0 3px rgba(108, 77, 255, 0.2);
+}
+
+.notes-save-btn {
+  align-self: flex-end;
+
+  height: 42px;
+
+  padding: 0 20px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: linear-gradient(
+    135deg,
+    #6c4dff,
+    #8b7cff
+  );
+
+  color: white;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.25s ease;
+}
+
+.notes-save-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 24px rgba(108, 77, 255, 0.35);
+}
+
+.notes-save-feedback {
+  font-size: 0.85rem;
+
+  font-weight: 600;
+
+  text-align: right;
+
+  min-height: 20px;
+}
+
+.notes-save-feedback.success {
+  color: #22c55e;
+}
+
+.notes-save-feedback.error {
+  color: #ef4444;
+}
+
+.notes-divider {
+  height: 1px;
+
+  background: rgba(255, 255, 255, 0.06);
+
+  margin: 20px 0;
+}
+
+.notes-all-header {
+  font-size: 0.85rem;
+
+  color: rgba(255, 255, 255, 0.5);
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 1px;
+
+  margin-bottom: 14px;
+}
+
+.notes-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.notes-list-item {
+  background: rgba(255, 255, 255, 0.04);
+
+  border-radius: 14px;
+
+  padding: 14px 16px;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.notes-list-item:hover {
+  background: rgba(108, 77, 255, 0.12);
+}
+
+.notes-list-item-title {
+  font-weight: 700;
+
+  font-size: 0.95rem;
+
+  color: white;
+
+  margin-bottom: 6px;
+}
+
+.notes-list-item-preview {
+  color: rgba(255, 255, 255, 0.55);
+
+  font-size: 0.85rem;
+
+  line-height: 1.5;
+
+  overflow: hidden;
+
+  display: -webkit-box;
+
+  -webkit-line-clamp: 2;
+
+  -webkit-box-orient: vertical;
+}
+
+.notes-list-item-date {
+  color: rgba(255, 255, 255, 0.35);
+
+  font-size: 0.75rem;
+
+  margin-top: 6px;
+}
+
+.notes-empty {
+  color: rgba(255, 255, 255, 0.4);
+
+  text-align: center;
+
+  padding: 30px 0;
+
+  font-size: 0.9rem;
+}
+
+.notes-welcome-message {
+  color: rgba(255, 255, 255, 0.45);
+
+  text-align: center;
+
+  padding: 20px 0;
+
+  font-size: 0.9rem;
+
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .notes-panel {
+    width: 100%;
+
+    right: -100%;
+  }
+
+  .notes-fab {
+    bottom: 20px;
+    right: 20px;
+
+    width: 52px;
+    height: 52px;
+
+    font-size: 1.3rem;
+  }
+}

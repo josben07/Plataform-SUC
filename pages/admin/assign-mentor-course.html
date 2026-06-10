@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Asignar Mentores a Cursos | SUClassroom
+    </title>
+
+    <link rel="stylesheet" href="../../css/reset.css">
+
+    <link rel="stylesheet" href="../../css/global.css">
+
+    <link rel="stylesheet" href="../../css/admin-courses.css">
+
+</head>
+
+<body class="courses-admin-body">
+
+    <aside class="sidebar">
+
+        <div>
+
+            <div class="sidebar-logo">
+
+                SUClassroom
+
+            </div>
+
+            <nav class="sidebar-menu">
+
+                <a href="./dashboard.html">
+
+                    📊 Dashboard
+
+                </a>
+
+                <a href="./users.html">
+
+                    👤 Usuarios
+
+                </a>
+
+                <a href="./courses.html">
+
+                    📚 Cursos
+
+                </a>
+
+                <a href="./mentor.html">
+
+                    🎓 Mentorías
+
+                </a>
+
+                <a href="./mentor-prices.html">
+
+                    💰 Precios
+
+                </a>
+
+                <a href="./payments.html">
+
+                    💳 Pagos
+
+                </a>
+
+                <a href="./assign-mentor-course.html" class="active-link">
+
+                    📋 Asignar Mentores
+
+                </a>
+
+            </nav>
+
+        </div>
+
+    </aside>
+
+    <main class="courses-main">
+
+        <div class="courses-topbar">
+
+            <div>
+
+                <h1>
+
+                    Asignar mentores a cursos
+
+                </h1>
+
+                <p>
+
+                    Designa qué mentores pertenecen a cada curso.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="assign-controls" style="display:flex; gap:16px; margin-bottom:32px; flex-wrap:wrap;">
+
+            <div style="flex:1; min-width:220px; display:flex; flex-direction:column; gap:6px;">
+
+                <label style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.7); letter-spacing:0.5px; text-transform:uppercase;">
+                    Mentor
+                </label>
+
+                <select id="assignMentorSelect" class="assign-select">
+
+                    <option value="">
+                        Seleccionar mentor
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div style="flex:1; min-width:220px; display:flex; flex-direction:column; gap:6px;">
+
+                <label style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.7); letter-spacing:0.5px; text-transform:uppercase;">
+                    Curso
+                </label>
+
+                <select id="assignCourseSelect" class="assign-select">
+
+                    <option value="">
+                        Seleccionar curso
+                    </option>
+
+                </select>
+
+            </div>
+
+            <button id="assignBtn" class="assign-btn">
+
+                Asignar
+
+            </button>
+
+        </div>
+
+        <style>
+            .assign-select {
+                flex: 1;
+                padding: 16px 18px;
+                border: 2px solid rgba(139,124,255,0.25);
+                border-radius: 18px;
+                background: rgba(15,23,42,0.9);
+                color: white;
+                font-size: 1rem;
+                font-weight: 600;
+                outline: none;
+                cursor: pointer;
+                transition: 0.3s ease;
+                appearance: none;
+                -webkit-appearance: none;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238B7CFF' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 18px center;
+            }
+            .assign-select:hover {
+                border-color: rgba(139,124,255,0.5);
+            }
+            .assign-select:focus {
+                border-color: #8B7CFF;
+                box-shadow: 0 0 0 4px rgba(108,77,255,0.2);
+            }
+            .assign-select option {
+                background: #0F172A;
+                color: white;
+                padding: 12px;
+                font-weight: 500;
+            }
+            .assign-select option:checked {
+                background: rgba(108,77,255,0.3);
+                color: #A89BFF;
+            }
+            .assign-select option:hover {
+                background: rgba(108,77,255,0.2);
+            }
+            .assign-btn {
+                height: 58px;
+                padding: 0 32px;
+                border: none;
+                border-radius: 18px;
+                background: linear-gradient(135deg, #6C4DFF, #8B7CFF);
+                color: white;
+                font-weight: 700;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: 0.35s ease;
+                box-shadow: 0 14px 35px rgba(108,77,255,0.35);
+                align-self: flex-end;
+            }
+            .assign-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 20px 45px rgba(108,77,255,0.45);
+            }
+        </style>
+
+        <div class="courses-grid" id="assignmentsGrid">
+
+        </div>
+
+    </main>
+
+    <div class="admin-toast">
+
+        <span id="adminToastMessage">
+            Acción realizada
+        </span>
+
+    </div>
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/admin-assign-mentor-course.js"></script>
+
+</body>
+
+</html>
