@@ -3,24 +3,29 @@ const user =
         localStorage.getItem("user")
     );
 
-const mentorshipGrid =
+if (!user) {
+
+    window.location.href =
+        "../login.html";
+
+}
+
+const list =
     document.getElementById(
-        "mentorshipGrid"
+        "mentorshipList"
     );
 
-let assignedMentors =
-    [];
+const toast =
+    document.querySelector(
+        ".app-toast"
+    );
 
-let activeStudentCourse =
-    null;
+const toastMessage =
+    document.getElementById(
+        "appToastMessage"
+    );
 
-function showMentorshipMessage(message) {
-
-    const toast =
-        document.querySelector(".app-toast");
-
-    const toastMessage =
-        document.getElementById("appToastMessage");
+function showMsg(message) {
 
     if (!toast || !toastMessage) {
 
@@ -35,488 +40,245 @@ function showMentorshipMessage(message) {
         "show-toast"
     );
 
-    setTimeout(
-        () => {
+    setTimeout(() => {
 
-            toast.classList.remove(
-                "show-toast"
-            );
-
-        },
-        3000
-    );
-
-}
-
-async function loadActiveStudentCourse() {
-
-    const response =
-        await fetch(
-            `${API_URL}/api/student-courses/${user.id}`
+        toast.classList.remove(
+            "show-toast"
         );
 
-    if (!response.ok) {
+    }, 3000);
 
-        return null;
+}
+
+function formatDate(dateStr) {
+
+    if (!dateStr) {
+
+        return "—";
 
     }
 
-    const studentCourses =
-        await response.json();
+    try {
 
-    return studentCourses.find(course =>
-        course.status === "Activo"
-    ) || null;
+        const d =
+            new Date(dateStr);
 
-}
+        return d.toLocaleDateString(
+            "es-PE",
+            {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            }
+        );
 
-function canScheduleMentorship() {
+    } catch {
 
-    return Boolean(
-        activeStudentCourse &&
-        activeStudentCourse.final_project_approved === true
-    );
-
-}
-
-function formatMentorshipPrice(price) {
-
-    if (
-        price === null ||
-        price === undefined ||
-        price === ""
-    ) {
-
-        return "Por definir";
+        return dateStr;
 
     }
 
-    const numericPrice =
-        Number(price);
+}
 
-    return Number.isFinite(numericPrice) &&
-        numericPrice >= 0
-        ? `S/ ${numericPrice.toFixed(2)}`
-        : "Por definir";
+function formatTime(timeStr) {
+
+    if (!timeStr) {
+
+        return "—";
+
+    }
+
+    return timeStr;
 
 }
 
-function getMentorshipPayment(payments, sessionId) {
+function statusLabel(status) {
 
-    return payments.find(payment =>
-        payment.student_id === user.id &&
-        payment.session_id === sessionId &&
-        payment.payment_type === "mentor"
-    );
+    switch (status) {
+
+        case "reserved":
+            return "Reservada";
+        case "completed":
+            return "Completada";
+        case "cancelled":
+            return "Cancelada";
+        case "available":
+            return "Disponible";
+        default:
+            return status ||
+                "—";
+
+    }
+
+}
+
+function statusClass(status) {
+
+    switch (status) {
+
+        case "reserved":
+            return "status-reserved";
+        case "completed":
+            return "status-completed";
+        case "cancelled":
+            return "status-cancelled";
+        default:
+            return "";
+
+    }
 
 }
 
 async function loadMentorships() {
 
-    activeStudentCourse =
-        await loadActiveStudentCourse();
+    try {
 
-    if (!activeStudentCourse) {
+        const response =
+            await fetch(
+                `${API_URL}/api/mentor/student/${user.id}`
+            );
 
-        mentorshipGrid.innerHTML = `
+        if (!response.ok) {
 
-            <div class="empty-state">
+            renderEmpty();
+            return;
 
-                <h3>
-                    No hay curso activo
-                </h3>
+        }
 
-                <p>
-                    Debes tener un curso activo y tu proyecto final aprobado para agendar una mentoría.
-                </p>
+        const sessions =
+            await response.json();
 
-            </div>
+        const mySessions =
+            sessions.filter(
+                s =>
+                    s.status ===
+                        "reserved" ||
+                    s.status ===
+                        "completed" ||
+                    s.status ===
+                        "cancelled"
+            );
 
-        `;
+        if (
+            mySessions.length === 0
+        ) {
 
-        return;
+            renderEmpty();
+            return;
 
-    }
+        }
 
-    const assignedResponse =
-        await fetch(
-            `${API_URL}/api/student-mentors/${user.id}`
-        );
+        renderList(mySessions);
 
-    assignedMentors =
-        await assignedResponse.json();
+    } catch {
 
-    const activeCourseMentors =
-        assignedMentors.filter(item =>
-            String(item.course_id) === String(activeStudentCourse.course_id)
-        );
-
-    const assignedMentorIds =
-        activeCourseMentors.map(
-            item => item.mentor_id
-        );
-
-    const mentorshipUnlocked =
-        canScheduleMentorship();
-
-    const profilesResponse =
-        await fetch(
-            `${API_URL}/api/mentor-profiles`
-        );
-
-    const mentorProfiles =
-        await profilesResponse.json();
-
-    const myMentors =
-        mentorProfiles.filter(
-            mentor =>
-                assignedMentorIds.includes(mentor.id)
-        );
-
-    const response =
-        await fetch(
-            `${API_URL}/api/mentor`
-        );
-
-    const sessions =
-        await response.json();
-
-    const paymentsResponse =
-        await fetch(
-            `${API_URL}/api/payments`
-        );
-
-    const payments =
-        await paymentsResponse.json();
-
-    mentorshipGrid.innerHTML = "";
-
-    if (!mentorshipUnlocked) {
-
-        mentorshipGrid.innerHTML += `
-
-            <div class="assigned-mentors-banner">
-
-                <h3>
-                    Proyecto final pendiente
-                </h3>
-
-                <p>
-                    Debes tener tu proyecto final aprobado para agendar una mentoría.
-                </p>
-
-            </div>
-
-        `;
+        renderEmpty();
 
     }
 
-    if (myMentors.length > 0) {
+}
 
-        mentorshipGrid.innerHTML += `
+function renderEmpty() {
 
-        <div class="assigned-mentors-banner">
+    list.innerHTML = `
+
+        <div class="empty-mentorships">
+
+            <div class="empty-icon">
+                🎓
+            </div>
 
             <h3>
-                Tus mentores asignados
+                Aún no tienes mentorías agendadas
             </h3>
 
             <p>
-                Solo puedes agendar reuniones con los mentores que seleccionaste para tus cursos.
+                Ve a Mentores para agendar una sesión.
             </p>
 
-            <div class="assigned-mentor-list">
-
-                ${myMentors.map(mentor => `
-
-                        <span>
-                            ${mentor.full_name}
-                        </span>
-
-                    `).join("")
-            }
-
-            </div>
+            <a
+                href="./select-mentor.html"
+                class="mentorship-btn"
+            >
+                Ir a Mentores
+            </a>
 
         </div>
 
     `;
 
-    }
-
-    if (sessions.length === 0) {
-
-        mentorshipGrid.innerHTML = `
-
-            <div class="empty-state">
-
-                <h3>
-                    No hay mentorías disponibles
-                </h3>
-
-                <p>
-                    Cuando el administrador cree mentorías, aparecerán aquí.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-    sessions.forEach(session => {
-
-        const isAssignedMentor =
-            assignedMentorIds.includes(
-                session.mentor_id
-            );
-
-        const sessionStatus =
-            session.status || "available";
-
-        const payment =
-            getMentorshipPayment(
-                payments,
-                session.id
-            );
-
-        const isOwnReservation =
-            isAssignedMentor &&
-            session.student_id === user.id;
-
-        const isPaymentApproved =
-            payment &&
-            payment.status === "aprobado";
-
-        mentorshipGrid.innerHTML += `
-
-            <div class="
-                mentor-card
-                ${!isAssignedMentor || !mentorshipUnlocked ? "locked-mentorship" : ""}
-            ">
-
-                <h3>
-                    ${session.session_title}
-                </h3>
-
-                <p>
-                    Mentor: ${session.mentor_name}
-                </p>
-
-                <p>
-                    ${session.mentor_specialty || ""}
-                </p>
-
-                <p>
-                    Fecha: ${session.session_date || "Por definir"}
-                </p>
-
-                <p>
-                    Hora: ${session.session_time || "Por definir"}
-                </p>
-
-                <p class="mentor-price">
-                    Precio: ${formatMentorshipPrice(session.price)}
-                </p>
-
-                <div class="mentor-status">
-
-                    ${!isAssignedMentor
-                ? "Bloqueada"
-                : !mentorshipUnlocked
-                    ? "Bloqueada"
-                : sessionStatus === "available"
-                    ? "Disponible"
-                    : isOwnReservation && !isPaymentApproved
-                        ? "Pago pendiente"
-                    : "Reservada"
-            }
-
-                </div>
-
-                ${!isAssignedMentor
-                ?
-                `
-                    <div class="locked-message">
-                        Debes seleccionar este mentor en uno de tus cursos para agendar.
-                    </div>
-
-                    <button
-                        class="mentor-btn"
-                        disabled
-                    >
-                        Mentor no seleccionado
-                    </button>
-                    `
-                :
-                !mentorshipUnlocked
-                    ?
-                    `
-                    <div class="locked-message">
-                        Debes tener tu proyecto final aprobado para agendar una mentoría.
-                    </div>
-
-                    <button
-                        class="mentor-btn"
-                        disabled
-                    >
-                        Solicitar mentoría
-                    </button>
-                    `
-                :
-                isOwnReservation &&
-                    !isPaymentApproved
-                    ?
-                    `
-                    <div class="locked-message">
-                        Mentoría reservada. Esperando aprobación del pago.
-                    </div>
-                    `
-                    :
-                    isOwnReservation &&
-                    isPaymentApproved &&
-                    session.meet_link
-                    ?
-                    `
-                    <a
-                        href="${session.meet_link}"
-                        target="_blank"
-                        class="meet-link"
-                    >
-                        Entrar a reunión
-                    </a>
-                    `
-                    :
-                    ""
-            }
-
-                ${isAssignedMentor && mentorshipUnlocked && sessionStatus === "available"
-                ?
-                `
-                    <button
-                        class="mentor-btn"
-                        onclick="requestMentorship('${session.id}')"
-                    >
-                        Solicitar mentoría
-                    </button>
-                    `
-                :
-                isAssignedMentor && !mentorshipUnlocked
-                    ?
-                    ""
-                    :
-                isAssignedMentor && session.student_id === user.id
-                    ?
-                    `
-                    <button
-                        class="mentor-btn cancel-btn"
-                        onclick="cancelMentorship('${session.id}')"
-                    >
-                        Cancelar reserva
-                    </button>
-                    `
-                    :
-                    isAssignedMentor
-                        ?
-                        `
-                    <button
-                        class="mentor-btn"
-                        disabled
-                    >
-                        Reservada
-                    </button>
-                    `
-                        :
-                        ""
-            }
-
-            </div>
-
-        `;
-
-    });
-
 }
 
-async function requestMentorship(mentorshipId) {
+function renderList(sessions) {
 
-    activeStudentCourse =
-        await loadActiveStudentCourse();
+    list.innerHTML = `
 
-    if (!activeStudentCourse) {
+        <div class="mentorship-table-wrap">
 
-        showMentorshipMessage(
-            "Debes tener un curso activo para agendar una mentoría."
-        );
+            <table class="mentorship-table">
 
-        return;
+                <thead>
 
-    }
+                    <tr>
+                        <th>Mentor</th>
+                        <th>Curso</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Estado</th>
+                        <th></th>
+                    </tr>
 
-    if (!canScheduleMentorship()) {
+                </thead>
 
-        showMentorshipMessage(
-            "Debes tener tu proyecto final aprobado para agendar una mentoría."
-        );
+                <tbody>
 
-        return;
+                    ${sessions.map(s => `
 
-    }
+                        <tr>
 
-    const response =
-        await fetch(
-        `${API_URL}/api/mentor/request/${mentorshipId}`,
-        {
-            method: "PUT",
+                            <td class="td-mentor">
+                                ${s.mentor_name || "—"}
+                            </td>
 
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
+                            <td class="td-course">
+                                —
+                            </td>
 
-            body:
-                JSON.stringify({
+                            <td class="td-date">
+                                ${formatDate(s.session_date)}
+                            </td>
 
-                    student_id:
-                        user.id,
+                            <td class="td-time">
+                                ${formatTime(s.session_time)}
+                            </td>
 
-                    student_name:
-                        user.full_name
+                            <td>
+                                <span class="status-badge ${statusClass(s.status)}">
+                                    ${statusLabel(s.status)}
+                                </span>
+                            </td>
 
-                })
-        }
-    );
+                            <td class="td-action">
+                                <button
+                                    class="pay-btn"
+                                    disabled
+                                    title="Próximamente"
+                                >
+                                    Pagar Mentoría
+                                </button>
+                            </td>
 
-    const result =
-        await response.json();
+                        </tr>
 
-    if (!response.ok) {
+                    `).join("")}
 
-        showMentorshipMessage(
-            result.error ||
-            "No se pudo reservar la mentoría."
-        );
+                </tbody>
 
-        return;
+            </table>
 
-    }
+        </div>
 
-    loadMentorships();
-
-}
-
-async function cancelMentorship(mentorshipId) {
-
-    await fetch(
-        `${API_URL}/api/mentor/cancel/${mentorshipId}`,
-        {
-            method: "PUT"
-        }
-    );
-
-    loadMentorships();
+    `;
 
 }
 

@@ -15,8 +15,19 @@ const params =
         window.location.search
     );
 
-const courseId =
+let courseId =
     params.get("courseId");
+
+if (!courseId) {
+
+    courseId =
+        localStorage.getItem(
+            "currentCourseId"
+        );
+
+}
+
+
 
 const mentorsGrid =
     document.getElementById(
@@ -102,6 +113,15 @@ let mentorsData =
 let courseMentorIds =
     [];
 
+const DEFAULT_AVATAR =
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%236C4DFF'/%3E%3Ccircle cx='50' cy='34' r='16' fill='white'/%3E%3Cellipse cx='50' cy='72' rx='30' ry='22' fill='white'/%3E%3C/svg%3E";
+
+const CALENDLY_FALLBACK =
+    "https://calendly.com/jossvasquezcu-uch/30min?hide_landing_page_details=1&hide_gdpr_banner=1";
+
+let calendlyContext =
+    null;
+
 /* LOAD COURSE MENTOR ASSIGNMENTS */
 
 async function loadCourseMentors() {
@@ -125,7 +145,7 @@ async function loadCourseMentors() {
         courseMentorIds =
             assignments
                 .filter(item =>
-                    item.course_id === courseId
+                    String(item.course_id) === String(courseId)
                 )
                 .map(item =>
                     item.mentor_id
@@ -174,7 +194,11 @@ function showAllMentors() {
 
 function showCourseMentors() {
     setActiveFilter(event.target);
-    const filtered = mentorsData.filter(m => courseMentorIds.includes(m.id));
+    const filtered = mentorsData.filter(m =>
+        courseMentorIds.some(id =>
+            String(id) === String(m.id)
+        )
+    );
     renderMentors(filtered);
 }
 
@@ -236,9 +260,11 @@ function renderMentors(mentors) {
             mentor.profile || {};
 
         const isCourseMentor =
-            courseMentorIds.includes(
-                mentor.id
-            );
+            courseId
+                ? courseMentorIds.some(id =>
+                    String(id) === String(mentor.id)
+                )
+                : true;
 
         const cardClass =
             isCourseMentor
@@ -246,7 +272,7 @@ function renderMentors(mentors) {
                 : "mentor-card";
 
         const badgeHtml =
-            isCourseMentor
+            isCourseMentor && courseId
                 ? `<div class="course-badge">Mentor de este curso</div>`
                 : "";
 
@@ -260,7 +286,7 @@ function renderMentors(mentors) {
 
                     <img
                         src="${profile.photo_url ||
-            '../../assets/default-avatar.png'
+            DEFAULT_AVATAR
             }"
                     >
 
@@ -321,7 +347,14 @@ function renderMentors(mentors) {
                             class="mentor-btn"
                             onclick="openMentorProfile('${mentor.id}')"
                         >
-                            Ver perfil
+                            Ver Perfil
+                        </button>
+
+                        <button
+                            class="mentor-btn mentor-btn-secondary"
+                            onclick="openCalendly('${mentor.id}')"
+                        >
+                            Agendar Mentoría
                         </button>
 
                     </div>
@@ -433,14 +466,18 @@ function openMentorProfile(mentorId) {
         "Empresa";
 
     const isCourseMentor =
-        courseMentorIds.includes(mentor.id);
+        courseId
+            ? courseMentorIds.some(id =>
+                String(id) === String(mentor.id)
+            )
+            : true;
 
     modalPrice.textContent =
         `$${profile.base_price ? parseFloat(profile.base_price).toFixed(2) : "0.00"}`;
 
     modalSelectBtn.textContent =
         isCourseMentor
-            ? "Seleccionar mentor"
+            ? "Agendar mentoría"
             : "No disponible para este curso";
 
     modalSelectBtn.disabled =
@@ -479,6 +516,268 @@ function openMentorProfile(mentorId) {
 
 }
 
+/* CALENDLY */
+
+function openCalendly(mentorId) {
+
+    const mentor =
+        mentorsData.find(
+            m =>
+                String(m.id) === String(mentorId)
+        );
+
+    if (!mentor) {
+
+        showToast(
+            "No se encontró el mentor."
+        );
+
+        return;
+
+    }
+
+    const profile =
+        mentor.profile || {};
+
+    const isCourseMentor =
+        courseId
+            ? courseMentorIds.some(id =>
+                String(id) === String(mentor.id)
+            )
+            : true;
+
+    if (!isCourseMentor) {
+
+        showToast(
+            "Este mentor no está asignado a tu curso."
+        );
+
+        return;
+
+    }
+
+    let calendlyUrl =
+        profile.calendly_url ||
+        CALENDLY_FALLBACK;
+
+    if (
+        calendlyUrl !==
+            CALENDLY_FALLBACK
+    ) {
+
+        calendlyUrl +=
+            calendlyUrl.includes("?")
+                ? "&hide_landing_page_details=1&hide_gdpr_banner=1"
+                : "?hide_landing_page_details=1&hide_gdpr_banner=1";
+
+    }
+
+    calendlyUrl +=
+        calendlyUrl.includes(
+            "embed_domain"
+        )
+            ? ""
+            : `${calendlyUrl.includes("?") ? "&" : "?"}embed_domain=${encodeURIComponent(window.location.hostname)}&embed_type=Inline`;
+
+    const container =
+        document.getElementById(
+            "calendlyContainer"
+        );
+
+    container.innerHTML =
+        `<iframe
+            src="${calendlyUrl}"
+            style="width:100%;height:100%;border:none;"
+            allow="payment"
+        ></iframe>`;
+
+    modal.classList.remove(
+        "active-modal"
+    );
+
+    calendlyContext = {
+        mentorId:
+            String(mentor.id),
+        courseId:
+            courseId || null
+    };
+
+    document
+        .getElementById(
+            "calendlyModal"
+        )
+        .classList.add(
+            "active-modal"
+        );
+
+}
+
+function closeCalendly() {
+
+    document
+        .getElementById(
+            "calendlyModal"
+        )
+        .classList.remove(
+            "active-modal"
+        );
+
+    const container =
+        document.getElementById(
+            "calendlyContainer"
+        );
+
+    container.innerHTML =
+        "";
+
+}
+
+/* BOOK MENTORSHIP (shared) */
+
+async function bookMentorshipDb(
+    mentorId,
+    courseId
+) {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/api/mentor/book`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            student_id:
+                                user.id,
+                            mentor_id:
+                                mentorId,
+                            course_id:
+                                courseId ||
+                                null
+                        })
+                }
+            );
+
+        if (!response.ok) {
+
+            const errBody =
+                await response.json().catch(() => ({}));
+
+            console.error(
+                "[Calendly] Error POST /api/mentor/book:",
+                response.status,
+                errBody
+            );
+
+            showToast(
+                `Error al guardar (${response.status})`
+            );
+
+            return false;
+
+        }
+
+        calendlyContext =
+            null;
+
+        closeCalendly();
+
+        showToast(
+            "Mentoría agendada correctamente. Revisa Mis Mentorías."
+        );
+
+        setTimeout(
+            () => {
+
+                window.location.href =
+                    "./mentorships.html";
+
+            },
+            2500
+        );
+
+        return true;
+
+    } catch (err) {
+
+        console.error(
+            "[Calendly] Error en bookMentorshipDb:",
+            err
+        );
+
+        showToast(
+            "Error al guardar la mentoría."
+        );
+
+        return false;
+
+    }
+
+}
+
+/* CALENDLY EVENT LISTENER */
+
+window.addEventListener(
+    "message",
+    (e) => {
+
+        if (
+            !e.data ||
+            typeof e.data.event !==
+                "string" ||
+            e.data.event.indexOf(
+                "calendly."
+            ) !== 0
+        ) {
+
+            return;
+
+        }
+
+        console.log(
+            "[Calendly] event:",
+            e.data.event,
+            e.data
+        );
+
+        if (
+            e.data.event !==
+                "calendly.event_scheduled"
+        ) {
+
+            return;
+
+        }
+
+        if (!calendlyContext) {
+
+            console.warn(
+                "[Calendly] No hay contexto de mentor"
+            );
+
+            return;
+
+        }
+
+        console.log(
+            "[Calendly] Reserva confirmada, guardando..."
+        );
+
+        bookMentorshipDb(
+            calendlyContext.mentorId,
+            calendlyContext.courseId
+        );
+
+    }
+);
+
 /* CLOSE */
 
 closeModal.addEventListener(
@@ -511,93 +810,21 @@ modal.addEventListener(
 
 modalSelectBtn.addEventListener(
     "click",
-    async () => {
+    () => {
 
-        const mentor =
-            mentorsData.find(
-                item =>
-                    item.id === selectedMentorId
-            );
-
-        if (
-            !mentor ||
-            !courseMentorIds.includes(
-                mentor.id
-            )
-        ) {
+        if (!selectedMentorId) {
 
             showToast(
-                "Este mentor no está asignado a tu curso."
+                "No se pudo seleccionar el mentor."
             );
 
             return;
 
         }
 
-        if (
-            !selectedMentorId ||
-            !courseId
-        ) {
-
-            showToast(
-                "No se pudo seleccionar el mentor"
-            );
-
-            return;
-
-        }
-
-        const response =
-            await fetch(
-                `${API_URL}/api/student-mentors/assign`,
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify({
-
-                            student_id:
-                                user.id,
-
-                            mentor_id:
-                                selectedMentorId,
-
-                            course_id:
-                                courseId
-
-                        })
-                }
-            );
-
-        if (response.ok) {
-
-            modal.classList.remove(
-                "active-modal"
-            );
-
-            showToast(
-                "Mentor asignado correctamente. Tu proceso de acompañamiento ha comenzado."
-            );
-
-            setTimeout(() => {
-
-                window.location.href =
-                    "./my-courses.html";
-
-            }, 2500);
-
-        } else {
-
-            showToast(
-                "No se pudo guardar el mentor"
-            );
-
-        }
+        openCalendly(
+            selectedMentorId
+        );
 
     }
 );

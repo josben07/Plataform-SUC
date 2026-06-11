@@ -91,6 +91,17 @@ body{
     color:white;
 }
 
+.mentor-btn-secondary{
+    background:transparent !important;
+    border:1px solid rgba(139,124,255,0.35) !important;
+    color:#c4baff !important;
+}
+
+.mentor-btn-secondary:hover{
+    background:rgba(108,77,255,0.14) !important;
+    color:white !important;
+}
+
 .close-modal{
     position:absolute;
     top:20px;
@@ -258,4 +269,295 @@ body{
     font-weight: 600;
     color: rgba(255,255,255,0.45);
     margin-right: 4px;
+}
+
+/* STUDENT PANEL LAYOUT */
+
+.student-page .mentors-student-main{
+    padding:24px;
+    background:#020617;
+}
+
+.mentors-student-main .container{
+    width:100%;
+    max-width:none;
+    margin:0;
+}
+
+.mentors-student-main .mentors-hero{
+    padding:0;
+    background:transparent;
+    text-align:left;
+}
+
+.mentors-student-main .mentors-hero-content{
+    max-width:780px;
+    margin:0;
+}
+
+.mentors-student-main .section-badge{
+    padding:0;
+    border:0;
+    border-radius:0;
+    background:transparent;
+    box-shadow:none;
+    backdrop-filter:none;
+    color:#8B7CFF;
+    font-size:.8rem;
+    font-weight:900;
+    letter-spacing:2px;
+    text-transform:uppercase;
+}
+
+.mentors-student-main .mentors-hero-content h1{
+    margin:10px 0 0;
+    color:white;
+    font-size:3rem;
+    line-height:1.12;
+}
+
+.mentors-student-main .mentors-hero-content p{
+    max-width:720px;
+    margin:12px 0 0;
+    color:rgba(255,255,255,.62);
+    line-height:1.7;
+}
+
+.mentors-student-main .mentors-layout{
+    padding:38px 0 0;
+    background:transparent;
+}
+
+.mentors-student-main .mentors-container{
+    display:block;
+}
+
+.mentors-filters-panel{
+    margin-bottom:24px;
+}
+
+.mentors-filters-panel .sidebar-box{
+    margin:0;
+    padding:24px;
+    border-radius:28px;
+    background:#0F172A !important;
+}
+
+.mentors-filters-panel .sidebar-box h3{
+    margin-bottom:16px;
+    color:#8B7CFF;
+    font-size:.8rem;
+    font-weight:900;
+    letter-spacing:2px;
+    text-transform:uppercase;
+}
+
+.mentors-filters-panel .sidebar-links{
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+.mentors-filters-panel .mentor-filter{
+    min-height:46px;
+    padding:0 18px;
+    border-radius:16px;
+    background:rgba(255,255,255,.06);
+    color:rgba(255,255,255,.72);
+    font-weight:800;
+}
+
+.mentors-filters-panel .mentor-filter:hover,
+.mentors-filters-panel .mentor-filter.active-filter{
+    padding-left:18px;
+    background:rgba(108,77,255,.18);
+    color:white;
+}
+
+.mentors-content{
+    min-width:0;
+}
+
+.mentors-topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:22px;
+    margin-bottom:28px;
+    padding:28px;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:28px;
+    background:#0F172A;
+}
+
+.mentors-topbar h2{
+    margin:0;
+    color:white;
+    font-size:1.7rem;
+}
+
+.mentors-topbar p{
+    margin-top:8px;
+    color:rgba(255,255,255,.62) !important;
+}
+
+.mentors-search{
+    width:min(340px,100%);
+    flex-shrink:0;
+}
+
+.mentors-search input{
+    height:50px;
+    border-radius:16px;
+    background:rgba(255,255,255,.05);
+    color:white;
+}
+
+.mentors-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:24px;
+}
+
+.mentors-student-main .mentor-card{
+    grid-template-columns:260px 1fr;
+    border-radius:28px;
+    background:#0F172A !important;
+    transform:none;
+}
+
+.mentors-student-main .mentor-card:hover{
+    transform:translateY(-4px);
+}
+
+.mentors-student-main .mentor-image{
+    min-height:260px;
+}
+
+.mentors-student-main .mentor-info{
+    padding:28px;
+}
+
+.mentors-student-main .mentor-top{
+    margin-bottom:14px;
+}
+
+.mentors-student-main .mentor-top h3{
+    font-size:1.45rem;
+}
+
+.mentors-student-main .mentor-description{
+    margin-bottom:18px;
+}
+
+.mentors-student-main .mentor-footer{
+    margin-top:22px;
+}
+
+.mentors-student-main .mentor-btn{
+    min-height:48px;
+    padding:0 22px;
+}
+
+.mentor-card:not(.course-mentor-card){
+    opacity:.62;
+}
+
+/* CALENDLY MODAL */
+
+.calendly-modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.82);
+    z-index:99999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .3s ease;
+}
+
+.calendly-modal.active-modal{
+    opacity:1;
+    pointer-events:auto;
+}
+
+.calendly-modal-content{
+    width:min(90vw,820px);
+    height:min(90vh,700px);
+    background:#0F172A;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:28px;
+    position:relative;
+    overflow:hidden;
+}
+
+.calendly-modal-content .close-modal{
+    top:16px;
+    right:16px;
+    z-index:100000;
+}
+
+#calendlyContainer{
+    width:100%;
+    height:100%;
+}
+
+.empty-mentors{
+    display:block;
+    background:#0F172A;
+    border-color:rgba(255,255,255,.08);
+}
+
+@media(max-width:900px){
+    .student-page .mentors-student-main{
+        padding:24px;
+    }
+
+    .mentors-student-main .mentors-hero-content h1{
+        font-size:2.2rem;
+    }
+
+    .mentors-topbar{
+        flex-direction:column;
+        align-items:stretch;
+        padding:24px;
+    }
+
+    .mentors-search{
+        width:100%;
+    }
+
+    .mentors-student-main .mentor-card{
+        grid-template-columns:1fr;
+    }
+
+    .mentors-student-main .mentor-image{
+        min-height:220px;
+    }
+}
+
+@media(max-width:520px){
+    .student-page .mentors-student-main{
+        padding:20px;
+    }
+
+    .mentors-filters-panel .sidebar-links{
+        flex-direction:column;
+    }
+
+    .mentors-filters-panel .mentor-filter{
+        width:100%;
+        text-align:center;
+    }
+
+    .mentors-student-main .mentors-hero-content h1{
+        font-size:1.9rem;
+    }
+
+    .mentors-student-main .mentor-info{
+        padding:22px;
+    }
 }

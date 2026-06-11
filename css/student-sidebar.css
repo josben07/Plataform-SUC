@@ -1,0 +1,184 @@
+/* Shared student navigation */
+
+:root {
+    --student-sidebar-width: 280px;
+}
+
+.student-page,
+.player-page {
+    min-height: 100vh;
+}
+
+.student-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    width: var(--student-sidebar-width);
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.student-logo {
+    line-height: 1.1;
+}
+
+.student-menu a {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    white-space: nowrap;
+}
+
+.student-menu .active-link {
+    background: rgba(108, 77, 255, 0.2);
+    color: #ffffff;
+}
+
+.student-main,
+.player-main,
+.mentors-student-main {
+    margin-left: var(--student-sidebar-width);
+    min-width: 0;
+}
+
+.player-page {
+    display: block;
+}
+
+.sidebar-course-panel {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-section-label {
+    display: block;
+    margin-bottom: 12px;
+    color: #8b7cff;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.sidebar-course-panel .back-link {
+    margin-bottom: 18px;
+}
+
+.mentors-student-main {
+    padding: 0;
+}
+
+.mentors-student-main .mentors-hero {
+    padding-top: 56px;
+}
+
+.mentors-student-main .mentors-container {
+    grid-template-columns: 1fr;
+}
+
+.mentors-filters-panel {
+    margin-bottom: 28px;
+}
+
+.mentors-filters-panel .sidebar-box {
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.mentors-filters-panel .sidebar-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.mentors-filters-panel .mentor-filter {
+    padding: 12px 16px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.72);
+    font-weight: 800;
+}
+
+.mentors-filters-panel .mentor-filter:hover,
+.mentors-filters-panel .active-filter {
+    padding-left: 16px;
+    background: rgba(108, 77, 255, 0.18);
+    color: #ffffff;
+}
+
+@media (max-width: 900px) {
+    .student-page,
+    .player-page {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .student-sidebar {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        height: auto;
+        max-height: none;
+        padding: 18px;
+        display: flex;
+        border-right: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .student-logo {
+        margin-bottom: 14px;
+        text-align: left;
+        font-size: 1.35rem;
+    }
+
+    .student-menu {
+        margin-top: 0;
+        flex-direction: row;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+
+    .student-menu a {
+        flex: 0 0 auto;
+        min-height: 42px;
+        padding: 11px 14px;
+        border-radius: 14px;
+    }
+
+    .student-main,
+    .player-main,
+    .mentors-student-main {
+        margin-left: 0;
+    }
+
+    .sidebar-course-panel {
+        max-height: 360px;
+        overflow-y: auto;
+        margin-top: 16px;
+        padding-top: 16px;
+    }
+
+    .mentors-student-main .mentors-hero {
+        padding-top: 36px;
+    }
+}
+
+@media (max-width: 520px) {
+    .student-sidebar {
+        padding: 16px;
+    }
+
+    .student-menu a {
+        font-size: 0.9rem;
+    }
+
+    .mentors-filters-panel .sidebar-links {
+        flex-direction: column;
+    }
+}

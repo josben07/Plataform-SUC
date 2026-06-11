@@ -75,6 +75,11 @@ const finishCourseBtn =
         "finishCourseBtn"
     );
 
+const refreshCourseBtn =
+    document.getElementById(
+        "refreshCourseBtn"
+    );
+
 const resourcesPanel =
     document.querySelector(".resources-panel");
 
@@ -83,6 +88,9 @@ const commentsPanel =
 
 const lessonProjectPanel =
     document.querySelector(".lesson-project-panel");
+
+const courseFlowPanel =
+    document.querySelector(".course-flow-panel");
 
 const finalProjectPanel =
     document.getElementById("finalProjectPanel");
@@ -101,6 +109,15 @@ const finalProjectFileName =
 
 const finalProjectSubmitBtn =
     document.getElementById("finalProjectSubmitBtn");
+
+const classesFlowStatus =
+    document.getElementById("classesFlowStatus");
+
+const projectFlowStatus =
+    document.getElementById("projectFlowStatus");
+
+const mentorshipFlowStatus =
+    document.getElementById("mentorshipFlowStatus");
 
 const notesFab =
     document.getElementById("notesFab");
@@ -204,6 +221,162 @@ function getCurrentProgressPercent() {
 
 }
 
+function setFlowStepState(step, state) {
+
+    document
+        .querySelectorAll(`[data-flow-step="${step}"]`)
+        .forEach(element => {
+
+            element.classList.remove(
+                "is-current",
+                "is-ready",
+                "is-complete",
+                "is-locked"
+            );
+
+            if (state) {
+
+                element.classList.add(
+                    state
+                );
+
+            }
+
+        });
+
+}
+
+function updateCourseFlowVisualState() {
+
+    const progressPercent =
+        getCurrentProgressPercent();
+
+    const classesComplete =
+        progressPercent === 100;
+
+    const finalApproved =
+        (
+            finalProjectSubmission &&
+            finalProjectSubmission.status === "approved"
+        ) ||
+        (
+            currentCourseRelation &&
+            currentCourseRelation.final_project_approved === true
+        );
+
+    const mentorshipApproved =
+        currentCourseRelation &&
+        currentCourseRelation.final_mentorship_approved === true;
+
+    setFlowStepState(
+        "classes",
+        classesComplete
+            ? "is-complete"
+            : "is-current"
+    );
+
+    setFlowStepState(
+        "project",
+        finalApproved
+            ? "is-complete"
+            : classesComplete
+                ? "is-current"
+                : "is-locked"
+    );
+
+    setFlowStepState(
+        "mentorship",
+        mentorshipApproved
+            ? "is-complete"
+            : finalApproved
+                ? "is-current"
+                : "is-ready"
+    );
+
+    if (classesFlowStatus) {
+
+        classesFlowStatus.textContent =
+            classesComplete
+                ? "Clases completadas"
+                : `${progressPercent}% completado`;
+
+    }
+
+    if (projectFlowStatus) {
+
+        if (finalApproved) {
+
+            projectFlowStatus.textContent =
+                "Proyecto aprobado";
+
+        } else if (
+            finalProjectSubmission &&
+            finalProjectSubmission.status === "pending"
+        ) {
+
+            projectFlowStatus.textContent =
+                "En revisión";
+
+        } else if (
+            finalProjectSubmission &&
+            finalProjectSubmission.status === "rejected"
+        ) {
+
+            projectFlowStatus.textContent =
+                "Reenviar proyecto";
+
+        } else {
+
+            projectFlowStatus.textContent =
+                classesComplete
+                    ? "Siguiente etapa"
+                    : "Disponible al terminar las clases";
+
+        }
+
+    }
+
+    if (mentorshipFlowStatus) {
+
+        mentorshipFlowStatus.textContent =
+            mentorshipApproved
+                ? "Mentoría validada"
+                : finalApproved
+                    ? "Siguiente paso"
+                    : "Puedes solicitar apoyo durante tu proceso";
+
+    }
+
+}
+
+function handleFinalProjectShortcut() {
+
+    showWelcomeView();
+
+    if (getCurrentProgressPercent() < 100) {
+
+        showCourseMessage(
+            "Completa las clases para habilitar la entrega del proyecto final."
+        );
+
+        return;
+
+    }
+
+    setTimeout(
+        scrollToFinalProjectPanel,
+        100
+    );
+
+}
+
+function handleMentorshipShortcut() {
+
+    window.location.href =
+        `./select-mentor.html?courseId=${courseId}`;
+
+}
+
 function getLatestFinalProject(projects) {
 
     const finalProjects =
@@ -286,6 +459,8 @@ function renderFinalProjectPanel() {
             ? "block"
             : "none";
 
+    updateCourseFlowVisualState();
+
     if (!courseReadyForFinalProject) {
 
         return;
@@ -323,6 +498,8 @@ function renderFinalProjectPanel() {
         finalProjectForm.style.display =
             "none";
 
+        updateCourseFlowVisualState();
+
         return;
 
     }
@@ -344,6 +521,8 @@ function renderFinalProjectPanel() {
         finalProjectSubmitBtn.textContent =
             "Reenviar proyecto final";
 
+        updateCourseFlowVisualState();
+
         return;
 
     }
@@ -363,13 +542,15 @@ function renderFinalProjectPanel() {
             finalProjectStatus.innerHTML = `
             Proyecto final aprobado.
             <br>
-            Mentoria final validada. Ya puedes finalizar el curso.
+            Mentoría final validada. Ya puedes finalizar el curso.
         `;
 
             finalProjectForm.style.display =
                 "none";
 
             updateFinishCourseButton();
+
+            updateCourseFlowVisualState();
 
             return;
 
@@ -380,7 +561,7 @@ function renderFinalProjectPanel() {
             <br>
             <button
                 class="final-project-action"
-                onclick="window.location.href='./mentorships.html'"
+                onclick="window.location.href='./select-mentor.html?courseId=${courseId}'"
             >
                 Agendar mentoría
             </button>
@@ -389,7 +570,9 @@ function renderFinalProjectPanel() {
         finalProjectForm.style.display =
             "none";
 
-    }
+        updateCourseFlowVisualState();
+
+}
 
 }
 
@@ -1459,6 +1642,7 @@ completeLessonBtn.addEventListener(
         await loadProgress();
         refreshLessonLocks();
         updateFinishCourseButton();
+        updateCourseFlowVisualState();
 
         const progressAfterComplete =
             getCurrentProgressPercent();
@@ -1709,6 +1893,16 @@ function showWelcomeView() {
             "none";
     }
 
+    if (courseFlowPanel) {
+        courseFlowPanel.style.display =
+            "block";
+    }
+
+    if (refreshCourseBtn) {
+        refreshCourseBtn.textContent =
+            "Refrescar curso";
+    }
+
     updateFinishCourseButton();
 
     const totalLessons =
@@ -1721,6 +1915,7 @@ function showWelcomeView() {
 
     if (isCompleted && finalProjectPanel) {
         finalProjectPanel.style.display = "none";
+        updateCourseFlowVisualState();
     } else {
         renderFinalProjectPanel();
     }
@@ -1853,6 +2048,18 @@ function showLessonView() {
         commentsPanel.style.display =
             "block";
     }
+
+    if (courseFlowPanel) {
+        courseFlowPanel.style.display =
+            "none";
+    }
+
+    if (refreshCourseBtn) {
+        refreshCourseBtn.textContent =
+            "Refrescar clase";
+    }
+
+    updateCourseFlowVisualState();
 
 }
 
@@ -2046,6 +2253,113 @@ function refreshLessonLocks() {
             }
 
         });
+
+}
+
+async function refreshCurrentLesson() {
+
+    if (!currentLessonId || !currentLessonData) {
+
+        showCourseMessage(
+            "No hay clase seleccionada."
+        );
+
+        return;
+
+    }
+
+    if (refreshCourseBtn) {
+
+        refreshCourseBtn.disabled =
+            true;
+
+        refreshCourseBtn.textContent =
+            "Actualizando...";
+
+    }
+
+    try {
+
+        await loadProgress();
+
+        const isCompleted =
+            completedLessons.some(
+                item =>
+                    item.lesson_id === currentLessonId &&
+                    item.completed === true
+            );
+
+        if (isCompleted) {
+
+            completeLessonBtn.textContent =
+                "Clase completada";
+
+            completeLessonBtn.classList.add(
+                "completed-btn"
+            );
+
+        } else {
+
+            completeLessonBtn.textContent =
+                "Marcar como completada";
+
+            completeLessonBtn.classList.remove(
+                "completed-btn"
+            );
+
+        }
+
+        updateLessonTaskPanel(
+            currentLessonData
+        );
+
+        loadResources(
+            currentLessonId
+        );
+
+        loadComments(
+            currentLessonId
+        );
+
+        updateFinishCourseButton();
+
+        updateCourseFlowVisualState();
+
+        if (
+            notesPanel.classList.contains(
+                "open"
+            )
+        ) {
+
+            loadCurrentLessonNote();
+
+        }
+
+        showCourseMessage(
+            "Clase actualizada correctamente."
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        showCourseMessage(
+            "Error al actualizar la clase."
+        );
+
+    } finally {
+
+        if (refreshCourseBtn) {
+
+            refreshCourseBtn.disabled =
+                false;
+
+            refreshCourseBtn.textContent =
+                "Refrescar clase";
+
+        }
+
+    }
 
 }
 
@@ -2466,6 +2780,108 @@ lessonProjectForm.addEventListener(
 
 /* INIT */
 
+async function refreshCoursePlayer() {
+
+    if (refreshCourseBtn) {
+
+        refreshCourseBtn.disabled =
+            true;
+
+        refreshCourseBtn.textContent =
+            "Refrescando...";
+
+    }
+
+    try {
+
+        const canAccess =
+            await validateCourseAccess();
+
+        if (!canAccess) {
+
+            return;
+
+        }
+
+        currentLessonId =
+            null;
+
+        currentLessonData =
+            null;
+
+        finalProjectSubmission =
+            null;
+
+        resetFinalProjectFileState();
+
+        await loadCourse();
+
+        await loadModules();
+
+        await loadProgress();
+
+        refreshLessonLocks();
+
+        showWelcomeView();
+
+        await loadFinalProjectStatus();
+
+        updateFinishCourseButton();
+
+        updateCourseFlowVisualState();
+
+        showCourseMessage(
+            "Curso actualizado correctamente."
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        showCourseMessage(
+            "No se pudo refrescar el curso."
+        );
+
+    } finally {
+
+        if (refreshCourseBtn) {
+
+            refreshCourseBtn.disabled =
+                false;
+
+            refreshCourseBtn.textContent =
+                "Refrescar curso";
+
+        }
+
+    }
+
+}
+
+if (refreshCourseBtn) {
+
+    refreshCourseBtn.addEventListener(
+        "click",
+        () => {
+
+            if (
+                currentLessonId &&
+                currentLessonData
+            ) {
+
+                refreshCurrentLesson();
+
+            } else {
+
+                refreshCoursePlayer();
+
+            }
+
+        }
+    );
+
+}
+
 async function initCoursePlayer() {
 
     const canAccess =
@@ -2476,6 +2892,11 @@ async function initCoursePlayer() {
         return;
 
     }
+
+    localStorage.setItem(
+        "currentCourseId",
+        courseId
+    );
 
     await loadCourse();
 

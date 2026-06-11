@@ -12,7 +12,9 @@ const {
     updateMentorSession,
     deleteMentorSession,
     requestMentorship,
-    cancelMentorship
+    cancelMentorship,
+    getStudentMentorships,
+    bookMentorship
 
 } = require(
     "../controllers/mentor.controller"
@@ -59,6 +61,18 @@ router.put(
 router.put(
     "/cancel/:id",
     cancelMentorship
+);
+
+router.get(
+    "/student/:studentId",
+    getStudentMentorships
+);
+
+/* BOOK */
+
+router.post(
+    "/book",
+    bookMentorship
 );
 
 module.exports =

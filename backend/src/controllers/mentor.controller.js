@@ -537,6 +537,93 @@ const requestMentorship =
 
     };
 
+/* GET BY STUDENT */
+
+const getStudentMentorships =
+    async (req, res) => {
+
+        try {
+
+            const { studentId } =
+                req.params;
+
+            const { data, error } =
+                await supabase
+                    .from("mentor_sessions")
+                    .select("*")
+                    .eq("student_id", studentId)
+                    .order("created_at", {
+
+                        ascending: false
+
+                    });
+
+            if (error) {
+
+                return res.status(400).json(error);
+
+            }
+
+            const mentorIds =
+                [
+                    ...new Set(
+                        data
+                            .filter(s => s.mentor_id)
+                            .map(s => s.mentor_id)
+                    )
+                ];
+
+            const mentorNames =
+                {};
+
+            if (mentorIds.length > 0) {
+
+                const { data: mentors } =
+                    await supabase
+                        .from("users")
+                        .select("id,full_name")
+                        .in("id", mentorIds);
+
+                if (mentors) {
+
+                    mentors.forEach(m => {
+
+                        mentorNames[m.id] =
+                            m.full_name;
+
+                    });
+
+                }
+
+            }
+
+            const withNames =
+                data.map(session => ({
+
+                    ...session,
+
+                    mentor_name:
+                        mentorNames[session.mentor_id] ||
+                        session.mentor_name ||
+                        "Mentor"
+
+                }));
+
+            res.json(withNames);
+
+        } catch (err) {
+
+            res.status(500).json({
+
+                error:
+                    err.message
+
+            });
+
+        }
+
+    };
+
 /* CANCEL MENTORSHIP */
 
 const cancelMentorship =
@@ -585,6 +672,70 @@ const cancelMentorship =
 
     };
 
+/* BOOK MENTORSHIP (from Calendly) */
+
+const bookMentorship =
+    async (req, res) => {
+
+        try {
+
+            const {
+                student_id,
+                mentor_id,
+                course_id
+            } = req.body;
+
+            if (
+                !student_id ||
+                !mentor_id
+            ) {
+
+                return res.status(400).json({
+                    error:
+                        "student_id y mentor_id son requeridos"
+                });
+
+            }
+
+            const insertData = {
+                student_id,
+                mentor_id,
+                status: "reserved"
+            };
+
+            if (course_id) {
+
+                insertData.course_id =
+                    course_id;
+
+            }
+
+            const { data, error } =
+                await supabase
+                    .from("mentor_sessions")
+                    .insert([insertData])
+                    .select()
+                    .single();
+
+            if (error) {
+
+                return res.status(400).json(error);
+
+            }
+
+            res.json(data);
+
+        } catch (err) {
+
+            res.status(500).json({
+                error:
+                    err.message
+            });
+
+        }
+
+    };
+
 module.exports = {
 
     getMentorSessions,
@@ -593,6 +744,9 @@ module.exports = {
     updateMentorSession,
     deleteMentorSession,
     requestMentorship,
-    cancelMentorship
+    cancelMentorship,
+    getStudentMentorships,
+    bookMentorship
 
 };
+
