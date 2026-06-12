@@ -1,3 +1,15 @@
+/* agregado para correr backend hoy */
+const path =
+    require("path");
+
+require("dotenv").config({
+    path:
+        path.join(
+            __dirname,
+            ".env"
+        )
+});
+
 const mentorProfilesRoutes =
     require("./src/routes/mentor-profiles.routes");
 
@@ -9,10 +21,6 @@ const commentsRoutes =
 
 const courseMentorsRoutes =
     require("./src/routes/course-mentors.routes");
-
-/* agregado para correr backend hoy */
-const path =
-    require("path");
 
 const studentMentorsRoutes =
     require("./src/routes/student-mentors.routes");
@@ -64,8 +72,6 @@ const express =
 
 const cors =
     require("cors");
-
-require("dotenv").config();
 
 /* EXPRESS */
 

@@ -62,6 +62,468 @@ const getCourseName =
 
     };
 
+const getCalendlyToken =
+    () =>
+        process.env.CALENDLY_ACCESS_TOKEN ||
+        process.env.CALENDLY_TOKEN ||
+        process.env.CALENDLY_API_TOKEN ||
+        null;
+
+const fetchCalendlyResource =
+    async (uri) => {
+
+        const token =
+            getCalendlyToken();
+
+        if (!uri || !token) {
+
+            if (!token) {
+
+                console.warn(
+                    "[Calendly] No hay token configurado. Define CALENDLY_ACCESS_TOKEN para sincronizar fecha/hora."
+                );
+
+            }
+
+            return null;
+
+        }
+
+        const response =
+            await fetch(uri, {
+
+                headers: {
+                    Authorization:
+                        `Bearer ${token}`,
+                    "Content-Type":
+                        "application/json"
+                }
+
+            });
+
+        const body =
+            await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+
+            console.error(
+                "[Calendly] Error consultando recurso:",
+                response.status,
+                body
+            );
+
+            return null;
+
+        }
+
+        return body.resource || body;
+
+    };
+
+const getCalendlyEventUri =
+    (resource) => {
+
+        if (!resource) {
+
+            return null;
+
+        }
+
+        if (
+            typeof resource.event ===
+            "string"
+        ) {
+
+            return resource.event;
+
+        }
+
+        if (
+            resource.event &&
+            resource.event.uri
+        ) {
+
+            return resource.event.uri;
+
+        }
+
+        if (
+            resource.scheduled_event &&
+            typeof resource.scheduled_event ===
+                "string"
+        ) {
+
+            return resource.scheduled_event;
+
+        }
+
+        if (
+            resource.scheduled_event &&
+            resource.scheduled_event.uri
+        ) {
+
+            return resource.scheduled_event.uri;
+
+        }
+
+        return null;
+
+    };
+
+const getCalendlyStartTime =
+    (resource) => {
+
+        if (!resource) {
+
+            return null;
+
+        }
+
+        return resource.start_time ||
+            resource.startTime ||
+            (
+                resource.event &&
+                (
+                    resource.event.start_time ||
+                    resource.event.startTime
+                )
+            ) ||
+            (
+                resource.scheduled_event &&
+                (
+                    resource.scheduled_event.start_time ||
+                    resource.scheduled_event.startTime
+                )
+            ) ||
+            null;
+
+    };
+
+const getCalendlyTimezone =
+    (...resources) => {
+
+        for (const resource of resources) {
+
+            if (!resource) {
+
+                continue;
+
+            }
+
+            const timezone =
+                resource.timezone ||
+                resource.invitee_timezone ||
+                resource.event_timezone ||
+                resource.scheduled_event_timezone;
+
+            if (timezone) {
+
+                return timezone;
+
+            }
+
+        }
+
+        return "America/Lima";
+
+    };
+
+const formatCalendlyDate =
+    (date, timezone) => {
+
+        const parts =
+            new Intl.DateTimeFormat(
+            "en-CA",
+            {
+                timeZone:
+                    timezone,
+                year:
+                    "numeric",
+                month:
+                    "2-digit",
+                day:
+                    "2-digit"
+            }
+            )
+                .formatToParts(date)
+                .reduce((values, part) => {
+
+                    values[part.type] =
+                        part.value;
+
+                    return values;
+
+                }, {});
+
+        return `${parts.year}-${parts.month}-${parts.day}`;
+
+    };
+
+const formatCalendlyTime =
+    (date, timezone) => {
+
+        const parts =
+            new Intl.DateTimeFormat(
+            "es-PE",
+            {
+                timeZone:
+                    timezone,
+                hour:
+                    "2-digit",
+                minute:
+                    "2-digit",
+                hour12:
+                    false
+            }
+            )
+                .formatToParts(date)
+                .reduce((values, part) => {
+
+                    values[part.type] =
+                        part.value;
+
+                    return values;
+
+                }, {});
+
+        return `${parts.hour}:${parts.minute}`;
+
+    };
+
+const resolveCalendlySchedule =
+    async ({
+        session_date,
+        session_time,
+        calendly_start_time,
+        calendly_timezone,
+        calendly_event_uri,
+        calendly_invitee_uri
+    }) => {
+
+        if (session_date && session_time) {
+
+            return {
+                session_date,
+                session_time
+            };
+
+        }
+
+        const inviteeResource =
+            await fetchCalendlyResource(
+                calendly_invitee_uri
+            );
+
+        const eventUri =
+            calendly_event_uri ||
+            getCalendlyEventUri(
+                inviteeResource
+            );
+
+        const eventResource =
+            await fetchCalendlyResource(
+                eventUri
+            );
+
+        const startTime =
+            calendly_start_time ||
+            getCalendlyStartTime(eventResource) ||
+            getCalendlyStartTime(inviteeResource);
+
+        if (!startTime) {
+
+            console.warn(
+                "[Calendly] No se pudo obtener start_time del evento.",
+                {
+                    calendly_event_uri,
+                    calendly_invitee_uri
+                }
+            );
+
+            return {
+                session_date:
+                    session_date || null,
+                session_time:
+                    session_time || null
+            };
+
+        }
+
+        const date =
+            new Date(startTime);
+
+        if (Number.isNaN(date.getTime())) {
+
+            return {
+                session_date:
+                    session_date || null,
+                session_time:
+                    session_time || null
+            };
+
+        }
+
+        const timezone =
+            calendly_timezone ||
+            getCalendlyTimezone(
+                inviteeResource,
+                eventResource
+            );
+
+        return {
+            session_date:
+                session_date ||
+                formatCalendlyDate(
+                    date,
+                    timezone
+                ),
+            session_time:
+                session_time ||
+                formatCalendlyTime(
+                    date,
+                    timezone
+                )
+        };
+
+    };
+
+const getCalendlyUrisFromSession =
+    (session) => {
+
+        const description =
+            session.session_description || "";
+
+        const eventMatch =
+            description.match(
+                /Evento:\s*(https?:\/\/\S+)/i
+            );
+
+        const inviteeMatch =
+            description.match(
+                /Invitado:\s*(https?:\/\/\S+)/i
+            );
+
+        return {
+            calendly_event_uri:
+                eventMatch
+                    ? eventMatch[1]
+                    : null,
+            calendly_invitee_uri:
+                inviteeMatch
+                    ? inviteeMatch[1]
+                    : null
+        };
+
+    };
+
+const syncCalendlyScheduleForSessions =
+    async (sessions) => {
+
+        const syncedSessions =
+            [];
+
+        for (const session of sessions) {
+
+            if (
+                session.session_date &&
+                session.session_time
+            ) {
+
+                syncedSessions.push(
+                    session
+                );
+
+                continue;
+
+            }
+
+            const calendlyUris =
+                getCalendlyUrisFromSession(
+                    session
+                );
+
+            if (
+                !calendlyUris.calendly_event_uri &&
+                !calendlyUris.calendly_invitee_uri
+            ) {
+
+                syncedSessions.push(
+                    session
+                );
+
+                continue;
+
+            }
+
+            const schedule =
+                await resolveCalendlySchedule({
+                    session_date:
+                        session.session_date,
+                    session_time:
+                        session.session_time,
+                    calendly_event_uri:
+                        calendlyUris.calendly_event_uri,
+                    calendly_invitee_uri:
+                        calendlyUris.calendly_invitee_uri
+                });
+
+            if (
+                !schedule.session_date ||
+                !schedule.session_time
+            ) {
+
+                syncedSessions.push(
+                    session
+                );
+
+                continue;
+
+            }
+
+            const { data: updatedSession, error } =
+                await supabase
+                    .from("mentor_sessions")
+                    .update({
+                        session_date:
+                            schedule.session_date,
+                        session_time:
+                            schedule.session_time
+                    })
+                    .eq("id", session.id)
+                    .select()
+                    .single();
+
+            if (error) {
+
+                console.error(
+                    "[Calendly] Error actualizando fecha/hora de mentoría:",
+                    error
+                );
+
+                syncedSessions.push(
+                    session
+                );
+
+                continue;
+
+            }
+
+            syncedSessions.push(
+                updatedSession || {
+                    ...session,
+                    session_date:
+                        schedule.session_date,
+                    session_time:
+                        schedule.session_time
+                }
+            );
+
+        }
+
+        return syncedSessions;
+
+    };
+
 const createPendingMentorshipPayment =
     async ({
         student_id,
@@ -173,7 +635,12 @@ const getMentorSessions =
 
             }
 
-            res.json(data);
+            const syncedData =
+                await syncCalendlyScheduleForSessions(
+                    data || []
+                );
+
+            res.json(syncedData);
 
         } catch (err) {
 
@@ -213,7 +680,12 @@ const getMentorSessionsByMentor =
 
             }
 
-            res.json(data);
+            const syncedData =
+                await syncCalendlyScheduleForSessions(
+                    data || []
+                );
+
+            res.json(syncedData);
 
         } catch (err) {
 
@@ -564,10 +1036,15 @@ const getStudentMentorships =
 
             }
 
+            const syncedData =
+                await syncCalendlyScheduleForSessions(
+                    data || []
+                );
+
             const mentorIds =
                 [
                     ...new Set(
-                        data
+                        syncedData
                             .filter(s => s.mentor_id)
                             .map(s => s.mentor_id)
                     )
@@ -598,7 +1075,7 @@ const getStudentMentorships =
             }
 
             const withNames =
-                data.map(session => ({
+                syncedData.map(session => ({
 
                     ...session,
 
@@ -609,7 +1086,52 @@ const getStudentMentorships =
 
                 }));
 
-            res.json(withNames);
+            const courseIds =
+                [
+                    ...new Set(
+                        withNames
+                            .filter(s => s.course_id)
+                            .map(s => s.course_id)
+                    )
+                ];
+
+            const courseNames =
+                {};
+
+            if (courseIds.length > 0) {
+
+                const { data: courses } =
+                    await supabase
+                        .from("courses")
+                        .select("id,title")
+                        .in("id", courseIds);
+
+                if (courses) {
+
+                    courses.forEach(course => {
+
+                        courseNames[course.id] =
+                            course.title;
+
+                    });
+
+                }
+
+            }
+
+            const withCourseNames =
+                withNames.map(session => ({
+
+                    ...session,
+
+                    course_name:
+                        courseNames[session.course_id] ||
+                        session.course_name ||
+                        null
+
+                }));
+
+            res.json(withCourseNames);
 
         } catch (err) {
 
@@ -682,7 +1204,13 @@ const bookMentorship =
             const {
                 student_id,
                 mentor_id,
-                course_id
+                course_id,
+                calendly_event_uri,
+                calendly_invitee_uri,
+                calendly_start_time,
+                calendly_timezone,
+                session_date,
+                session_time
             } = req.body;
 
             if (
@@ -697,18 +1225,99 @@ const bookMentorship =
 
             }
 
+            const {
+                data: student
+            } =
+                await supabase
+                    .from("users")
+                    .select("full_name")
+                    .eq("id", student_id)
+                    .maybeSingle();
+
+            const {
+                data: mentor
+            } =
+                await supabase
+                    .from("users")
+                    .select("full_name")
+                    .eq("id", mentor_id)
+                    .maybeSingle();
+
+            const courseName =
+                await getCourseName(
+                    course_id || null,
+                    null
+                );
+
+            const descriptionParts =
+                [
+                    "Reserva confirmada desde Calendly."
+                ];
+
+            if (calendly_event_uri) {
+
+                descriptionParts.push(
+                    `Evento: ${calendly_event_uri}`
+                );
+
+            }
+
+            if (calendly_invitee_uri) {
+
+                descriptionParts.push(
+                    `Invitado: ${calendly_invitee_uri}`
+                );
+
+            }
+
+            const calendlySchedule =
+                await resolveCalendlySchedule({
+                    session_date,
+                    session_time,
+                    calendly_start_time,
+                    calendly_timezone,
+                    calendly_event_uri,
+                    calendly_invitee_uri
+                });
+
+            if (
+                !calendlySchedule.session_date ||
+                !calendlySchedule.session_time
+            ) {
+
+                return res.status(422).json({
+                    error:
+                        "No se pudo sincronizar la fecha y hora de Calendly. Configura CALENDLY_ACCESS_TOKEN en backend/.env."
+                });
+
+            }
+
             const insertData = {
                 student_id,
                 mentor_id,
-                status: "reserved"
+                course_id:
+                    course_id || null,
+                student_name:
+                    student
+                        ? student.full_name
+                        : null,
+                mentor_name:
+                    mentor
+                        ? mentor.full_name
+                        : null,
+                session_title:
+                    courseName
+                        ? `Mentoría - ${courseName}`
+                        : "Mentoría agendada",
+                session_description:
+                    descriptionParts.join("\n"),
+                session_date:
+                    calendlySchedule.session_date,
+                session_time:
+                    calendlySchedule.session_time,
+                status:
+                    "reserved"
             };
-
-            if (course_id) {
-
-                insertData.course_id =
-                    course_id;
-
-            }
 
             const { data, error } =
                 await supabase
@@ -719,6 +1328,11 @@ const bookMentorship =
 
             if (error) {
 
+                console.error(
+                    "[POST /api/mentor/book] Supabase insert error:",
+                    error
+                );
+
                 return res.status(400).json(error);
 
             }
@@ -726,6 +1340,11 @@ const bookMentorship =
             res.json(data);
 
         } catch (err) {
+
+            console.error(
+                "[POST /api/mentor/book] Controller error:",
+                err
+            );
 
             res.status(500).json({
                 error:
