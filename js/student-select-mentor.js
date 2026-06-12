@@ -117,9 +117,18 @@ const DEFAULT_AVATAR =
     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%236C4DFF'/%3E%3Ccircle cx='50' cy='34' r='16' fill='white'/%3E%3Cellipse cx='50' cy='72' rx='30' ry='22' fill='white'/%3E%3C/svg%3E";
 
 const CALENDLY_FALLBACK =
-    "https://calendly.com/jossvasquezcu-uch/30min?hide_landing_page_details=1&hide_gdpr_banner=1";
+    "https://calendly.com/jossvasquezcu-uch/30min";
+
+const CALENDLY_WIDGET_SCRIPT =
+    "https://assets.calendly.com/assets/external/widget.js";
 
 let calendlyContext =
+    null;
+
+let calendlyBookingInProgress =
+    false;
+
+let calendlyWidgetScriptPromise =
     null;
 
 /* LOAD COURSE MENTOR ASSIGNMENTS */
@@ -518,7 +527,115 @@ function openMentorProfile(mentorId) {
 
 /* CALENDLY */
 
-function openCalendly(mentorId) {
+function getCalendlyEmbedUrl() {
+
+    const params =
+        "hide_landing_page_details=1&hide_gdpr_banner=1";
+
+    return `${CALENDLY_FALLBACK}?${params}`;
+
+}
+
+function loadCalendlyWidget() {
+
+    if (
+        window.Calendly &&
+        typeof window.Calendly.initInlineWidget ===
+            "function"
+    ) {
+
+        return Promise.resolve();
+
+    }
+
+    if (calendlyWidgetScriptPromise) {
+
+        return calendlyWidgetScriptPromise;
+
+    }
+
+    calendlyWidgetScriptPromise =
+        new Promise((resolve, reject) => {
+
+            const existingScript =
+                document.querySelector(
+                    `script[src="${CALENDLY_WIDGET_SCRIPT}"]`
+                );
+
+            const onLoad =
+                () => resolve();
+
+            const onError =
+                () => reject(
+                    new Error(
+                        "No se pudo cargar el widget oficial de Calendly."
+                    )
+                );
+
+            if (existingScript) {
+
+                existingScript.addEventListener(
+                    "load",
+                    onLoad,
+                    {
+                        once:
+                            true
+                    }
+                );
+
+                existingScript.addEventListener(
+                    "error",
+                    onError,
+                    {
+                        once:
+                            true
+                    }
+                );
+
+                return;
+
+            }
+
+            const script =
+                document.createElement(
+                    "script"
+                );
+
+            script.src =
+                CALENDLY_WIDGET_SCRIPT;
+
+            script.async =
+                true;
+
+            script.addEventListener(
+                "load",
+                onLoad,
+                {
+                    once:
+                        true
+                }
+            );
+
+            script.addEventListener(
+                "error",
+                onError,
+                {
+                    once:
+                        true
+                }
+            );
+
+            document.head.appendChild(
+                script
+            );
+
+        });
+
+    return calendlyWidgetScriptPromise;
+
+}
+
+async function openCalendly(mentorId) {
 
     const mentor =
         mentorsData.find(
@@ -535,9 +652,6 @@ function openCalendly(mentorId) {
         return;
 
     }
-
-    const profile =
-        mentor.profile || {};
 
     const isCourseMentor =
         courseId
@@ -556,40 +670,13 @@ function openCalendly(mentorId) {
 
     }
 
-    let calendlyUrl =
-        profile.calendly_url ||
-        CALENDLY_FALLBACK;
-
-    if (
-        calendlyUrl !==
-            CALENDLY_FALLBACK
-    ) {
-
-        calendlyUrl +=
-            calendlyUrl.includes("?")
-                ? "&hide_landing_page_details=1&hide_gdpr_banner=1"
-                : "?hide_landing_page_details=1&hide_gdpr_banner=1";
-
-    }
-
-    calendlyUrl +=
-        calendlyUrl.includes(
-            "embed_domain"
-        )
-            ? ""
-            : `${calendlyUrl.includes("?") ? "&" : "?"}embed_domain=${encodeURIComponent(window.location.hostname)}&embed_type=Inline`;
-
     const container =
         document.getElementById(
             "calendlyContainer"
         );
 
     container.innerHTML =
-        `<iframe
-            src="${calendlyUrl}"
-            style="width:100%;height:100%;border:none;"
-            allow="payment"
-        ></iframe>`;
+        "";
 
     modal.classList.remove(
         "active-modal"
@@ -602,6 +689,9 @@ function openCalendly(mentorId) {
             courseId || null
     };
 
+    calendlyBookingInProgress =
+        false;
+
     document
         .getElementById(
             "calendlyModal"
@@ -609,6 +699,32 @@ function openCalendly(mentorId) {
         .classList.add(
             "active-modal"
         );
+
+    try {
+
+        await loadCalendlyWidget();
+
+        window.Calendly.initInlineWidget({
+            url:
+                getCalendlyEmbedUrl(),
+            parentElement:
+                container
+        });
+
+    } catch (err) {
+
+        console.error(
+            "[Calendly] Error inicializando widget oficial:",
+            err
+        );
+
+        showToast(
+            "No se pudo abrir Calendly."
+        );
+
+        closeCalendly();
+
+    }
 
 }
 
@@ -630,16 +746,132 @@ function closeCalendly() {
     container.innerHTML =
         "";
 
+    calendlyContext =
+        null;
+
+    calendlyBookingInProgress =
+        false;
+
+}
+
+function getCalendlyStartTime(payload) {
+
+    const candidates = [
+        payload &&
+            payload.event &&
+            payload.event.start_time,
+        payload &&
+            payload.event &&
+            payload.event.startTime,
+        payload &&
+            payload.scheduled_event &&
+            payload.scheduled_event.start_time,
+        payload &&
+            payload.scheduledEvent &&
+            payload.scheduledEvent.startTime,
+        payload &&
+            payload.start_time,
+        payload &&
+            payload.startTime
+    ];
+
+    return candidates.find(Boolean) || null;
+
+}
+
+function getCalendlyTimezone(payload) {
+
+    const candidates = [
+        payload &&
+            payload.event &&
+            payload.event.timezone,
+        payload &&
+            payload.event &&
+            payload.event.event_timezone,
+        payload &&
+            payload.invitee &&
+            payload.invitee.timezone,
+        payload &&
+            payload.invitee &&
+            payload.invitee.invitee_timezone,
+        payload &&
+            payload.timezone
+    ];
+
+    return candidates.find(Boolean) || null;
+
+}
+
+function getCalendlySchedule(payload) {
+
+    const startTime =
+        getCalendlyStartTime(payload);
+
+    if (!startTime) {
+
+        return {
+            session_date:
+                null,
+            session_time:
+                null
+        };
+
+    }
+
+    const date =
+        new Date(startTime);
+
+    if (Number.isNaN(date.getTime())) {
+
+        return {
+            session_date:
+                null,
+            session_time:
+                null
+        };
+
+    }
+
+    return {
+        session_date:
+            date.toISOString().slice(0, 10),
+        session_time:
+            date.toLocaleTimeString(
+                "es-PE",
+                {
+                    hour:
+                        "2-digit",
+                    minute:
+                        "2-digit"
+                }
+            )
+    };
+
 }
 
 /* BOOK MENTORSHIP (shared) */
 
 async function bookMentorshipDb(
     mentorId,
-    courseId
+    courseId,
+    calendlyPayload = {}
 ) {
 
     try {
+
+        const calendlySchedule =
+            getCalendlySchedule(
+                calendlyPayload
+            );
+
+        if (calendlyBookingInProgress) {
+
+            return false;
+
+        }
+
+        calendlyBookingInProgress =
+            true;
 
         const response =
             await fetch(
@@ -660,7 +892,29 @@ async function bookMentorshipDb(
                                 mentorId,
                             course_id:
                                 courseId ||
-                                null
+                                null,
+                            calendly_event_uri:
+                                calendlyPayload.event &&
+                                calendlyPayload.event.uri
+                                    ? calendlyPayload.event.uri
+                                    : null,
+                            calendly_invitee_uri:
+                                calendlyPayload.invitee &&
+                                calendlyPayload.invitee.uri
+                                    ? calendlyPayload.invitee.uri
+                                    : null,
+                            calendly_start_time:
+                                getCalendlyStartTime(
+                                    calendlyPayload
+                                ),
+                            calendly_timezone:
+                                getCalendlyTimezone(
+                                    calendlyPayload
+                                ),
+                            session_date:
+                                calendlySchedule.session_date,
+                            session_time:
+                                calendlySchedule.session_time
                         })
                 }
             );
@@ -677,12 +931,24 @@ async function bookMentorshipDb(
             );
 
             showToast(
+                errBody.error ||
                 `Error al guardar (${response.status})`
             );
+
+            calendlyBookingInProgress =
+                false;
 
             return false;
 
         }
+
+        const result =
+            await response.json();
+
+        console.log(
+            "[Calendly] Mentoría guardada en SUClassroom:",
+            result
+        );
 
         calendlyContext =
             null;
@@ -690,7 +956,7 @@ async function bookMentorshipDb(
         closeCalendly();
 
         showToast(
-            "Mentoría agendada correctamente. Revisa Mis Mentorías."
+            "Mentoría agendada correctamente"
         );
 
         setTimeout(
@@ -741,12 +1007,6 @@ window.addEventListener(
 
         }
 
-        console.log(
-            "[Calendly] event:",
-            e.data.event,
-            e.data
-        );
-
         if (
             e.data.event !==
                 "calendly.event_scheduled"
@@ -755,6 +1015,28 @@ window.addEventListener(
             return;
 
         }
+
+        console.log(
+            "[Calendly] event_scheduled event.data:",
+            e.data
+        );
+
+        console.log(
+            "[Calendly] event_scheduled payload:",
+            e.data.payload
+        );
+
+        console.log(
+            "[Calendly] event_scheduled payload.event:",
+            e.data.payload &&
+            e.data.payload.event
+        );
+
+        console.log(
+            "[Calendly] event_scheduled payload.invitee:",
+            e.data.payload &&
+            e.data.payload.invitee
+        );
 
         if (!calendlyContext) {
 
@@ -772,7 +1054,8 @@ window.addEventListener(
 
         bookMentorshipDb(
             calendlyContext.mentorId,
-            calendlyContext.courseId
+            calendlyContext.courseId,
+            e.data.payload || {}
         );
 
     }

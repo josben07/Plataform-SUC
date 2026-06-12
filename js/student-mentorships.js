@@ -50,33 +50,45 @@ function showMsg(message) {
 
 }
 
+function escapeHtml(value) {
+
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
 function formatDate(dateStr) {
 
     if (!dateStr) {
 
-        return "—";
+        return "Fecha por confirmar";
 
     }
 
-    try {
+    const d =
+        new Date(`${dateStr}T00:00:00`);
 
-        const d =
-            new Date(dateStr);
+    if (Number.isNaN(d.getTime())) {
 
-        return d.toLocaleDateString(
-            "es-PE",
-            {
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-            }
-        );
-
-    } catch {
-
-        return dateStr;
+        return "Fecha por confirmar";
 
     }
+
+    return d.toLocaleDateString(
+        "es-PE",
+        {
+            year:
+                "numeric",
+            month:
+                "long",
+            day:
+                "numeric"
+        }
+    );
 
 }
 
@@ -84,11 +96,12 @@ function formatTime(timeStr) {
 
     if (!timeStr) {
 
-        return "—";
+        return "Hora por confirmar";
 
     }
 
-    return timeStr;
+    return String(timeStr)
+        .slice(0, 5);
 
 }
 
@@ -105,8 +118,7 @@ function statusLabel(status) {
         case "available":
             return "Disponible";
         default:
-            return status ||
-                "—";
+            return status || "Sin estado";
 
     }
 
@@ -151,17 +163,12 @@ async function loadMentorships() {
         const mySessions =
             sessions.filter(
                 s =>
-                    s.status ===
-                        "reserved" ||
-                    s.status ===
-                        "completed" ||
-                    s.status ===
-                        "cancelled"
+                    s.status === "reserved" ||
+                    s.status === "completed" ||
+                    s.status === "cancelled"
             );
 
-        if (
-            mySessions.length === 0
-        ) {
+        if (mySessions.length === 0) {
 
             renderEmpty();
             return;
@@ -170,7 +177,12 @@ async function loadMentorships() {
 
         renderList(mySessions);
 
-    } catch {
+    } catch (err) {
+
+        console.error(
+            "[Mis Mentorías] Error cargando historial:",
+            err
+        );
 
         renderEmpty();
 
@@ -185,15 +197,15 @@ function renderEmpty() {
         <div class="empty-mentorships">
 
             <div class="empty-icon">
-                🎓
+                *
             </div>
 
             <h3>
-                Aún no tienes mentorías agendadas
+                Aun no tienes mentorias agendadas
             </h3>
 
             <p>
-                Ve a Mentores para agendar una sesión.
+                Ve a Mentores para agendar una sesion.
             </p>
 
             <a
@@ -237,24 +249,24 @@ function renderList(sessions) {
                         <tr>
 
                             <td class="td-mentor">
-                                ${s.mentor_name || "—"}
+                                ${escapeHtml(s.mentor_name || "Mentor por confirmar")}
                             </td>
 
                             <td class="td-course">
-                                —
+                                ${escapeHtml(s.course_name || "Curso por confirmar")}
                             </td>
 
                             <td class="td-date">
-                                ${formatDate(s.session_date)}
+                                ${escapeHtml(formatDate(s.session_date))}
                             </td>
 
                             <td class="td-time">
-                                ${formatTime(s.session_time)}
+                                ${escapeHtml(formatTime(s.session_time))}
                             </td>
 
                             <td>
                                 <span class="status-badge ${statusClass(s.status)}">
-                                    ${statusLabel(s.status)}
+                                    ${escapeHtml(statusLabel(s.status))}
                                 </span>
                             </td>
 
@@ -262,9 +274,9 @@ function renderList(sessions) {
                                 <button
                                     class="pay-btn"
                                     disabled
-                                    title="Próximamente"
+                                    title="Proximamente"
                                 >
-                                    Pagar Mentoría
+                                    Pagar Mentoria
                                 </button>
                             </td>
 
