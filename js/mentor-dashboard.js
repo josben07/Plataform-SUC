@@ -65,7 +65,9 @@ async function loadMentorDashboard() {
 
     const reservedSessions =
         sessions.filter(
-            session => session.status === "reserved"
+            session =>
+                session.status === "reserved" ||
+                session.status === "confirmed"
         );
 
     const studentIds =

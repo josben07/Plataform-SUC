@@ -927,16 +927,7 @@ const requestMentorship =
                 });
 
             }
-
-            if (activeCourse.final_project_approved !== true) {
-
-                return res.status(400).json({
-                    error:
-                        "Debes tener tu proyecto final aprobado para agendar una mentoría."
-                });
-
-            }
-
+            
             const {
                 data: assignedMentor
             } =
@@ -993,6 +984,16 @@ const requestMentorship =
                     data,
                 activeCourse
             });
+
+            await supabase
+                .from("project_submissions")
+                .update({
+                    mentor_id:
+                        session.mentor_id
+                })
+                .eq("user_id", student_id)
+                .eq("course_id", activeCourse.course_id)
+                .eq("submission_type", "final_project");
 
             res.json(data);
 
@@ -1146,8 +1147,74 @@ const getStudentMentorships =
 
     };
 
-/* CANCEL MENTORSHIP */
+/* CANCEL CALENDLY EVENT */
 
+const cancelCalendlyEvent =
+    async (calendlyEventUri) => {
+
+        const token =
+            getCalendlyToken();
+
+        if (!token || !calendlyEventUri) {
+
+            return;
+
+        }
+
+        try {
+
+            const cancelUrl =
+                calendlyEventUri.replace(
+                    /\/?$/,
+                    "/cancellation"
+                );
+
+            const response =
+                await fetch(cancelUrl, {
+
+                    method:
+                        "POST",
+
+                    headers: {
+                        Authorization:
+                            `Bearer ${token}`,
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            reason:
+                                "Cancelado por el alumno"
+                        })
+
+                });
+
+            if (!response.ok) {
+
+                const body =
+                    await response.json().catch(() => ({}));
+
+                console.warn(
+                    "[Calendly] Error cancelando evento:",
+                    response.status,
+                    body
+                );
+
+            }
+
+        } catch (err) {
+
+            console.warn(
+                "[Calendly] Error cancelando evento:",
+                err.message
+            );
+
+        }
+
+    };
+
+/* CANCEL MENTORSHIP */
 const cancelMentorship =
     async (req, res) => {
 
@@ -1155,6 +1222,63 @@ const cancelMentorship =
 
             const { id } =
                 req.params;
+
+            const { data: session } =
+                await supabase
+                    .from("mentor_sessions")
+                    .select("id, session_description")
+                    .eq("id", id)
+                    .maybeSingle();
+
+            if (!session) {
+
+                return res.status(404).json({
+                    error:
+                        "Mentoría no encontrada."
+                });
+
+            }
+
+            const { data: payment } =
+                await supabase
+                    .from("payments")
+                    .select("id, status")
+                    .eq("session_id", id)
+                    .maybeSingle();
+
+            if (
+                payment &&
+                payment.status === "aprobado"
+            ) {
+
+                return res.status(400).json({
+                    error:
+                        "No puedes cancelar una mentoría que ya ha sido pagada."
+                });
+
+            }
+
+            const calendlyUris =
+                getCalendlyUrisFromSession(
+                    session
+                );
+
+            if (calendlyUris.calendly_event_uri) {
+
+                await cancelCalendlyEvent(
+                    calendlyUris.calendly_event_uri
+                );
+
+            }
+
+            if (payment) {
+
+                await supabase
+                    .from("payments")
+                    .delete()
+                    .eq("id", payment.id);
+
+            }
 
             const { data, error } =
                 await supabase
@@ -1182,6 +1306,170 @@ const cancelMentorship =
             }
 
             res.json(data);
+
+        } catch (err) {
+
+            res.status(500).json({
+
+                error:
+                    err.message
+            });
+
+        }
+
+    };
+
+/* SYNC MISSING PAYMENTS FOR EXISTING MENTORSHIPS */
+
+const syncMentorshipPayments =
+    async (req, res) => {
+
+        try {
+
+            const { studentId } =
+                req.params;
+
+            if (!studentId) {
+
+                return res.status(400).json({
+                    error:
+                        "studentId es requerido"
+                });
+
+            }
+
+            const { data: sessions, error: sessionsError } =
+                await supabase
+                    .from("mentor_sessions")
+                    .select("*")
+                    .eq("student_id", studentId)
+                    .in("status", ["reserved", "completed"]);
+
+            if (sessionsError) {
+
+                return res.status(400).json(sessionsError);
+
+            }
+
+            if (!sessions || sessions.length === 0) {
+
+                return res.json({
+                    message:
+                        "No hay mentorías para sincronizar",
+                    created: 0
+                });
+
+            }
+
+            const { data: student } =
+                await supabase
+                    .from("users")
+                    .select("full_name")
+                    .eq("id", studentId)
+                    .maybeSingle();
+
+            const studentName =
+                student
+                    ? student.full_name
+                    : null;
+
+            let createdCount =
+                0;
+
+            for (const session of sessions) {
+
+                /* ALWAYS SYNC PRICE FROM MENTOR PROFILE */
+
+                if (session.mentor_id) {
+
+                    const { data: mp, error: mpErr } =
+                        await supabase
+                            .from("mentor_profiles")
+                            .select("base_price")
+                            .eq("user_id", session.mentor_id)
+                            .maybeSingle();
+
+                    if (mpErr) {
+                        console.error("[syncMentorshipPayments] Error leyendo mentor_profiles.base_price:", mpErr);
+                    }
+
+                    const mentorBasePrice =
+                        mp && mp.base_price != null
+                            ? mp.base_price
+                            : null;
+
+                    if (
+                        mentorBasePrice != null &&
+                        Number(mentorBasePrice) !== Number(session.price)
+                    ) {
+
+                        const newPrice =
+                            Number(mentorBasePrice);
+
+                        await supabase
+                            .from("mentor_sessions")
+                            .update({ price: newPrice })
+                            .eq("id", session.id);
+
+                        session.price =
+                            newPrice;
+
+                        /* UPDATE PAYMENT AMOUNT */
+
+                        await supabase
+                            .from("payments")
+                            .update({
+                                amount:
+                                    newPrice
+                            })
+                            .eq("session_id", session.id)
+                            .eq("student_id", studentId);
+
+                    }
+
+                }
+
+                const activeCourse =
+                    session.course_id
+                        ? { course_id: session.course_id }
+                        : null;
+
+                try {
+
+                    const result =
+                        await createPendingMentorshipPayment({
+                            student_id:
+                                studentId,
+                            student_name:
+                                studentName,
+                            session,
+                            activeCourse
+                        });
+
+                    if (result && result.id) {
+
+                        createdCount++;
+
+                    }
+
+                } catch (err) {
+
+                    console.error(
+                        "[syncMentorshipPayments] Error en sesión",
+                        session.id,
+                        err
+                    );
+
+                }
+
+            }
+
+            res.json({
+                message:
+                    "Sincronización completada",
+                created:
+                    createdCount
+            });
 
         } catch (err) {
 
@@ -1243,6 +1531,18 @@ const bookMentorship =
                     .eq("id", mentor_id)
                     .maybeSingle();
 
+            const { data: mentorProfile } =
+                await supabase
+                    .from("mentor_profiles")
+                    .select("base_price")
+                    .eq("user_id", mentor_id)
+                    .maybeSingle();
+
+            const mentorPrice =
+                mentorProfile && mentorProfile.base_price
+                    ? mentorProfile.base_price
+                    : null;
+
             const courseName =
                 await getCourseName(
                     course_id || null,
@@ -1292,6 +1592,28 @@ const bookMentorship =
 
             }
 
+            let meetLink = null;
+
+            if (calendly_event_uri) {
+
+                const eventResource =
+                    await fetchCalendlyResource(
+                        calendly_event_uri
+                    );
+
+                if (
+                    eventResource &&
+                    eventResource.location &&
+                    eventResource.location.join_url
+                ) {
+
+                    meetLink =
+                        eventResource.location.join_url;
+
+                }
+
+            }
+
             const insertData = {
                 student_id,
                 mentor_id,
@@ -1315,6 +1637,10 @@ const bookMentorship =
                     calendlySchedule.session_date,
                 session_time:
                     calendlySchedule.session_time,
+                price:
+                    mentorPrice,
+                meet_link:
+                    meetLink,
                 status:
                     "reserved"
             };
@@ -1336,6 +1662,44 @@ const bookMentorship =
                 return res.status(400).json(error);
 
             }
+
+            /* CREATE PENDING PAYMENT */
+
+            try {
+
+                const activeCourse =
+                    course_id
+                        ? { course_id }
+                        : null;
+
+                await createPendingMentorshipPayment({
+                    student_id,
+                    student_name:
+                        student
+                            ? student.full_name
+                            : null,
+                    session:
+                        data,
+                    activeCourse
+                });
+
+            } catch (paymentError) {
+
+                console.error(
+                    "[POST /api/mentor/book] Error creando pago pendiente:",
+                    paymentError
+                );
+
+            }
+
+            await supabase
+                .from("project_submissions")
+                .update({
+                    mentor_id
+                })
+                .eq("user_id", student_id)
+                .eq("course_id", course_id)
+                .eq("submission_type", "final_project");
 
             res.json(data);
 
@@ -1365,7 +1729,8 @@ module.exports = {
     requestMentorship,
     cancelMentorship,
     getStudentMentorships,
-    bookMentorship
+    bookMentorship,
+    syncMentorshipPayments
 
 };
 

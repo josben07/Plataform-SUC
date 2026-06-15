@@ -14,7 +14,8 @@ const {
     requestMentorship,
     cancelMentorship,
     getStudentMentorships,
-    bookMentorship
+    bookMentorship,
+    syncMentorshipPayments
 
 } = require(
     "../controllers/mentor.controller"
@@ -66,6 +67,13 @@ router.put(
 router.get(
     "/student/:studentId",
     getStudentMentorships
+);
+
+/* SYNC PAYMENTS */
+
+router.post(
+    "/sync-payments/:studentId",
+    syncMentorshipPayments
 );
 
 /* BOOK */

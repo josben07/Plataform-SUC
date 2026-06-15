@@ -388,6 +388,21 @@ const updatePayment =
                     courseUpdate.final_mentorship_session_id =
                         payment.session_id || null;
 
+                    if (payment.session_id) {
+
+                        await supabase
+                            .from("mentor_sessions")
+                            .update({
+                                status:
+                                    "confirmed"
+                            })
+                            .eq(
+                                "id",
+                                payment.session_id
+                            );
+
+                    }
+
                 }
 
                 await supabase

@@ -417,6 +417,55 @@ body{
     color:#EF4444;
 }
 
+/* HISTORY HEADER */
+
+.history-header{
+
+    grid-column:1 / -1;
+
+    margin-top:8px;
+}
+
+.history-header h3{
+
+    font-size:1.4rem;
+
+    color:
+    rgba(255,255,255,.72);
+}
+
+/* HISTORY CARD */
+
+.history-card{
+
+    border:
+    1px solid rgba(108,77,255,.18);
+}
+
+.history-card .mentor-status{
+
+    background:
+    rgba(255,183,77,0.14);
+
+    color:#FFB74D;
+}
+
+.history-card .status-completed{
+
+    background:
+    rgba(34,197,94,0.14);
+
+    color:#22C55E;
+}
+
+.history-card .status-cancelled{
+
+    background:
+    rgba(239,68,68,0.14);
+
+    color:#EF4444;
+}
+
 /* EMPTY STATE */
 
 .empty-state{

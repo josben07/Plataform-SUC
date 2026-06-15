@@ -561,3 +561,72 @@ body{
         padding:22px;
     }
 }
+
+/* ========================= */
+/* MENTOR NOTICE */
+/* ========================= */
+
+.mentor-notice{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:20px 28px;
+    margin-bottom:28px;
+    border-radius:20px;
+    background:rgba(108,77,255,0.06);
+    border:1px solid rgba(108,77,255,0.15);
+}
+
+.mentor-notice span{
+    font-size:1.8rem;
+    flex-shrink:0;
+}
+
+.mentor-notice p{
+    color:rgba(255,255,255,0.7);
+    font-size:1rem;
+    line-height:1.7;
+    margin:0;
+}
+
+/* ========================= */
+/* MENTOR LOCKED */
+/* ========================= */
+
+.mentor-card.mentor-locked{
+    opacity:0.55;
+}
+
+.mentor-card.mentor-locked:hover{
+    transform:none;
+    border-color:rgba(255,255,255,.08) !important;
+    box-shadow:none;
+}
+
+.mentor-btn.mentor-btn-locked{
+    background:rgba(255,255,255,0.08);
+    color:rgba(255,255,255,0.4);
+    cursor:not-allowed;
+    pointer-events:none;
+}
+
+.mentor-btn.mentor-btn-locked:hover{
+    transform:none;
+    box-shadow:none;
+}
+
+.mentor-lock-overlay{
+    position:absolute;
+    top:18px;
+    right:18px;
+    z-index:10;
+    font-size:1.4rem;
+    background:rgba(0,0,0,0.45);
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    backdrop-filter:blur(4px);
+}

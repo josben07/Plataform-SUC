@@ -185,6 +185,183 @@ async function loadMentors() {
 
     mentorGrid.innerHTML = "";
 
+    const availableSessions =
+        mentors.filter(m =>
+            m.status === "available"
+        );
+
+    const historySessions =
+        mentors.filter(m =>
+            m.status === "reserved" ||
+            m.status === "completed" ||
+            m.status === "cancelled"
+        );
+
+    /* HISTORY SECTION */
+
+    if (historySessions.length > 0) {
+
+        mentorGrid.innerHTML += `
+
+            <div class="history-header">
+                <h3>
+                    📋 Historial de reservas
+                </h3>
+            </div>
+
+        `;
+
+        historySessions.forEach(session => {
+
+            mentorGrid.innerHTML += `
+
+                <div class="mentor-card history-card">
+
+                    <h3>
+                        ${session.session_title}
+                    </h3>
+
+                    <p>
+                        Mentor:
+                        ${session.mentor_name}
+                    </p>
+
+                    <p>
+                        Alumno:
+                        ${session.student_name || "Desconocido"}
+                    </p>
+
+                    <p>
+                        Fecha:
+                        ${session.session_date || "Sin fecha"}
+                    </p>
+
+                    <p>
+                        Hora:
+                        ${session.session_time || "Sin hora"}
+                    </p>
+
+                    <p class="mentor-price">
+                        Precio: ${formatMentorshipPrice(session.price)}
+                    </p>
+
+                    <div class="mentor-status status-${session.status}">
+                        ${session.status === "reserved"
+                ? "Reservada"
+                : session.status === "completed"
+                    ? "Completada"
+                    : "Cancelada"
+            }
+                    </div>
+
+                </div>
+
+            `;
+
+        });
+
+    }
+
+    /* AVAILABLE SECTION */
+
+    if (availableSessions.length > 0) {
+
+        mentorGrid.innerHTML += `
+
+            <div class="history-header">
+                <h3>
+                    🎯 Mentorías disponibles
+                </h3>
+            </div>
+
+        `;
+
+        availableSessions.forEach(mentor => {
+
+            const mentorUser =
+                mentorsUsers.find(
+                    m => m.id === mentor.mentor_id
+                );
+
+            const basePrice =
+                mentorUser?.profile?.base_price;
+
+            mentorGrid.innerHTML += `
+
+                <div class="mentor-card">
+
+                    <h3>
+                        ${mentor.session_title}
+                    </h3>
+
+                    <p>
+                        Mentor:
+                        ${mentor.mentor_name}
+                    </p>
+
+                    <p style="color:#A89BFF; font-weight:700;">
+                        Precio base del mentor:
+                        $${basePrice ? Number(basePrice).toFixed(2) : "0.00"}
+                    </p>
+
+                    <p>
+                        ${mentor.mentor_specialty || ""}
+                    </p>
+
+                    <p>
+                        ${mentor.session_date || "Sin fecha"}
+                    </p>
+
+                    <p>
+                        ${mentor.session_time || "Sin hora"}
+                    </p>
+
+                    <p class="mentor-price">
+                        Precio: ${formatMentorshipPrice(mentor.price)}
+                    </p>
+
+                    <div class="mentor-status">
+                        Disponible
+                    </div>
+
+                    <div class="mentor-actions">
+
+                        <button
+                            class="edit-mentor-btn"
+                            onclick="
+                                openEditMentorModal(
+                                    '${mentor.id}',
+                                    '${mentor.mentor_id || ""}',
+                                    '${mentor.mentor_specialty || ""}',
+                                    '${mentor.session_title}',
+                                    '${mentor.session_description || ""}',
+                                    '${mentor.session_date || ""}',
+                                    '${mentor.session_time || ""}',
+                                    '${mentor.price ?? ""}',
+                                    '${mentor.meet_link || ""}'
+                                )
+                            "
+                        >
+                            Editar
+                        </button>
+
+                        <button
+                            class="delete-mentor-btn"
+                            onclick="deleteMentor('${mentor.id}')"
+                        >
+                            Eliminar
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        });
+
+    }
+
     if (mentors.length === 0) {
 
         mentorGrid.innerHTML = `
@@ -207,96 +384,7 @@ async function loadMentors() {
 
         `;
 
-        return;
-
     }
-
-    mentors.forEach(mentor => {
-
-        const mentorUser =
-            mentorsUsers.find(
-                m => m.id === mentor.mentor_id
-            );
-
-        const basePrice =
-            mentorUser?.profile?.base_price;
-
-        mentorGrid.innerHTML += `
-
-            <div class="mentor-card">
-
-                <h3>
-                    ${mentor.session_title}
-                </h3>
-
-                <p>
-                    Mentor:
-                    ${mentor.mentor_name}
-                </p>
-
-                <p style="color:#A89BFF; font-weight:700;">
-                    Precio base del mentor:
-                    $${basePrice ? Number(basePrice).toFixed(2) : "0.00"}
-                </p>
-
-                <p>
-                    ${mentor.mentor_specialty || ""}
-                </p>
-
-                <p>
-                    ${mentor.session_date || "Sin fecha"}
-                </p>
-
-                <p>
-                    ${mentor.session_time || "Sin hora"}
-                </p>
-
-                <p class="mentor-price">
-                    Precio: ${formatMentorshipPrice(mentor.price)}
-                </p>
-
-                <div class="mentor-status">
-                    ${mentor.status === "available"
-                ? "Disponible"
-                : mentor.status
-            }
-                </div>
-
-                <div class="mentor-actions">
-
-                    <button
-                        class="edit-mentor-btn"
-                        onclick="
-                            openEditMentorModal(
-                                '${mentor.id}',
-                                '${mentor.mentor_id || ""}',
-                                '${mentor.mentor_specialty || ""}',
-                                '${mentor.session_title}',
-                                '${mentor.session_description || ""}',
-                                '${mentor.session_date || ""}',
-                                '${mentor.session_time || ""}',
-                                '${mentor.price ?? ""}',
-                                '${mentor.meet_link || ""}'
-                            )
-                        "
-                    >
-                        Editar
-                    </button>
-
-                    <button
-                        class="delete-mentor-btn"
-                        onclick="deleteMentor('${mentor.id}')"
-                    >
-                        Eliminar
-                    </button>
-
-                </div>
-
-            </div>
-
-        `;
-
-    });
 
 }
 

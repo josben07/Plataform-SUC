@@ -113,6 +113,8 @@ let mentorsData =
 let courseMentorIds =
     [];
 
+let hasEnrolledCourses = false;
+
 const DEFAULT_AVATAR =
     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%236C4DFF'/%3E%3Ccircle cx='50' cy='34' r='16' fill='white'/%3E%3Cellipse cx='50' cy='72' rx='30' ry='22' fill='white'/%3E%3C/svg%3E";
 
@@ -204,9 +206,7 @@ function showAllMentors() {
 function showCourseMentors() {
     setActiveFilter(event.target);
     const filtered = mentorsData.filter(m =>
-        courseMentorIds.some(id =>
-            String(id) === String(m.id)
-        )
+        hasEnrolledCourses && m.available
     );
     renderMentors(filtered);
 }
@@ -219,14 +219,24 @@ async function loadMentors() {
 
     const response =
         await fetch(
-            `${API_URL}/api/mentor-profiles`
+            `${API_URL}/api/student/mentors/${user.id}`
         );
 
-    const mentors =
+    const data =
         await response.json();
 
-    mentorsData =
-        mentors;
+    hasEnrolledCourses = data.has_enrolled_courses;
+
+    mentorsData = (data.mentors || []).map(m => ({
+        ...m,
+        available: m.available
+    }));
+
+    const heroTitle = document.querySelector(".mentors-hero-content h1");
+
+    if (!hasEnrolledCourses && heroTitle) {
+        heroTitle.textContent = "Inscríbete a un curso para poder orientarte mejor.";
+    }
 
     renderMentors(
         mentorsData
@@ -268,27 +278,28 @@ function renderMentors(mentors) {
         const profile =
             mentor.profile || {};
 
-        const isCourseMentor =
-            courseId
-                ? courseMentorIds.some(id =>
-                    String(id) === String(mentor.id)
-                )
-                : true;
+        const isAvailable =
+            hasEnrolledCourses && mentor.available;
 
-        const cardClass =
-            isCourseMentor
-                ? "mentor-card course-mentor-card"
-                : "mentor-card";
+        const isLocked = !hasEnrolledCourses || (!mentor.available && hasEnrolledCourses);
 
-        const badgeHtml =
-            isCourseMentor && courseId
-                ? `<div class="course-badge">Mentor de este curso</div>`
-                : "";
+        const cardClass = isAvailable
+            ? "mentor-card course-mentor-card"
+            : "mentor-card mentor-locked";
+
+        const badgeHtml = isAvailable
+            ? `<div class="course-badge">Mentor de este curso</div>`
+            : "";
+
+        const lockOverlay = isLocked
+            ? `<div class="mentor-lock-overlay">🔒</div>`
+            : "";
 
         mentorsGrid.innerHTML += `
 
             <div class="${cardClass}">
 
+                ${lockOverlay}
                 ${badgeHtml}
 
                 <div class="mentor-image">
@@ -360,8 +371,8 @@ function renderMentors(mentors) {
                         </button>
 
                         <button
-                            class="mentor-btn mentor-btn-secondary"
-                            onclick="openCalendly('${mentor.id}')"
+                            class="mentor-btn mentor-btn-secondary ${!isAvailable ? 'mentor-btn-locked' : ''}"
+                            onclick="${isAvailable ? "openCalendly('" + mentor.id + "')" : ''}"
                         >
                             Agendar Mentoría
                         </button>

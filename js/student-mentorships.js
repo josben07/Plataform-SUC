@@ -25,6 +25,9 @@ const toastMessage =
         "appToastMessage"
     );
 
+let currentSessionId = null;
+let selectedStars = 0;
+
 function showMsg(message) {
 
     if (!toast || !toastMessage) {
@@ -111,6 +114,8 @@ function statusLabel(status) {
 
         case "reserved":
             return "Reservada";
+        case "confirmed":
+            return "Confirmada";
         case "completed":
             return "Completada";
         case "cancelled":
@@ -130,12 +135,30 @@ function statusClass(status) {
 
         case "reserved":
             return "status-reserved";
+        case "confirmed":
+            return "status-confirmed";
         case "completed":
             return "status-completed";
         case "cancelled":
             return "status-cancelled";
         default:
             return "";
+
+    }
+
+}
+
+async function getCompletionStatus(sessionId) {
+
+    try {
+
+        const res = await fetch(`${API_URL}/api/mentorship/status/${sessionId}`);
+        if (!res.ok) return null;
+        return await res.json();
+
+    } catch {
+
+        return null;
 
     }
 
@@ -164,6 +187,7 @@ async function loadMentorships() {
             sessions.filter(
                 s =>
                     s.status === "reserved" ||
+                    s.status === "confirmed" ||
                     s.status === "completed" ||
                     s.status === "cancelled"
             );
@@ -175,7 +199,18 @@ async function loadMentorships() {
 
         }
 
-        renderList(mySessions);
+        const statusMap = {};
+        try {
+            await Promise.all(mySessions.map(async (s) => {
+                if (s.status === "reserved") {
+                    statusMap[s.id] = await getCompletionStatus(s.id);
+                }
+            }));
+        } catch (e) {
+            console.warn("[statusMap] Error cargando estados:", e);
+        }
+
+        renderList(mySessions, statusMap);
 
     } catch (err) {
 
@@ -221,77 +256,281 @@ function renderEmpty() {
 
 }
 
-function renderList(sessions) {
+function renderList(sessions, statusMap) {
 
-    list.innerHTML = `
+    const rows = [];
 
-        <div class="mentorship-table-wrap">
+    for (let i = 0; i < sessions.length; i++) {
 
-            <table class="mentorship-table">
+        const s = sessions[i];
 
-                <thead>
+        const st = statusMap?.[s.id];
+        const studentConfirmed = st?.student_confirmed === true;
+        const bothDone = st?.completed === true;
 
-                    <tr>
-                        <th>Mentor</th>
-                        <th>Curso</th>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Estado</th>
-                        <th></th>
-                    </tr>
+        let actionHtml = "";
 
-                </thead>
+        if (s.status === "reserved" && bothDone) {
 
-                <tbody>
+            actionHtml = '<span style="color:#22C55E;font-weight:700;font-size:.85rem">✔ Completada</span>';
 
-                    ${sessions.map(s => `
+        } else if (s.status === "reserved" && studentConfirmed) {
 
-                        <tr>
+            actionHtml = '<span style="color:#F59E0B;font-weight:700;font-size:.85rem">⏳ Esperando al mentor</span>';
+        } else if (s.status === "confirmed") {
 
-                            <td class="td-mentor">
-                                ${escapeHtml(s.mentor_name || "Mentor por confirmar")}
-                            </td>
+            actionHtml = '<button class="complete-mentorship-btn" onclick="openStudentCompleteModal(\'' + s.id + '\')">Confirmar mentoría</button>';
 
-                            <td class="td-course">
-                                ${escapeHtml(s.course_name || "Curso por confirmar")}
-                            </td>
+        } else if (s.status === "reserved") {
 
-                            <td class="td-date">
-                                ${escapeHtml(formatDate(s.session_date))}
-                            </td>
+            const paymentStatus = st?.payment_status;
+            if (paymentStatus === "aprobado") {
 
-                            <td class="td-time">
-                                ${escapeHtml(formatTime(s.session_time))}
-                            </td>
+                actionHtml = '<button class="complete-mentorship-btn" onclick="openStudentCompleteModal(\'' + s.id + '\')">Confirmar mentoría</button>';
 
-                            <td>
-                                <span class="status-badge ${statusClass(s.status)}">
-                                    ${escapeHtml(statusLabel(s.status))}
-                                </span>
-                            </td>
+            } else if (paymentStatus === "en_revision") {
 
-                            <td class="td-action">
-                                <button
-                                    class="pay-btn"
-                                    disabled
-                                    title="Proximamente"
-                                >
-                                    Pagar Mentoria
-                                </button>
-                            </td>
+                actionHtml = '<span style="color:#F59E0B;font-weight:700;font-size:.85rem">⏳ Comprobante enviado</span>';
 
-                        </tr>
+            } else {
 
-                    `).join("")}
+                actionHtml = '<a href="./payments.html" class="pay-btn" style="margin-right:8px">Ir a Pagar</a>' +
+                    '<button class="cancel-mentorship-btn" onclick="cancelStudentMentorship(\'' + s.id + '\')">Cancelar</button>';
 
-                </tbody>
+            }
 
-            </table>
+        }
 
-        </div>
+        const priceHtml = (s.price != null && s.price != "")
+            ? "S/ " + Number(s.price).toFixed(2)
+            : "Por definir";
 
-    `;
+        rows.push("<tr>");
+        rows.push('<td class="td-mentor">' + escapeHtml(s.mentor_name || "Mentor por confirmar") + "</td>");
+        rows.push('<td class="td-course">' + escapeHtml(s.course_name || "Curso por confirmar") + "</td>");
+        rows.push('<td class="td-price">' + priceHtml + "</td>");
+        rows.push('<td class="td-date">' + escapeHtml(formatDate(s.session_date)) + "</td>");
+        rows.push('<td class="td-time">' + escapeHtml(formatTime(s.session_time)) + "</td>");
+        rows.push('<td><span class="status-badge ' + statusClass(s.status) + '">' + escapeHtml(statusLabel(s.status)) + "</span></td>");
+        if (
+            s.meet_link &&
+            (s.status === "confirmed" || (s.status === "reserved" && st?.payment_status === "aprobado"))
+        ) {
+
+            rows.push('<td class="td-action td-action-split"><a href="' + escapeHtml(s.meet_link) + '" target="_blank" class="join-meet-btn">Entrar a reunión</a><span class="action-group">' + actionHtml + '</span></td>');
+
+        } else {
+
+            rows.push('<td class="td-action">' + actionHtml + "</td>");
+
+        }
+        rows.push("</tr>");
+
+    }
+
+    list.innerHTML =
+        '<div class="mentorship-table-wrap">' +
+            '<table class="mentorship-table">' +
+                "<thead><tr>" +
+                    "<th>Mentor</th>" +
+                    "<th>Curso</th>" +
+                    "<th>Precio</th>" +
+                    "<th>Fecha</th>" +
+                    "<th>Hora</th>" +
+                    "<th>Estado</th>" +
+                    "<th></th>" +
+                "</tr></thead>" +
+                "<tbody>" +
+                    rows.join("") +
+                "</tbody>" +
+            "</table>" +
+        "</div>";
 
 }
 
+/* MODAL ALUMNO */
+
+function openStudentCompleteModal(sessionId) {
+
+    currentSessionId = sessionId;
+    document.getElementById("studentEvidenceFile").value = "";
+    document.querySelector('input[name="student_more"][value="no"]').checked = true;
+    document.getElementById("studentComments").value = "";
+    selectedStars = 0;
+    document.querySelectorAll("#studentStarGroup .star").forEach(el => el.classList.remove("active"));
+    document.getElementById("studentCompleteModal").classList.add("active");
+
+}
+
+function closeStudentCompleteModal() {
+
+    document.getElementById("studentCompleteModal").classList.remove("active");
+    currentSessionId = null;
+
+}
+
+function initStarRating() {
+
+    const stars = document.querySelectorAll("#studentStarGroup .star");
+    stars.forEach(star => {
+
+        star.addEventListener("click", function () {
+
+            selectedStars = Number(this.dataset.value);
+            stars.forEach(s => {
+                s.classList.toggle("active", Number(s.dataset.value) <= selectedStars);
+            });
+
+        });
+
+        star.addEventListener("mouseenter", function () {
+
+            const val = Number(this.dataset.value);
+            stars.forEach(s => {
+                s.classList.toggle("active", Number(s.dataset.value) <= val);
+            });
+
+        });
+
+        star.addEventListener("mouseleave", function () {
+
+            stars.forEach(s => {
+                s.classList.toggle("active", Number(s.dataset.value) <= selectedStars);
+            });
+
+        });
+
+    });
+
+}
+
+async function submitStudentComplete() {
+
+    if (!currentSessionId) return;
+
+    const submitBtn = document.getElementById("studentCompleteSubmitBtn");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Guardando...";
+
+    try {
+
+        const evidenceFile = document.getElementById("studentEvidenceFile").files[0];
+        let evidenceUrl = null;
+
+        if (evidenceFile) {
+
+            const formData = new FormData();
+            formData.append("file", evidenceFile);
+
+            const uploadRes = await fetch(`${API_URL}/api/uploads/mentorships`, {
+                method: "POST",
+                body: formData
+            });
+
+            if (uploadRes.ok) {
+
+                const uploadData = await uploadRes.json();
+                evidenceUrl = uploadData.url;
+
+            }
+
+        }
+
+        const studentWantsMore = document.querySelector('input[name="student_more"]:checked')?.value === "si";
+        const studentComments = document.getElementById("studentComments").value.trim();
+
+        const res = await fetch(`${API_URL}/api/mentorship/student-complete`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                session_id: currentSessionId,
+                student_id: user.id,
+                student_wants_more: studentWantsMore,
+                student_rating: selectedStars || null,
+                student_comments: studentComments || null,
+                evidence_url: evidenceUrl
+            })
+        });
+
+        if (!res.ok) {
+
+            const errData = await res.json();
+            throw new Error(errData.error || "Error al guardar");
+
+        }
+
+        showMsg("Mentoría confirmada correctamente.");
+        closeStudentCompleteModal();
+        loadMentorships();
+
+    } catch (err) {
+
+        console.error("[submitStudentComplete]", err);
+        showMsg("Error: " + err.message);
+
+    } finally {
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Confirmar";
+
+    }
+
+}
+
+function cancelStudentMentorship(sessionId) {
+
+    document.getElementById("studentCancelModal").classList.add("active");
+    document.getElementById("studentCancelConfirmBtn").dataset.sessionId = sessionId;
+
+}
+
+function closeCancelModal() {
+
+    document.getElementById("studentCancelModal").classList.remove("active");
+
+}
+
+async function confirmCancelMentorship() {
+
+    const sessionId = document.getElementById("studentCancelConfirmBtn").dataset.sessionId;
+    if (!sessionId) return;
+
+    const btn = document.getElementById("studentCancelConfirmBtn");
+    btn.disabled = true;
+    btn.textContent = "Cancelando...";
+
+    try {
+
+        const res = await fetch(
+            `${API_URL}/api/mentor/cancel/${sessionId}`,
+            { method: "PUT" }
+        );
+
+        if (!res.ok) {
+
+            const err = await res.json();
+            throw new Error(err.error || "No se pudo cancelar la mentoría.");
+
+        }
+
+        closeCancelModal();
+        showMsg("Mentoría cancelada correctamente.");
+        loadMentorships();
+
+    } catch (err) {
+
+        console.error("[confirmCancelMentorship]", err);
+        showMsg("Error: " + err.message);
+        closeCancelModal();
+
+    } finally {
+
+        btn.disabled = false;
+        btn.textContent = "Sí, cancelar";
+
+    }
+
+}
+
+initStarRating();
 loadMentorships();
