@@ -270,10 +270,9 @@ async function loadPayments() {
                     ${getPaymentStatusText(payment.status)}
                 </div>
 
-                ${
-                    payment.status === "pendiente"
-                        ?
-                        `
+                ${payment.status === "pendiente"
+                ?
+                `
                             <button
                                 class="pay-action-btn"
                                 onclick="openPayModal('${payment.id}', '${escapeInlineValue(paymentTitle)}', '${payment.amount}', '${payment.payment_type || "mentor"}')"
@@ -281,19 +280,19 @@ async function loadPayments() {
                                 Ir a pagar
                             </button>
                         `
-                        :
-                        payment.status === "en_revision"
-                            ?
-                            `
+                :
+                payment.status === "en_revision"
+                    ?
+                    `
                                 <div class="payment-waiting-message">
                                     Pago enviado. Esperando aprobación del administrador.
                                 </div>
                             `
-                            :
-                            payment.status === "aprobado" &&
-                                payment.payment_type === "mentor"
-                                ?
-                                `
+                    :
+                    payment.status === "aprobado" &&
+                        payment.payment_type === "mentor"
+                        ?
+                        `
                                     <button
                                         class="continue-course-btn"
                                         onclick="window.location.href='./mentorships.html'"
@@ -301,10 +300,10 @@ async function loadPayments() {
                                         Ver mentoría
                                     </button>
                                 `
-                                :
-                                payment.status === "aprobado"
-                                    ?
-                                    `
+                        :
+                        payment.status === "aprobado"
+                            ?
+                            `
                                         <button
                                             class="continue-course-btn"
                                             onclick="window.location.href='./course-player.html?id=${payment.course_id}'"
@@ -312,9 +311,9 @@ async function loadPayments() {
                                             Continuar curso
                                         </button>
                                     `
-                                    :
-                                    ""
-                }
+                            :
+                            ""
+            }
 
             </div>
 
