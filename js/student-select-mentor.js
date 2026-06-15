@@ -113,7 +113,9 @@ let mentorsData =
 let courseMentorIds =
     [];
 
-let hasEnrolledCourses = false;
+let hasActiveCourse = false;
+
+let hasCompletedCourses = false;
 
 const DEFAULT_AVATAR =
     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%236C4DFF'/%3E%3Ccircle cx='50' cy='34' r='16' fill='white'/%3E%3Cellipse cx='50' cy='72' rx='30' ry='22' fill='white'/%3E%3C/svg%3E";
@@ -133,11 +135,76 @@ let calendlyBookingInProgress =
 let calendlyWidgetScriptPromise =
     null;
 
+async function loadStudentCourseContext() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/api/student-courses/${user.id}`
+            );
+
+        if (!response.ok) {
+
+            return null;
+
+        }
+
+        const studentCourses =
+            await response.json();
+
+        const activeCourse =
+            (studentCourses || [])
+                .filter(course =>
+                    course.status === "Activo"
+                )
+                .sort((a, b) =>
+                    new Date(
+                        b.updated_at ||
+                        b.created_at ||
+                        0
+                    ) -
+                    new Date(
+                        a.updated_at ||
+                        a.created_at ||
+                        0
+                    )
+                )[0];
+
+        hasCompletedCourses =
+            (studentCourses || []).some(course =>
+                course.status === "Completed"
+            );
+
+        return activeCourse || null;
+
+    } catch (err) {
+
+        console.error(
+            "[Mentores] Error leyendo cursos del alumno:",
+            err
+        );
+
+        return null;
+
+    }
+
+}
+
 /* LOAD COURSE MENTOR ASSIGNMENTS */
 
 async function loadCourseMentors() {
 
     try {
+
+        courseMentorIds =
+            [];
+
+        if (!courseId) {
+
+            return;
+
+        }
 
         const response =
             await fetch(
@@ -206,7 +273,7 @@ function showAllMentors() {
 function showCourseMentors() {
     setActiveFilter(event.target);
     const filtered = mentorsData.filter(m =>
-        hasEnrolledCourses && m.available
+        hasActiveCourse && m.available
     );
     renderMentors(filtered);
 }
@@ -215,7 +282,8 @@ function showCourseMentors() {
 
 async function loadMentors() {
 
-    await loadCourseMentors();
+    const activeCourse =
+        await loadStudentCourseContext();
 
     const response =
         await fetch(
@@ -225,17 +293,49 @@ async function loadMentors() {
     const data =
         await response.json();
 
-    hasEnrolledCourses = data.has_enrolled_courses;
+    hasActiveCourse =
+        Boolean(activeCourse);
+
+    courseId =
+        hasActiveCourse
+            ? activeCourse.course_id
+            : null;
+
+    if (hasActiveCourse) {
+
+        localStorage.setItem(
+            "currentCourseId",
+            courseId
+        );
+
+    } else {
+
+        localStorage.removeItem(
+            "currentCourseId"
+        );
+
+    }
+
+    await loadCourseMentors();
 
     mentorsData = (data.mentors || []).map(m => ({
         ...m,
-        available: m.available
+        available:
+            hasActiveCourse &&
+            courseMentorIds.some(id =>
+                String(id) === String(m.id)
+            )
     }));
 
     const heroTitle = document.querySelector(".mentors-hero-content h1");
+    const heroText = document.querySelector(".mentors-hero-content p");
 
-    if (!hasEnrolledCourses && heroTitle) {
-        heroTitle.textContent = "Inscríbete a un curso para poder orientarte mejor.";
+    if (!hasActiveCourse && heroTitle) {
+        heroTitle.textContent = "Inscribete a un curso para desbloquear mentores.";
+    }
+
+    if (!hasActiveCourse && heroText) {
+        heroText.textContent = "Cuando tengas un curso activo, se habilitaran solo los mentores asignados por el administrador a ese curso.";
     }
 
     renderMentors(
@@ -279,9 +379,9 @@ function renderMentors(mentors) {
             mentor.profile || {};
 
         const isAvailable =
-            hasEnrolledCourses && mentor.available;
+            hasActiveCourse && mentor.available;
 
-        const isLocked = !hasEnrolledCourses || (!mentor.available && hasEnrolledCourses);
+        const isLocked = !hasActiveCourse || (!mentor.available && hasActiveCourse);
 
         const cardClass = isAvailable
             ? "mentor-card course-mentor-card"
@@ -294,6 +394,18 @@ function renderMentors(mentors) {
         const lockOverlay = isLocked
             ? `<div class="mentor-lock-overlay">🔒</div>`
             : "";
+
+        const lockedReason =
+            !hasActiveCourse
+                ? hasCompletedCourses
+                    ? "Curso finalizado. Inscribete a otro curso para desbloquear nuevos mentores."
+                    : "Inscribete a un curso para desbloquear los mentores asignados."
+                : "Este mentor no esta asignado a tu curso activo.";
+
+        const lockReasonHtml =
+            isLocked
+                ? `<div class="mentor-lock-reason">${lockedReason}</div>`
+                : "";
 
         mentorsGrid.innerHTML += `
 
@@ -313,6 +425,8 @@ function renderMentors(mentors) {
                 </div>
 
                 <div class="mentor-info">
+
+                    ${lockReasonHtml}
 
                     <div class="mentor-top">
 
@@ -486,11 +600,11 @@ function openMentorProfile(mentorId) {
         "Empresa";
 
     const isCourseMentor =
-        courseId
-            ? courseMentorIds.some(id =>
-                String(id) === String(mentor.id)
-            )
-            : true;
+        hasActiveCourse &&
+        courseId &&
+        courseMentorIds.some(id =>
+            String(id) === String(mentor.id)
+        );
 
     modalPrice.textContent =
         `$${profile.base_price ? parseFloat(profile.base_price).toFixed(2) : "0.00"}`;
@@ -499,6 +613,13 @@ function openMentorProfile(mentorId) {
         isCourseMentor
             ? "Agendar mentoría"
             : "No disponible para este curso";
+
+    if (!hasActiveCourse) {
+
+        modalSelectBtn.textContent =
+            "Inscribete a un curso";
+
+    }
 
     modalSelectBtn.disabled =
         !isCourseMentor;
@@ -665,11 +786,11 @@ async function openCalendly(mentorId) {
     }
 
     const isCourseMentor =
-        courseId
-            ? courseMentorIds.some(id =>
-                String(id) === String(mentor.id)
-            )
-            : true;
+        hasActiveCourse &&
+        courseId &&
+        courseMentorIds.some(id =>
+            String(id) === String(mentor.id)
+        );
 
     if (!isCourseMentor) {
 

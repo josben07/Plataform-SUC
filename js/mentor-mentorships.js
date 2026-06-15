@@ -16,6 +16,8 @@ const mentorSessionsGrid =
     );
 
 let currentSessionId = null;
+let latestMentorSessions = [];
+let latestCompletionStatus = {};
 
 function escapeHtml(value) {
 
@@ -149,6 +151,11 @@ async function loadMentorSessions() {
             statusMap[s.id] = await getCompletionStatus(s.id);
         }));
 
+        latestMentorSessions =
+            mentorSessions;
+        latestCompletionStatus =
+            statusMap;
+
         mentorSessionsGrid.innerHTML =
             mentorSessions.map(session => {
 
@@ -227,6 +234,10 @@ async function loadMentorSessions() {
                         : ""
                     }
 
+                    <button class="detail-btn" onclick="openMentorshipDetails('${session.id}')">
+                        Ver Detalles
+                    </button>
+
                     ${actionHtml}
 
                 </div>
@@ -252,6 +263,47 @@ async function loadMentorSessions() {
         `;
 
     }
+
+}
+
+function openMentorshipDetails(sessionId) {
+
+    const session =
+        latestMentorSessions.find(item => item.id === sessionId);
+
+    if (!session) return;
+
+    const status =
+        latestCompletionStatus[sessionId] || {};
+
+    const paymentLabel =
+        status.payment_status || "Sin pago registrado";
+
+    const mentorDone =
+        status.mentor_confirmed ? "Confirmado" : "Pendiente";
+
+    const studentDone =
+        status.student_confirmed ? "Confirmado" : "Pendiente";
+
+    document.getElementById("detailContent").innerHTML = `
+        <p><strong>Alumno:</strong> ${escapeHtml(session.student_name || "Alumno por confirmar")}</p>
+        <p><strong>Curso:</strong> ${escapeHtml(session.course_name || "Curso por confirmar")}</p>
+        <p><strong>Fecha:</strong> ${escapeHtml(formatDate(session.session_date))}</p>
+        <p><strong>Hora:</strong> ${escapeHtml(formatTime(session.session_time))}</p>
+        <p><strong>Precio:</strong> ${session.price != null ? "S/ " + Number(session.price).toFixed(2) : "Por definir"}</p>
+        <p><strong>Estado de pago:</strong> ${escapeHtml(paymentLabel)}</p>
+        <p><strong>Confirmación mentor:</strong> ${mentorDone}</p>
+        <p><strong>Confirmación alumno:</strong> ${studentDone}</p>
+        <p><strong>Estado final:</strong> ${status.completed ? "Mentoría completada" : "Pendiente de completar"}</p>
+    `;
+
+    document.getElementById("mentorDetailModal").classList.add("active");
+
+}
+
+function closeMentorshipDetails() {
+
+    document.getElementById("mentorDetailModal").classList.remove("active");
 
 }
 

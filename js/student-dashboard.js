@@ -21,6 +21,39 @@ document.getElementById("studentName").textContent =
 document.getElementById("studentAvatar").textContent =
     user.full_name.charAt(0);
 
+const studentRefreshBtn =
+    document.getElementById("studentRefreshBtn");
+
+if (studentRefreshBtn) {
+
+    studentRefreshBtn.addEventListener("click", async () => {
+
+        studentRefreshBtn.disabled =
+            true;
+
+        studentRefreshBtn.textContent =
+            "Recargando...";
+
+        await Promise.all([
+            loadStudentStats(),
+            loadStudentCourses(),
+            loadStudentAlerts()
+        ]);
+
+        studentRefreshBtn.disabled =
+            false;
+
+        studentRefreshBtn.textContent =
+            "Recargar";
+
+        showStudentToast(
+            "Dashboard actualizado"
+        );
+
+    });
+
+}
+
 /* LOGOUT */
 
 document.getElementById("logoutBtn").addEventListener(
@@ -456,6 +489,216 @@ async function loadStudentStats() {
 
 }
 
+async function loadStudentAlerts() {
+
+    const section =
+        document.getElementById("studentAlertsSection");
+
+    const grid =
+        document.getElementById("studentAlertsGrid");
+
+    if (!section || !grid) return;
+
+    try {
+
+        const [
+            projectsRes,
+            paymentsRes,
+            mentorshipsRes,
+            coursesRes,
+            certificatesRes
+        ] =
+            await Promise.all([
+                fetch(`${API_URL}/api/projects`),
+                fetch(`${API_URL}/api/payments`),
+                fetch(`${API_URL}/api/mentor/student/${user.id}`),
+                fetch(`${API_URL}/api/student-courses/${user.id}`),
+                fetch(`${API_URL}/api/certificates/${user.id}`)
+            ]);
+
+        const projects =
+            projectsRes.ok ? await projectsRes.json() : [];
+
+        const payments =
+            paymentsRes.ok ? await paymentsRes.json() : [];
+
+        const mentorships =
+            mentorshipsRes.ok ? await mentorshipsRes.json() : [];
+
+        const studentCourses =
+            coursesRes.ok ? await coursesRes.json() : [];
+
+        const certificates =
+            certificatesRes.ok ? await certificatesRes.json() : [];
+
+        const myFinalProjects =
+            (projects || []).filter(project =>
+                project.user_id === user.id &&
+                project.submission_type === "final_project"
+            );
+
+        const myPayments =
+            (payments || []).filter(payment =>
+                payment.student_id === user.id ||
+                payment.user_name === user.full_name
+            );
+
+        const certificateCourseIds =
+            new Set(
+                (certificates || []).map(cert => cert.course_id)
+            );
+
+        const alerts =
+            [];
+
+        const latestProject =
+            myFinalProjects[0];
+
+        if (latestProject) {
+
+            const hasMentorship =
+                (mentorships || []).some(session =>
+                    session.course_id === latestProject.course_id &&
+                    [
+                        "reserved",
+                        "confirmed",
+                        "completed"
+                    ].includes(session.status)
+                );
+
+            if (!hasMentorship) {
+
+                alerts.push({
+                    title:
+                        "Agenda tu mentoría",
+                    text:
+                        "Recuerda que debes agendar tu mentoría para ser asesorado en tu proyecto.",
+                    href:
+                        `./select-mentor.html?courseId=${latestProject.course_id}`,
+                    action:
+                        "Agendar mentoría"
+                });
+
+            }
+
+            if (latestProject.status === "approved") {
+
+                alerts.push({
+                    title:
+                        "Proyecto aprobado",
+                    text:
+                        "Tu proyecto final fue aprobado. Completa la mentoría y finaliza el curso para habilitar el certificado.",
+                    href:
+                        `./course-player.html?id=${latestProject.course_id}`,
+                    action:
+                        "Ver curso"
+                });
+
+            }
+
+        }
+
+        myPayments.forEach(payment => {
+
+            if (payment.status === "pendiente") {
+
+                alerts.push({
+                    title:
+                        "Pago pendiente",
+                    text:
+                        "Tienes un pago pendiente. Sube tu comprobante para que el administrador lo revise.",
+                    href:
+                        "./payments.html",
+                    action:
+                        "Ir a pagos"
+                });
+
+            }
+
+            if (payment.status === "en_revision") {
+
+                alerts.push({
+                    title:
+                        "Pago en revisión",
+                    text:
+                        "Tu comprobante fue enviado y está esperando aprobación del administrador.",
+                    href:
+                        "./payments.html",
+                    action:
+                        "Ver estado"
+                });
+
+            }
+
+            if (payment.status === "aprobado") {
+
+                alerts.push({
+                    title:
+                        "Pago aprobado",
+                    text:
+                        "Tu pago fue aprobado. Ya puedes continuar con el siguiente paso.",
+                    href:
+                        payment.payment_type === "mentor"
+                            ? "./mentorships.html"
+                            : `./course-player.html?id=${payment.course_id}`,
+                    action:
+                        "Continuar"
+                });
+
+            }
+
+        });
+
+        (studentCourses || [])
+            .filter(course => course.status === "Completed")
+            .forEach(course => {
+
+                if (!certificateCourseIds.has(course.course_id)) {
+
+                    alerts.push({
+                        title:
+                            "Certificado disponible",
+                        text:
+                            "Ya puedes generar y ver tu certificado del curso completado.",
+                        href:
+                            "./certificates.html",
+                        action:
+                            "Ir a Certificados"
+                    });
+
+                }
+
+            });
+
+        grid.innerHTML =
+            alerts
+                .slice(0, 6)
+                .map(alert => `
+                    <div class="student-alert-card">
+                        <strong>${alert.title}</strong>
+                        <p>${alert.text}</p>
+                        <a href="${alert.href}">${alert.action}</a>
+                    </div>
+                `)
+                .join("");
+
+        section.style.display =
+            alerts.length > 0 ? "block" : "none";
+
+    } catch (error) {
+
+        console.error(
+            "[student-alerts] Error cargando avisos:",
+            error
+        );
+
+        section.style.display =
+            "none";
+
+    }
+
+}
+
 /* FILTERS */
 
 function changeStudentFilter(filter, element) {
@@ -704,3 +947,5 @@ async function openCoursePreview(courseId) {
 loadStudentStats();
 
 loadStudentCourses();
+
+loadStudentAlerts();

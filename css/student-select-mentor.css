@@ -597,6 +597,25 @@ body{
     opacity:0.55;
 }
 
+.mentor-card.mentor-locked .mentor-info{
+    position:relative;
+}
+
+.mentor-lock-reason{
+    display:inline-flex;
+    width:fit-content;
+    max-width:100%;
+    margin-bottom:14px;
+    padding:9px 12px;
+    border-radius:999px;
+    background:rgba(245,158,11,0.12);
+    color:#FBBF24;
+    border:1px solid rgba(245,158,11,0.22);
+    font-size:.78rem;
+    font-weight:800;
+    line-height:1.35;
+}
+
 .mentor-card.mentor-locked:hover{
     transform:none;
     border-color:rgba(255,255,255,.08) !important;

@@ -41,6 +41,34 @@ const projectCourse =
         "projectCourse"
     );
 
+function showProjectToast(message) {
+
+    const toast =
+        document.querySelector(".app-toast");
+
+    const toastMessage =
+        document.getElementById("appToastMessage");
+
+    if (!toast || !toastMessage) {
+
+        alert(message);
+        return;
+
+    }
+
+    toastMessage.textContent =
+        message;
+
+    toast.classList.add("show-toast");
+
+    setTimeout(() => {
+
+        toast.classList.remove("show-toast");
+
+    }, 3000);
+
+}
+
 /* MODAL */
 
 openProjectModal.addEventListener(
@@ -161,7 +189,9 @@ async function loadStudentProjects() {
 
     const myProjects =
         projects.filter(
-            project => project.user_id === user.id
+            project =>
+                project.user_id === user.id &&
+                project.submission_type === "final_project"
         );
 
     studentProjectsGrid.innerHTML = "";
@@ -287,14 +317,20 @@ projectForm.addEventListener(
             project_url:
                 projectUrl.value,
 
+            submission_type:
+                "final_project",
+
             status:
                 "pending"
 
         };
 
+        let response;
+
         if (editingProjectId) {
 
-            await fetch(
+            response =
+                await fetch(
                 `${API_URL}/api/projects/${editingProjectId}`,
                 {
                     method: "PUT",
@@ -311,7 +347,8 @@ projectForm.addEventListener(
 
         } else {
 
-            await fetch(
+            response =
+                await fetch(
                 `${API_URL}/api/projects`,
                 {
                     method: "POST",
@@ -328,6 +365,20 @@ projectForm.addEventListener(
 
         }
 
+        const result =
+            await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+
+            showProjectToast(
+                result.error ||
+                "No se pudo guardar el proyecto final."
+            );
+
+            return;
+
+        }
+
         editingProjectId =
             null;
 
@@ -336,6 +387,10 @@ projectForm.addEventListener(
         );
 
         loadStudentProjects();
+
+        showProjectToast(
+            "Proyecto final guardado correctamente. Recuerda que debes agendar tu mentoría para ser asesorado en tu proyecto."
+        );
 
     }
 );

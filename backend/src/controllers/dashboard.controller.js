@@ -38,6 +38,10 @@ const getDashboardStats =
                     .eq(
                         "status",
                         "pending"
+                    )
+                    .eq(
+                        "submission_type",
+                        "final_project"
                     );
 
             const { count: mentorCount } =
@@ -49,9 +53,12 @@ const getDashboardStats =
                         head: true
 
                     })
-                    .eq(
+                    .in(
                         "status",
-                        "available"
+                        [
+                            "reserved",
+                            "confirmed"
+                        ]
                     );
 
             const { count: paymentsCount } =
@@ -63,9 +70,12 @@ const getDashboardStats =
                         head: true
 
                     })
-                    .eq(
+                    .in(
                         "status",
-                        "pendiente"
+                        [
+                            "pendiente",
+                            "en_revision"
+                        ]
                     );
 
             res.json({

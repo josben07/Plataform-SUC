@@ -151,6 +151,34 @@ body{background:#020617;color:white}
 .completion-status .done{color:#22C55E}
 .completion-status .pending{color:#F59E0B}
 
+.detail-btn{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:42px;
+    margin-top:12px;
+    border-radius:14px;
+    background:rgba(255,255,255,.08);
+    color:white;
+    border:1px solid rgba(255,255,255,.1);
+    font-weight:800;
+    cursor:pointer;
+    width:100%;
+}
+
+.detail-btn:hover{
+    background:rgba(255,255,255,.12);
+}
+
+.detail-content p{
+    margin-top:12px;
+    color:rgba(255,255,255,.68);
+}
+
+.detail-content strong{
+    color:white;
+}
+
 /* MODAL OVERLAY */
 .modal-overlay{
     position:fixed;

@@ -60,7 +60,9 @@ async function loadMentorDashboard() {
 
     const pendingProjects =
         projects.filter(
-            project => project.status === "pending"
+            project =>
+                project.status === "pending" &&
+                project.submission_type === "final_project"
         );
 
     const reservedSessions =
@@ -71,9 +73,14 @@ async function loadMentorDashboard() {
         );
 
     const studentIds =
-        new Set(
-            projects.map(project => project.user_id)
-        );
+        new Set([
+            ...projects
+                .map(project => project.user_id)
+                .filter(Boolean),
+            ...sessions
+                .map(session => session.student_id)
+                .filter(Boolean)
+        ]);
 
     document.getElementById("pendingProjects").textContent =
         pendingProjects.length;
@@ -89,7 +96,10 @@ async function loadMentorDashboard() {
 
     recentProjects.innerHTML = "";
 
-    projects.slice(0, 6).forEach(project => {
+    projects
+        .filter(project => project.submission_type === "final_project")
+        .slice(0, 6)
+        .forEach(project => {
 
         recentProjects.innerHTML += `
 
