@@ -169,6 +169,12 @@ body {
     font-style: italic;
 }
 
+.td-price {
+    font-weight: 700;
+    color: #A89BFF !important;
+    white-space: nowrap;
+}
+
 .td-date,
 .td-time {
     white-space: nowrap;
@@ -189,6 +195,11 @@ body {
     color: #FBBF24;
 }
 
+.status-confirmed {
+    background: rgba(108, 77, 255, .14);
+    color: #8B7CFF;
+}
+
 .status-completed {
     background: rgba(34, 197, 94, .14);
     color: #22C55E;
@@ -204,18 +215,39 @@ body {
 .td-action {
     text-align: right;
 }
+.td-action-split {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+.td-action-split .action-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
 .pay-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     min-height: 42px;
     padding: 0 22px;
     border: none;
     border-radius: 12px;
     font-weight: 800;
     font-size: .85rem;
-    cursor: not-allowed;
-    background: rgba(255, 255, 255, .08);
-    color: rgba(255, 255, 255, .35);
+    cursor: pointer;
+    background: linear-gradient(135deg, #6C4DFF, #8B7CFF);
+    color: #fff;
+    text-decoration: none;
     white-space: nowrap;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.pay-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(108, 77, 255, .35);
 }
 
 /* TOAST */
@@ -239,6 +271,239 @@ body {
 .app-toast.show-toast {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* COMPLETE MENTORSHIP BUTTON */
+.complete-mentorship-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 22px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: .85rem;
+    cursor: pointer;
+    background: linear-gradient(135deg, #22C55E, #16A34A);
+    color: #fff;
+    white-space: nowrap;
+    transition: opacity .2s ease, transform .2s;
+}
+.complete-mentorship-btn:hover {
+    opacity: .85;
+    transform: translateY(-1px);
+}
+.complete-mentorship-btn:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* JOIN MEET BUTTON */
+.join-meet-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 22px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: .85rem;
+    cursor: pointer;
+    background: linear-gradient(135deg, #06B6D4, #0891B2);
+    color: #fff;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+.join-meet-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(6, 182, 212, .35);
+}
+
+/* CANCEL MENTORSHIP BUTTON */
+.cancel-mentorship-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 22px;
+    border: 2px solid #EF4444;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: .85rem;
+    cursor: pointer;
+    background: transparent;
+    color: #EF4444;
+    white-space: nowrap;
+    transition: background .2s ease, color .2s ease, transform .2s;
+}
+.cancel-mentorship-btn:hover {
+    background: #EF4444;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* MODAL OVERLAY */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s;
+}
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+.modal-box {
+    background: #0F172A;
+    border-radius: 28px;
+    padding: 40px;
+    width: 90%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, .08);
+}
+.modal-box h2 {
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+}
+.modal-box .modal-sub {
+    color: rgba(255, 255, 255, .62);
+    margin-bottom: 24px;
+}
+.modal-box label {
+    display: block;
+    font-weight: 700;
+    font-size: .85rem;
+    margin-bottom: 6px;
+    margin-top: 18px;
+    color: rgba(255, 255, 255, .8);
+}
+.modal-box input[type=file] {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid rgba(255, 255, 255, .1);
+    color: white;
+    cursor: pointer;
+}
+.modal-box input[type=file]::file-selector-button {
+    background: linear-gradient(135deg, #6C4DFF, #8B7CFF);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-right: 12px;
+}
+.modal-box .radio-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+}
+.modal-box .radio-group label {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 400;
+    cursor: pointer;
+}
+.modal-box .radio-group input[type=radio] {
+    accent-color: #6C4DFF;
+    width: 18px;
+    height: 18px;
+}
+.modal-box textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid rgba(255, 255, 255, .1);
+    color: white;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 80px;
+}
+.modal-box .star-group {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+}
+.modal-box .star-group .star {
+    font-size: 2rem;
+    cursor: pointer;
+    color: rgba(255, 255, 255, .2);
+    transition: color .2s;
+    user-select: none;
+}
+.modal-box .star-group .star.active {
+    color: #FBBF24;
+}
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+}
+.modal-actions button {
+    flex: 1;
+    height: 50px;
+    border-radius: 16px;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    transition: transform .2s, box-shadow .2s;
+}
+.modal-actions .btn-cancel {
+    background: rgba(255, 255, 255, .08);
+    color: rgba(255, 255, 255, .7);
+}
+.modal-actions .btn-cancel:hover {
+    background: rgba(255, 255, 255, .12);
+}
+.modal-actions .btn-submit {
+    background: linear-gradient(135deg, #6C4DFF, #8B7CFF);
+    color: white;
+}
+.modal-actions .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(108, 77, 255, .35);
+}
+.modal-actions .btn-submit:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+.modal-box.modal-sm {
+    max-width: 400px;
+    text-align: center;
+}
+.modal-box.modal-sm p {
+    color: rgba(255, 255, 255, .7);
+    font-size: 1rem;
+    margin: 12px 0 0;
+}
+.modal-actions .btn-danger {
+    background: linear-gradient(135deg, #EF4444, #DC2626);
+    color: white;
+}
+.modal-actions .btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(239, 68, 68, .35);
 }
 
 /* RESPONSIVE */

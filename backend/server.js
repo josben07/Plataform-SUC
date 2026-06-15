@@ -223,6 +223,14 @@ app.use(
     certificatesRoutes
 );
 
+const mentorshipCompletionsRoutes =
+    require("./src/routes/mentorship-completions.routes");
+
+app.use(
+    "/api/mentorship",
+    mentorshipCompletionsRoutes
+);
+
 /* HOME */
 
 app.get("/", (req, res) => {

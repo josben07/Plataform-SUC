@@ -1962,12 +1962,22 @@ function showWelcomeView() {
 
             </div>
 
-            <button
-                class="welcome-start-btn"
-                onclick="startFirstLesson()"
-            >
-                Repasar clases
-            </button>
+            <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;width:100%">
+                <button
+                    class="welcome-start-btn"
+                    onclick="startFirstLesson()"
+                >
+                    Repasar clases
+                </button>
+
+                <button
+                    class="welcome-start-btn"
+                    style="background:#A89CFF"
+                    onclick="window.location.href='./certificates.html'"
+                >
+                    Ver mi certificado
+                </button>
+            </div>
 
         </div>
 
@@ -2187,18 +2197,7 @@ if (finishCourseBtn) {
                 const cert =
                     await certRes.json();
 
-                if (cert && cert.id) {
-
-                    setTimeout(() => {
-
-                        window.open(
-                            `./certificate.html?id=${cert.id}`,
-                            '_blank'
-                        );
-
-                    }, 1500);
-
-                }
+                // certificate generated, user can see it in ./certificates.html
 
             } catch (e) {
 
@@ -2519,19 +2518,6 @@ if (finalProjectForm) {
 
             }
 
-            const selectedMentor =
-                await getSelectedCourseMentor();
-
-            if (!selectedMentor) {
-
-                showCourseMessage(
-                    "Primero debes elegir un mentor para enviar tu proyecto final."
-                );
-
-                return;
-
-            }
-
             const originalText =
                 finalProjectSubmitBtn.textContent;
 
@@ -2600,7 +2586,7 @@ if (finalProjectForm) {
                 resetFinalProjectFileState();
 
                 showCourseMessage(
-                    "Proyecto final enviado correctamente."
+                    "Proyecto final enviado correctamente. Recuerda que debes agendar tu mentoría para ser asesorado en tu proyecto."
                 );
 
                 await loadFinalProjectStatus();

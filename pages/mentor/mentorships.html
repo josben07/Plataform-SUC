@@ -41,8 +41,41 @@
         <span id="appToastMessage">Acción realizada</span>
     </div>
 
-    <script src="../../js/config.js"></script>
+    <!-- MODAL COMPLETAR MENTORÍA (MENTOR) -->
+    <div class="modal-overlay" id="mentorCompleteModal">
+        <div class="modal-box">
+            <h2>Completar mentoría</h2>
+            <p class="modal-sub">Confirma los detalles de la sesión realizada con el alumno.</p>
 
+            <label>Subir evidencia de la sesión (opcional)</label>
+            <input type="file" id="mentorEvidenceFile" accept="image/*,application/pdf">
+
+            <label>¿Se realizó la mentoría?</label>
+            <div class="radio-group">
+                <label><input type="radio" name="mentor_done" value="si" checked> Sí</label>
+                <label><input type="radio" name="mentor_done" value="no"> No</label>
+            </div>
+
+            <label>¿Se aprobó el proyecto final del alumno?</label>
+            <div class="radio-group">
+                <label><input type="radio" name="mentor_approve_project" value="si"> Sí</label>
+                <label><input type="radio" name="mentor_approve_project" value="no" checked> No</label>
+            </div>
+
+            <label>¿Desea más mentorías con este alumno?</label>
+            <div class="radio-group">
+                <label><input type="radio" name="mentor_more" value="si"> Sí</label>
+                <label><input type="radio" name="mentor_more" value="no" checked> No</label>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeMentorCompleteModal()">Cancelar</button>
+                <button class="btn-submit" id="mentorCompleteSubmitBtn" onclick="submitMentorComplete()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/config.js"></script>
     <script src="../../js/mentor-mentorships.js"></script>
 
 </body>

@@ -50,6 +50,52 @@
         <span id="appToastMessage">Acción realizada</span>
     </div>
 
+    <!-- MODAL CONFIRMAR MENTORÍA (ALUMNO) -->
+    <div class="modal-overlay" id="studentCompleteModal">
+        <div class="modal-box">
+            <h2>Confirmar mentoría</h2>
+            <p class="modal-sub">Cuéntanos cómo te fue en tu sesión de mentoría.</p>
+
+            <label>Subir evidencia de la sesión (opcional)</label>
+            <input type="file" id="studentEvidenceFile" accept="image/*,application/pdf">
+
+            <label>¿Desea agendar más mentorías con este mentor?</label>
+            <div class="radio-group">
+                <label><input type="radio" name="student_more" value="si"> Sí</label>
+                <label><input type="radio" name="student_more" value="no" checked> No</label>
+            </div>
+
+            <label>Calificación de la mentoría</label>
+            <div class="star-group" id="studentStarGroup">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star" data-value="5">★</span>
+            </div>
+
+            <label>Comentarios (opcional)</label>
+            <textarea id="studentComments" placeholder="Escribe tus comentarios aquí..."></textarea>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeStudentCompleteModal()">Cancelar</button>
+                <button class="btn-submit" id="studentCompleteSubmitBtn" onclick="submitStudentComplete()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CANCELAR MENTORÍA -->
+    <div class="modal-overlay" id="studentCancelModal">
+        <div class="modal-box modal-sm">
+            <h2>Cancelar mentoría</h2>
+            <p>¿Estás seguro de cancelar esta mentoría?</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeCancelModal()">No, volver</button>
+                <button class="btn-submit btn-danger" id="studentCancelConfirmBtn" onclick="confirmCancelMentorship()">Sí, cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="../../js/config.js"></script>
     <script src="../../js/student-sidebar.js"></script>
     <script src="../../js/student-mentorships.js"></script>

@@ -89,8 +89,62 @@ const getStudentStats =
 
     };
 
+const getStudentMentors =
+    async (req, res) => {
+
+        try {
+
+            const { userId } = req.params;
+
+            const { data: studentCourses } = await supabase
+                .from("student_courses")
+                .select("course_id")
+                .eq("student_id", userId);
+
+            const hasCourses = studentCourses && studentCourses.length > 0;
+            const enrolledCourseIds = hasCourses
+                ? studentCourses.map(sc => sc.course_id)
+                : [];
+
+            const { data: courseMentors } = await supabase
+                .from("course_mentors")
+                .select("*");
+
+            const courseMentorIds = hasCourses && courseMentors
+                ? new Set(
+                    courseMentors
+                        .filter(cm => enrolledCourseIds.includes(cm.course_id))
+                        .map(cm => cm.mentor_id)
+                  )
+                : new Set();
+
+            const { data: mentors } = await supabase
+                .from("users")
+                .select("id, full_name, email, mentor_profiles(*)")
+                .eq("role", "mentor")
+                .eq("status", "active");
+
+            const result = (mentors || []).map(m => ({
+                id: m.id,
+                full_name: m.full_name,
+                email: m.email,
+                profile: m.mentor_profiles?.[0] || null,
+                available: hasCourses && courseMentorIds.has(m.id)
+            }));
+
+            res.json({
+                mentors: result,
+                has_enrolled_courses: hasCourses
+            });
+
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    };
+
 module.exports = {
 
-    getStudentStats
+    getStudentStats,
+    getStudentMentors
 
 };

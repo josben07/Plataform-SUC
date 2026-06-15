@@ -190,7 +190,31 @@ async function uploadPaymentProof(file) {
 
 }
 
+async function syncMentorshipPayments() {
+
+    try {
+
+        await fetch(
+            `${API_URL}/api/mentor/sync-payments/${user.id}`,
+            {
+                method: "POST"
+            }
+        );
+
+    } catch (err) {
+
+        console.error(
+            "[syncMentorshipPayments] Error:",
+            err
+        );
+
+    }
+
+}
+
 async function loadPayments() {
+
+    await syncMentorshipPayments();
 
     const response =
         await fetch(
@@ -237,7 +261,7 @@ async function loadPayments() {
 
                 <p>Método: ${payment.payment_method}</p>
 
-                <p>Monto: S/ ${payment.amount}</p>
+                <p>Monto: ${payment.amount != null ? `S/ ${Number(payment.amount).toFixed(2)}` : "Por definir"}</p>
 
                 <div class="payment-status ${payment.status}">
                     ${getPaymentStatusText(payment.status)}
@@ -323,13 +347,29 @@ function openPayModal(
             : `Curso: ${paymentTitle}`;
 
     payAmount.textContent =
-        `Monto: S/ ${amount}`;
+        amount != null && amount !== "null"
+            ? `Monto: S/ ${Number(amount).toFixed(2)}`
+            : "Monto: Por definir";
 
     resetPaymentProofState();
+    resetPaymentMethodSelection();
 
     payModal.classList.add(
         "active-modal"
     );
+
+}
+
+function selectPaymentMethod(el) {
+
+    document.querySelectorAll(".payment-method").forEach(m => m.classList.remove("selected"));
+    el.classList.add("selected");
+
+}
+
+function resetPaymentMethodSelection() {
+
+    document.querySelectorAll(".payment-method").forEach(m => m.classList.remove("selected"));
 
 }
 

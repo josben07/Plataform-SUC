@@ -6,7 +6,8 @@ const router =
 
 const {
 
-    getStudentStats
+    getStudentStats,
+    getStudentMentors
 
 } = require(
     "../controllers/student.controller"
@@ -15,6 +16,11 @@ const {
 router.get(
     "/stats/:userId",
     getStudentStats
+);
+
+router.get(
+    "/mentors/:userId",
+    getStudentMentors
 );
 
 module.exports =

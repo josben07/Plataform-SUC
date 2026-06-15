@@ -53,7 +53,7 @@ const getProjectsByMentor =
             const { mentorId } =
                 req.params;
 
-            const { data, error } =
+            const { data: projects, error } =
                 await supabase
                     .from("project_submissions")
                     .select("*")
@@ -70,7 +70,39 @@ const getProjectsByMentor =
 
             }
 
-            res.json(data);
+            const userIds = [...new Set(projects.map(p => p.user_id).filter(Boolean))];
+            const courseIds = [...new Set(projects.map(p => p.course_id).filter(Boolean))];
+
+            let userMap = {};
+            let courseMap = {};
+
+            if (userIds.length > 0) {
+
+                const { data: users } = await supabase
+                    .from("users")
+                    .select("id, full_name")
+                    .in("id", userIds);
+                if (users) userMap = Object.fromEntries(users.map(u => [u.id, u.full_name]));
+
+            }
+
+            if (courseIds.length > 0) {
+
+                const { data: courses } = await supabase
+                    .from("courses")
+                    .select("id, title")
+                    .in("id", courseIds);
+                if (courses) courseMap = Object.fromEntries(courses.map(c => [c.id, c.title]));
+
+            }
+
+            const enriched = projects.map(p => ({
+                ...p,
+                user_name: userMap[p.user_id] || "Desconocido",
+                course_title: courseMap[p.course_id] || "Curso desconocido"
+            }));
+
+            res.json(enriched);
 
         } catch (err) {
 
@@ -123,32 +155,6 @@ const createProject =
             const normalizedStatus =
                 status || "pending";
 
-            const { data: assignedMentor } =
-                await supabase
-                    .from("student_mentors")
-                    .select("mentor_id")
-                    .eq("student_id", user_id)
-                    .eq("course_id", course_id)
-                    .eq("status", "active")
-                    .maybeSingle();
-
-            if (
-                normalizedSubmissionType === "final_project" &&
-                !assignedMentor
-            ) {
-
-                return res.status(400).json({
-                    error:
-                        "Primero debes elegir un mentor para enviar tu proyecto final."
-                });
-
-            }
-
-            const assignedMentorId =
-                assignedMentor
-                    ? assignedMentor.mentor_id
-                    : null;
-
             const { data, error } =
                 await supabase
                     .from("project_submissions")
@@ -158,7 +164,7 @@ const createProject =
                         course_id,
                         lesson_id,
                         mentor_id:
-                            assignedMentorId,
+                            null,
 
                         title,
                         description,
@@ -178,23 +184,6 @@ const createProject =
             }
 
             if (normalizedSubmissionType === "final_project") {
-
-                const { error: taskMentorError } =
-                    await supabase
-                        .from("project_submissions")
-                        .update({
-                            mentor_id:
-                                assignedMentorId
-                        })
-                        .eq("user_id", user_id)
-                        .eq("course_id", course_id)
-                        .eq("submission_type", "task");
-
-                if (taskMentorError) {
-
-                    return res.status(400).json(taskMentorError);
-
-                }
 
                 const { error: courseError } =
                     await supabase

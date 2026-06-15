@@ -16,7 +16,9 @@ const UPLOAD_TYPE_TO_STORAGE_BUCKET = {
     submissions:
         "submissions",
     payments:
-        "payments"
+        "payments",
+    mentorships:
+        "mentorships"
 };
 
 const getSafeExtension =

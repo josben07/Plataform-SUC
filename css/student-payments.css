@@ -166,6 +166,55 @@ body{background:#020617;color:white}
     background:rgba(255,255,255,.05);
 }
 
+.payment-method{
+    margin-top:14px;
+    padding:14px 18px;
+    border-radius:14px;
+    background:rgba(255,255,255,.06);
+    border:2px solid rgba(255,255,255,.08);
+    cursor:pointer;
+    transition:border-color .2s, background .2s;
+}
+.payment-method:hover{
+    border-color:rgba(108,77,255,.4);
+    background:rgba(108,77,255,.08);
+}
+.payment-method.selected{
+    border-color:#6C4DFF;
+    background:linear-gradient(135deg, rgba(108,77,255,.2), rgba(139,124,255,.1));
+}
+.payment-method.selected .payment-method-header::after{
+    content:"✓";
+    margin-left:auto;
+    font-weight:800;
+    color:#6C4DFF;
+    font-size:1.1rem;
+}
+.payment-method-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:8px;
+    position:relative;
+}
+.payment-method-name{
+    font-weight:800;
+    font-size:1rem;
+    color:#fff;
+}
+.payment-method-details{
+    padding-left:2.3rem;
+}
+.payment-method-details p{
+    margin:2px 0 !important;
+    font-size:.88rem;
+    color:rgba(255,255,255,.75);
+}
+.detail-label{
+    color:rgba(255,255,255,.5);
+    font-weight:600;
+}
+
 .payment-proof-field{
     width:100%;
     min-height:52px;

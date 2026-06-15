@@ -37,14 +37,13 @@ body{background:#020617;color:white}
 .mentor-header p{color:rgba(255,255,255,.62);margin-top:10px}
 
 .projects-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
-    gap:24px;
+    display:block;
     margin-top:38px;
 }
 
 .project-card{
-    background:#0F172A;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.06);
     border-radius:28px;
     padding:28px;
 }
@@ -172,6 +171,69 @@ body{background:#020617;color:white}
     color:white;
     font-weight:800;
     cursor:pointer;
+}
+
+.student-group{
+    grid-column:1/-1;
+    margin-bottom:32px;
+    background:#0F172A;
+    border-radius:28px;
+    padding:24px;
+}
+
+.student-group-header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:16px;
+    padding-bottom:12px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+    cursor:pointer;
+    user-select:none;
+}
+
+.student-group-header:hover{
+    opacity:.8;
+}
+
+.collapse-arrow{
+    font-size:.8rem;
+    transition:transform .2s ease;
+    color:rgba(255,255,255,.5);
+}
+
+.student-group-header.collapsed .collapse-arrow{
+    transform:rotate(90deg);
+}
+
+.project-count{
+    font-size:.8rem;
+    color:rgba(255,255,255,.4);
+    font-weight:600;
+    margin-left:auto;
+}
+
+.student-projects-grid.collapsed{
+    display:none;
+}
+
+.student-group-header h2{
+    font-size:1.6rem;
+    color:#8B7CFF;
+}
+
+.student-projects-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+    gap:24px;
+}
+
+.course-name{
+    font-size:.8rem;
+    color:#8B7CFF;
+    font-weight:700;
+    letter-spacing:.5px;
+    text-transform:uppercase;
 }
 
 .empty-state{

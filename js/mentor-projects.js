@@ -1,4 +1,10 @@
 
+function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.appendChild(document.createTextNode(text));
+    return div.innerHTML;
+}
+
 const user =
     JSON.parse(localStorage.getItem("user"));
 
@@ -67,51 +73,86 @@ async function loadMentorProjects() {
         return;
     }
 
-    projects.forEach(project => {
+    const grouped = {};
+    projects.forEach(p => {
+        const key = p.user_id || "unknown";
+        if (!grouped[key]) grouped[key] = { user_name: p.user_name || "Desconocido", projects: [] };
+        grouped[key].projects.push(p);
+    });
+
+    Object.values(grouped).forEach((group, i) => {
 
         mentorProjectsGrid.innerHTML += `
-
-            <div class="project-card">
-
-                <span class="submission-type ${getSubmissionTypeClass(project)}">
-                    ${getSubmissionTypeLabel(project)}
-                </span>
-
-                <h3>${project.title}</h3>
-
-                <p>${project.description || ""}</p>
-
-                <div class="project-status ${project.status}">
-                    ${project.status === "approved"
-                ? "Aprobado"
-                : project.status === "rejected"
-                    ? "Rechazado"
-                    : "Pendiente"
-            }
+            <div class="student-group">
+                <div class="student-group-header" onclick="toggleStudentProjects(${i})">
+                    <span class="collapse-arrow">▶</span>
+                    <h2>${escapeHtml(group.user_name)}</h2>
+                    <span class="project-count">${group.projects.length} entrega${group.projects.length !== 1 ? "s" : ""}</span>
                 </div>
+                <div class="student-projects-grid" id="studentProjects${i}">
+                    ${group.projects.map(project => `
 
-                <br>
+                        <div class="project-card">
 
-                <a
-                    href="${project.project_url}"
-                    target="_blank"
-                    class="project-link"
-                >
-                    Ver entrega
-                </a>
+                            <span class="submission-type ${getSubmissionTypeClass(project)}">
+                                ${getSubmissionTypeLabel(project)}
+                            </span>
 
-                <button
-                    class="review-btn"
-                    onclick='openFeedbackModal(${JSON.stringify(project)})'
-                >
-                    Evaluar proyecto
-                </button>
+                            <h3>${escapeHtml(project.title)}</h3>
 
+                            <p class="course-name">${escapeHtml(project.course_title || "")}</p>
+
+                            <p>${escapeHtml(project.description || "")}</p>
+
+                            <div class="project-status ${project.status}">
+                                ${project.status === "approved"
+                            ? "Aprobado"
+                            : project.status === "rejected"
+                                ? "Rechazado"
+                                : "Pendiente"
+                        }
+                            </div>
+
+                            <br>
+
+                            <a
+                                href="${escapeHtml(project.project_url)}"
+                                target="_blank"
+                                class="project-link"
+                            >
+                                Ver entrega
+                            </a>
+
+                            ${project.status !== "approved" ? `
+                                <button
+                                    class="review-btn"
+                                    onclick='openFeedbackModal(${JSON.stringify(project).replace(/'/g, "&#39;")})'
+                                >
+                                    Evaluar proyecto
+                                </button>
+                            ` : ""}
+
+                        </div>
+
+                    `).join("")}
+                </div>
             </div>
-
         `;
 
+        // collapse by default
+        document.getElementById("studentProjects" + i).classList.add("collapsed");
+        document.querySelectorAll(".student-group-header")[i].classList.add("collapsed");
+
     });
+
+}
+
+function toggleStudentProjects(index) {
+
+    const grid = document.getElementById("studentProjects" + index);
+    const header = document.querySelectorAll(".student-group-header")[index];
+    grid.classList.toggle("collapsed");
+    header.classList.toggle("collapsed");
 
 }
 
