@@ -87,6 +87,30 @@ function showMsg(message) {
 
 }
 
+function isPaymentApproved(paymentStatus) {
+
+    return paymentStatus === "aprobado";
+
+}
+
+function getPaymentLockedText(paymentStatus) {
+
+    if (paymentStatus === "en_revision") {
+
+        return "Pago en revision";
+
+    }
+
+    if (paymentStatus === "rechazado") {
+
+        return "Pago rechazado";
+
+    }
+
+    return "Pago pendiente";
+
+}
+
 async function getCompletionStatus(sessionId) {
 
     try {
@@ -162,6 +186,10 @@ async function loadMentorSessions() {
                 const st = statusMap[session.id];
                 const mentorConfirmed = st?.mentor_confirmed === true;
                 const bothDone = st?.completed === true;
+                const paymentApproved =
+                    isPaymentApproved(st?.payment_status);
+                const paymentLockedText =
+                    getPaymentLockedText(st?.payment_status);
 
                 let statusHtml = session.status === "confirmed"
                     ? `<div class="session-status" style="background:rgba(108,77,255,.14);color:#8B7CFF">Confirmada</div>`
@@ -197,11 +225,21 @@ async function loadMentorSessions() {
 
                     const studentId = session.student_id || "";
                     const courseId = session.course_id || "";
-                    actionHtml = `
-                        <button class="complete-btn" onclick="openMentorCompleteModal('${session.id}', '${studentId}', '${courseId}')">
-                            Completar mentoría
-                        </button>
-                    `;
+                    actionHtml =
+                        paymentApproved
+                            ? `
+                                <button class="complete-btn" onclick="openMentorCompleteModal('${session.id}', '${studentId}', '${courseId}')">
+                                    Completar mentoría
+                                </button>
+                            `
+                            : `
+                                <button class="complete-btn locked-btn" disabled title="El admin debe validar el pago del alumno.">
+                                    Completar mentoría
+                                </button>
+                                <div class="payment-lock-message">
+                                    ${paymentLockedText}
+                                </div>
+                            `;
 
                 }
 
@@ -222,7 +260,8 @@ async function loadMentorSessions() {
                     ${statusHtml}
 
                     ${session.meet_link && session.status !== "completed"
-                        ? `
+                        ? paymentApproved
+                            ? `
                             <a
                                 href="${escapeHtml(session.meet_link)}"
                                 target="_blank"
@@ -230,6 +269,11 @@ async function loadMentorSessions() {
                             >
                                 Entrar a reunion
                             </a>
+                        `
+                            : `
+                            <button class="meet-btn locked-btn" disabled title="El admin debe validar el pago del alumno.">
+                                Entrar a reunion
+                            </button>
                         `
                         : ""
                     }
@@ -310,6 +354,16 @@ function closeMentorshipDetails() {
 /* MODAL MENTOR */
 
 async function openMentorCompleteModal(sessionId, studentId, courseId) {
+
+    const status =
+        latestCompletionStatus[sessionId] || {};
+
+    if (!isPaymentApproved(status.payment_status)) {
+
+        showMsg("El admin debe validar el pago antes de completar la mentoría.");
+        return;
+
+    }
 
     currentSessionId = sessionId;
     document.getElementById("mentorEvidenceFile").value = "";

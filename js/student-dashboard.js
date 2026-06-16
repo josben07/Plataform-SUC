@@ -505,15 +505,13 @@ async function loadStudentAlerts() {
             projectsRes,
             paymentsRes,
             mentorshipsRes,
-            coursesRes,
-            certificatesRes
+            coursesRes
         ] =
             await Promise.all([
                 fetch(`${API_URL}/api/projects`),
                 fetch(`${API_URL}/api/payments`),
                 fetch(`${API_URL}/api/mentor/student/${user.id}`),
-                fetch(`${API_URL}/api/student-courses/${user.id}`),
-                fetch(`${API_URL}/api/certificates/${user.id}`)
+                fetch(`${API_URL}/api/student-courses/${user.id}`)
             ]);
 
         const projects =
@@ -528,9 +526,6 @@ async function loadStudentAlerts() {
         const studentCourses =
             coursesRes.ok ? await coursesRes.json() : [];
 
-        const certificates =
-            certificatesRes.ok ? await certificatesRes.json() : [];
-
         const myFinalProjects =
             (projects || []).filter(project =>
                 project.user_id === user.id &&
@@ -543,16 +538,30 @@ async function loadStudentAlerts() {
                 payment.user_name === user.full_name
             );
 
-        const certificateCourseIds =
-            new Set(
-                (certificates || []).map(cert => cert.course_id)
+        const activeCourse =
+            (studentCourses || []).find(course =>
+                course.status === "Activo"
             );
+
+        if (!activeCourse) {
+
+            grid.innerHTML =
+                "";
+
+            section.style.display =
+                "none";
+
+            return;
+
+        }
 
         const alerts =
             [];
 
         const latestProject =
-            myFinalProjects[0];
+            myFinalProjects.find(project =>
+                project.course_id === activeCourse.course_id
+            );
 
         if (latestProject) {
 
@@ -598,7 +607,11 @@ async function loadStudentAlerts() {
 
         }
 
-        myPayments.forEach(payment => {
+        myPayments
+            .filter(payment =>
+                payment.course_id === activeCourse.course_id
+            )
+            .forEach(payment => {
 
             if (payment.status === "pendiente") {
 
@@ -649,26 +662,20 @@ async function loadStudentAlerts() {
 
         });
 
-        (studentCourses || [])
-            .filter(course => course.status === "Completed")
-            .forEach(course => {
+        if (alerts.length === 0) {
 
-                if (!certificateCourseIds.has(course.course_id)) {
-
-                    alerts.push({
-                        title:
-                            "Certificado disponible",
-                        text:
-                            "Ya puedes generar y ver tu certificado del curso completado.",
-                        href:
-                            "./certificates.html",
-                        action:
-                            "Ir a Certificados"
-                    });
-
-                }
-
+            alerts.push({
+                title:
+                    "Continua tu curso",
+                text:
+                    "Sigue avanzando con tus clases. Te mostraremos aqui el siguiente paso cuando sea necesario.",
+                href:
+                    `./course-player.html?id=${activeCourse.course_id}`,
+                action:
+                    "Ir al curso"
             });
+
+        }
 
         grid.innerHTML =
             alerts

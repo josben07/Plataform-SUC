@@ -22,6 +22,7 @@
 
     <link rel="stylesheet" href="../../css/admin-dashboard.css">
 
+    <link rel="stylesheet" href="../../css/admin-sidebar.css">
 </head>
 
 <body class="admin-body">
@@ -29,79 +30,23 @@
     <!-- ========================= -->
     <!-- SIDEBAR -->
     <!-- ========================= -->
-
     <aside class="sidebar">
-
-        <!-- LOGO -->
-
-        <div class="sidebar-logo">
-
-            SUClassroom
-
+        <div>
+            <div class="sidebar-logo">SUClassroom</div>
+            <nav class="sidebar-menu">
+                <a href="dashboard.html" class="active-link">Dashboard</a>
+                <a href="users.html">Usuarios</a>
+                <a href="courses.html">Cursos</a>
+                <a href="projects.html">Proyectos</a>
+                <a href="mentor.html">Mentor&iacute;as</a>
+                <a href="mentor-prices.html">Precios</a>
+                <a href="payments.html">Pagos</a>
+                <a href="settings.html">Configuraci&oacute;n</a>
+                <a href="assign-mentor-course.html">Asignar Mentores</a>
+            </nav>
         </div>
 
-        <!-- MENU -->
-
-        <nav class="sidebar-menu">
-
-            <a href="#" class="active-link">
-
-                📊 Dashboard
-
-            </a>
-
-            <a href="./users.html">
-
-                👤 Usuarios
-
-            </a>
-
-            <a href="./courses.html">
-
-                📚 Cursos
-
-            </a>
-
-            <a href="./projects.html">
-
-                🚀 Proyectos
-
-            </a>
-
-            <a href="./mentor.html">
-
-                🎓 Mentorías
-
-            </a>
-
-            <a href="./mentor-prices.html">
-
-                💰 Precios
-
-            </a>
-
-            <a href="./payments.html">
-
-                💳 Pagos
-
-            </a>
-
-            <a href="./assign-mentor-course.html">
-
-                📋 Asignar Mentores
-
-            </a>
-
-        </nav>
-
-        <!-- LOGOUT -->
-
-        <button class="logout-btn" id="logoutBtn">
-
-            Cerrar sesión
-
-        </button>
-
+        <button class="logout-btn" id="logoutBtn">Cerrar sesi&oacute;n</button>
     </aside>
 
     <!-- ========================= -->
@@ -232,6 +177,7 @@
     <!-- JS -->
 
     <script src="../../js/config.js"></script>
+    <script src="../../js/admin-sidebar.js"></script>
     <script src="../../js/dashboard-admin.js"></script>
 
 </body>
