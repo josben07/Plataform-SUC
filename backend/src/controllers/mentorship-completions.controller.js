@@ -80,6 +80,18 @@ const mentorComplete = async (req, res) => {
             return res.status(400).json({ error: "Falta session_id." });
         }
 
+        const { data: payment } = await supabase
+            .from("payments")
+            .select("status")
+            .eq("session_id", session_id)
+            .maybeSingle();
+
+        if (!payment || payment.status !== "aprobado") {
+            return res.status(403).json({
+                error: "El pago de la mentoría debe estar aprobado por el administrador."
+            });
+        }
+
         const now = new Date().toISOString();
 
         const { data: existing } = await supabase

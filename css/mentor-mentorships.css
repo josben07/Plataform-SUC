@@ -86,6 +86,27 @@ body{background:#020617;color:white}
     font-weight:800;
 }
 
+.locked-btn{
+    background:rgba(255,255,255,.08);
+    color:rgba(255,255,255,.45);
+    border:1px solid rgba(255,255,255,.1);
+    cursor:not-allowed;
+    box-shadow:none;
+}
+
+.locked-btn:hover{
+    transform:none;
+    box-shadow:none;
+}
+
+.payment-lock-message{
+    margin-top:8px;
+    color:#F59E0B;
+    font-size:.8rem;
+    font-weight:800;
+    text-align:center;
+}
+
 .empty-state{
     grid-column:1/-1;
     background:#0F172A;
@@ -141,6 +162,10 @@ body{background:#020617;color:white}
     cursor:not-allowed;
     transform:none;
     box-shadow:none;
+}
+
+.complete-btn.locked-btn:disabled{
+    opacity:1;
 }
 .completion-status{
     margin-top:12px;
