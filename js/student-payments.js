@@ -323,6 +323,92 @@ async function loadPayments() {
 
 }
 
+async function loadPaymentMethods() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/api/payment-methods`
+            );
+
+        const methods =
+            await response.json();
+
+        const activeMethods =
+            methods.filter(
+                m => m.is_active !== false
+            );
+
+        const list =
+            document.getElementById("paymentMethodsList");
+
+        if (!list) return [];
+
+        if (!activeMethods || activeMethods.length === 0) {
+
+            list.innerHTML =
+                `<p style="color:rgba(255,255,255,0.4);text-align:center;padding:10px 0;">No hay métodos de pago configurados.</p>`;
+
+            return [];
+
+        }
+
+        list.innerHTML =
+            activeMethods
+                .map(method => {
+
+                    const fields =
+                        method.fields || {};
+
+                    return `
+                        <div class="payment-method" data-type="${method.type || method.name || ""}" onclick="selectPaymentMethod(this)">
+                            <div class="payment-method-header">
+                                <span class="payment-method-name">${method.name || "Método"}</span>
+                            </div>
+                            <div class="payment-method-details">
+                                ${fields.number
+                                    ? `<p><span class="detail-label">Celular:</span> ${fields.number}</p>`
+                                    : ""
+                                }
+                                ${fields.account
+                                    ? `<p><span class="detail-label">Cuenta:</span> ${fields.account}</p>`
+                                    : ""
+                                }
+                                ${fields.email
+                                    ? `<p><span class="detail-label">Correo:</span> ${fields.email}</p>`
+                                    : ""
+                                }
+                                ${fields.cci
+                                    ? `<p><span class="detail-label">CCI:</span> ${fields.cci}</p>`
+                                    : ""
+                                }
+                                ${fields.holder
+                                    ? `<p><span class="detail-label">Titular:</span> ${fields.holder}</p>`
+                                    : ""
+                                }
+                            </div>
+                        </div>
+                    `;
+
+                })
+                .join("");
+
+        return activeMethods;
+
+    } catch (err) {
+
+        console.error(
+            "[loadPaymentMethods] Error:",
+            err
+        );
+
+        return [];
+
+    }
+
+}
+
 function openPayModal(
 
     paymentId,
@@ -360,6 +446,8 @@ function openPayModal(
         "active-modal"
     );
 
+    loadPaymentMethods();
+
 }
 
 function selectPaymentMethod(el) {
@@ -367,7 +455,7 @@ function selectPaymentMethod(el) {
     document.querySelectorAll(".payment-method").forEach(m => m.classList.remove("selected"));
     el.classList.add("selected");
     currentPaymentMethod =
-        el.dataset.method || null;
+        el.dataset.type || null;
 
 }
 

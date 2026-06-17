@@ -50,6 +50,151 @@ const getCourseMentorForStudent =
 
     };
 
+const enrichProjects =
+    async (projects) => {
+
+        const userIds =
+            [
+                ...new Set(
+                    projects
+                        .flatMap(project => [
+                            project.user_id,
+                            project.mentor_id
+                        ])
+                        .filter(Boolean)
+                )
+            ];
+
+        const courseIds =
+            [
+                ...new Set(
+                    projects
+                        .map(project => project.course_id)
+                        .filter(Boolean)
+                )
+            ];
+
+        const lessonIds =
+            [
+                ...new Set(
+                    projects
+                        .map(project => project.lesson_id)
+                        .filter(Boolean)
+                )
+            ];
+
+        let userMap =
+            {};
+
+        let courseMap =
+            {};
+
+        let lessonMap =
+            {};
+
+        if (userIds.length > 0) {
+
+            const { data: users } =
+                await supabase
+                    .from("users")
+                    .select("id, full_name")
+                    .in("id", userIds);
+
+            if (users) {
+
+                userMap =
+                    Object.fromEntries(
+                        users.map(user => [
+                            user.id,
+                            user.full_name
+                        ])
+                    );
+
+            }
+
+        }
+
+        if (courseIds.length > 0) {
+
+            const { data: courses } =
+                await supabase
+                    .from("courses")
+                    .select("id, title")
+                    .in("id", courseIds);
+
+            if (courses) {
+
+                courseMap =
+                    Object.fromEntries(
+                        courses.map(course => [
+                            course.id,
+                            course.title
+                        ])
+                    );
+
+            }
+
+        }
+
+        if (lessonIds.length > 0) {
+
+            const { data: lessons } =
+                await supabase
+                    .from("lessons")
+                    .select("id, title, task_title")
+                    .in("id", lessonIds);
+
+            if (lessons) {
+
+                lessonMap =
+                    Object.fromEntries(
+                        lessons.map(lesson => [
+                            lesson.id,
+                            lesson
+                        ])
+                    );
+
+            }
+
+        }
+
+        return projects.map(project => {
+
+            const lesson =
+                lessonMap[project.lesson_id] || {};
+
+            return {
+
+                ...project,
+
+                user_name:
+                    userMap[project.user_id] ||
+                    "Alumno desconocido",
+
+                course_title:
+                    courseMap[project.course_id] ||
+                    "Curso desconocido",
+
+                lesson_title:
+                    lesson.title ||
+                    "",
+
+                task_title:
+                    lesson.task_title ||
+                    "",
+
+                mentor_name:
+                    project.mentor_id
+                        ? userMap[project.mentor_id] ||
+                          "Mentor desconocido"
+                        : "Sin mentor asignado"
+
+            };
+
+        });
+
+    };
+
 /* ========================= */
 /* GET PROJECTS */
 /* ========================= */
@@ -75,7 +220,12 @@ const getProjects =
 
             }
 
-            res.json(data);
+            const enriched =
+                await enrichProjects(
+                    data || []
+                );
+
+            res.json(enriched);
 
         } catch (err) {
 
@@ -119,37 +269,10 @@ const getProjectsByMentor =
 
             }
 
-            const userIds = [...new Set(projects.map(p => p.user_id).filter(Boolean))];
-            const courseIds = [...new Set(projects.map(p => p.course_id).filter(Boolean))];
-
-            let userMap = {};
-            let courseMap = {};
-
-            if (userIds.length > 0) {
-
-                const { data: users } = await supabase
-                    .from("users")
-                    .select("id, full_name")
-                    .in("id", userIds);
-                if (users) userMap = Object.fromEntries(users.map(u => [u.id, u.full_name]));
-
-            }
-
-            if (courseIds.length > 0) {
-
-                const { data: courses } = await supabase
-                    .from("courses")
-                    .select("id, title")
-                    .in("id", courseIds);
-                if (courses) courseMap = Object.fromEntries(courses.map(c => [c.id, c.title]));
-
-            }
-
-            const enriched = projects.map(p => ({
-                ...p,
-                user_name: userMap[p.user_id] || "Desconocido",
-                course_title: courseMap[p.course_id] || "Curso desconocido"
-            }));
+            const enriched =
+                await enrichProjects(
+                    projects || []
+                );
 
             res.json(enriched);
 

@@ -203,6 +203,21 @@ async function loadStudentCourses() {
 
     }
 
+    if (studentFilter === "completedCourses") {
+
+        filteredCourses =
+            courses.filter(course => {
+
+                const relation =
+                    studentCourseMap.get(course.id);
+
+                return relation &&
+                    relation.status === "Completed";
+
+            });
+
+    }
+
     const availableCount =
         activeCourse
             ? 0

@@ -231,6 +231,14 @@ app.use(
     mentorshipCompletionsRoutes
 );
 
+const paymentMethodsRoutes =
+    require("./src/routes/payment-methods.routes");
+
+app.use(
+    "/api/payment-methods",
+    paymentMethodsRoutes
+);
+
 /* HOME */
 
 app.get("/", (req, res) => {
