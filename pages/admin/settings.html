@@ -30,7 +30,7 @@
                 <a href="dashboard.html">Dashboard</a>
                 <a href="users.html">Usuarios</a>
                 <a href="courses.html">Cursos</a>
-                <a href="projects.html">Proyectos</a>
+                <a href="projects.html">Entregas</a>
                 <a href="mentor.html">Mentor&iacute;as</a>
                 <a href="mentor-prices.html">Precios</a>
                 <a href="payments.html">Pagos</a>
@@ -166,9 +166,161 @@
 
                 </div>
 
+                <!-- PAYMENT METHODS -->
+
+                <div class="settings-card payment-methods-card">
+
+                    <h3>
+
+                        Métodos de pago
+
+                    </h3>
+
+                    <p style="color:rgba(255,255,255,0.6);margin-bottom:20px;font-size:0.9rem;">
+                        Configura los métodos de pago que verán los alumnos al pagar.
+                    </p>
+
+                    <div id="paymentMethodsContainer"></div>
+
+                    <button id="addPaymentMethodBtn" style="width:100%;background:rgba(255,255,255,0.08);color:white;">
+                        + Agregar método
+                    </button>
+
+                </div>
+
             </div>
 
         </main>
+
+    </div>
+
+    <!-- CREATE PAYMENT METHOD MODAL -->
+
+    <div class="pm-modal" id="createPmModal">
+
+        <div class="pm-modal-content">
+
+            <div class="pm-modal-header">
+
+                <h3>Agregar método de pago</h3>
+
+                <button class="pm-modal-close" onclick="closeCreateModal()">✕</button>
+
+            </div>
+
+            <div class="pm-modal-body">
+
+                <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:12px;">Selecciona el tipo:</p>
+
+                <div class="pm-type-selector" id="pmTypeSelector">
+
+                    <button class="pm-type-btn" data-type="yape" onclick="selectPmType('yape')">
+                        Yape / Plin
+                    </button>
+
+                    <button class="pm-type-btn" data-type="banco" onclick="selectPmType('banco')">
+                        Banco
+                    </button>
+
+                    <button class="pm-type-btn" data-type="paypal" onclick="selectPmType('paypal')">
+                        PayPal
+                    </button>
+
+                    <button class="pm-type-btn" data-type="otro" onclick="selectPmType('otro')">
+                        Otro
+                    </button>
+
+                </div>
+
+                <div id="pmDynamicFields" style="display:none;">
+
+                    <div class="pm-dynamic-fields-inner" id="pmDynamicFieldsInner"></div>
+
+                </div>
+
+            </div>
+
+            <div class="pm-modal-footer">
+
+                <button class="pm-btn-cancel" onclick="closeCreateModal()">Cancelar</button>
+
+                <button class="pm-btn-confirm" onclick="confirmCreateMethod()" id="pmCreateBtn" disabled>Crear método</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- EDIT PAYMENT METHOD MODAL -->
+
+    <div class="pm-modal" id="editPmModal">
+
+        <div class="pm-modal-content">
+
+            <div class="pm-modal-header">
+
+                <h3>Editar método de pago</h3>
+
+                <button class="pm-modal-close" onclick="closeEditModal()">✕</button>
+
+            </div>
+
+            <div class="pm-modal-body">
+
+                <div id="editPmTypeBadge" class="pm-type-badge" style="margin-bottom:16px;"></div>
+
+                <input type="text" id="pmEditName" placeholder="Nombre del método">
+
+                <div id="pmEditFields"></div>
+
+            </div>
+
+            <div class="pm-modal-footer">
+
+                <button class="pm-btn-cancel" onclick="closeEditModal()">Cancelar</button>
+
+                <button class="pm-btn-confirm" onclick="confirmEditMethod()" id="pmEditBtn">Guardar cambios</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- DELETE CONFIRMATION MODAL -->
+
+    <div class="pm-modal" id="deletePmModal">
+
+        <div class="pm-modal-content" style="max-width:400px;">
+
+            <div class="pm-modal-header">
+
+                <h3>Eliminar método</h3>
+
+                <button class="pm-modal-close" onclick="closeDeleteModal()">✕</button>
+
+            </div>
+
+            <div class="pm-modal-body">
+
+                <p style="color:rgba(255,255,255,0.7);text-align:center;padding:10px 0;" id="deletePmMessage">
+
+                    ¿Estás seguro de eliminar este método de pago?
+
+                </p>
+
+            </div>
+
+            <div class="pm-modal-footer">
+
+                <button class="pm-btn-cancel" onclick="closeDeleteModal()">Cancelar</button>
+
+                <button class="pm-btn-danger" onclick="confirmDeleteMethod()">Eliminar</button>
+
+            </div>
+
+        </div>
 
     </div>
 

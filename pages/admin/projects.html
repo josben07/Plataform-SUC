@@ -9,7 +9,7 @@
 
     <title>
 
-        Admin Projects
+        Entregas
 
     </title>
 
@@ -30,7 +30,7 @@
                 <a href="dashboard.html">Dashboard</a>
                 <a href="users.html">Usuarios</a>
                 <a href="courses.html">Cursos</a>
-                <a href="projects.html" class="active-link">Proyectos</a>
+                <a href="projects.html" class="active-link">Entregas</a>
                 <a href="mentor.html">Mentor&iacute;as</a>
                 <a href="mentor-prices.html">Precios</a>
                 <a href="payments.html">Pagos</a>
@@ -50,44 +50,72 @@
 
                 <h2>
 
-                    Gestión de Proyectos
+                    Entregas de alumnos
 
                 </h2>
+
+                <p>
+
+                    Supervisa las tareas y proyectos finales enviados por los alumnos.
+
+                </p>
 
             </div>
 
             <div class="projects-filters">
-            
-                <input type="text" id="searchProject" placeholder="Buscar proyecto...">
-            
-                <div class="status-filters">
-            
-                    <button class="filter-btn active-filter" data-status="all">
-            
+
+                <input type="text" id="searchProject" placeholder="Buscar por alumno, curso, mentor o entrega...">
+
+                <div class="type-filters">
+
+                    <button class="filter-btn type-filter active-filter" data-type="all">
+
                         Todos
-            
+
                     </button>
-            
-                    <button class="filter-btn" data-status="pending">
-            
-                        Pendientes
-            
+
+                    <button class="filter-btn type-filter" data-type="task">
+
+                        Tareas
+
                     </button>
-            
-                    <button class="filter-btn" data-status="approved">
-            
-                        Aprobados
-            
+
+                    <button class="filter-btn type-filter" data-type="final_project">
+
+                        Proyectos finales
+
                     </button>
-            
-                    <button class="filter-btn" data-status="rejected">
-            
-                        Rechazados
-            
-                    </button>
-            
+
                 </div>
-            
+
+                <div class="status-filters">
+
+                    <button class="filter-btn status-filter active-filter" data-status="all">
+
+                        Todo estado
+
+                    </button>
+
+                    <button class="filter-btn status-filter" data-status="pending">
+
+                        Pendientes
+
+                    </button>
+
+                    <button class="filter-btn status-filter" data-status="approved">
+
+                        Aprobados
+
+                    </button>
+
+                    <button class="filter-btn status-filter" data-status="rejected">
+
+                        Rechazados
+
+                    </button>
+
+                </div>
+
             </div>
 
             <!-- PROJECTS -->
@@ -101,32 +129,24 @@
     </div>
 
 
-    <div class="feedback-modal">
-    
-        <div class="feedback-modal-content">
-    
-            <span class="close-feedback-modal">✕</span>
-    
-            <h2>Evaluar proyecto</h2>
-    
-            <form id="feedbackForm">
-    
-                <select id="projectStatus">
-                    <option value="approved">Aprobado</option>
-                    <option value="pending">Pendiente</option>
-                    <option value="rejected">Rechazado</option>
-                </select>
-    
-                <textarea id="projectFeedback" placeholder="Escribe el feedback para el alumno..." required></textarea>
-    
-                <button type="submit">
-                    Guardar evaluación
-                </button>
-    
-            </form>
-    
+    <div class="delivery-modal">
+
+        <div class="delivery-modal-content">
+
+            <span class="close-delivery-modal">✕</span>
+
+            <h2 id="deliveryModalTitle">Detalle de entrega</h2>
+
+            <div class="delivery-detail-grid" id="deliveryDetailGrid"></div>
+
+            <div class="delivery-feedback-box" id="deliveryFeedbackBox"></div>
+
+            <a href="#" target="_blank" class="delivery-link-btn" id="deliveryLinkBtn">
+                Ver entrega
+            </a>
+
         </div>
-    
+
     </div>
 
     <div class="admin-toast">

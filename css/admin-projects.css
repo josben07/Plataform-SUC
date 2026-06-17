@@ -85,19 +85,23 @@ body{
     padding: 42px;
 }
 
+.projects-topbar p{
+
+    margin-top: 10px;
+
+    color:
+    rgba(255,255,255,0.58);
+}
+
 /* GRID */
 
 .projects-grid{
 
-    display: grid;
+    display: flex;
 
-    grid-template-columns:
-    repeat(
-        auto-fit,
-        minmax(320px,1fr)
-    );
+    flex-direction: column;
 
-    gap: 24px;
+    gap: 22px;
 
     margin-top: 32px;
 }
@@ -107,11 +111,118 @@ body{
 .project-card{
 
     background:
-    #0F172A;
+    rgba(15,23,42,0.92);
 
-    border-radius: 24px;
+    border: 1px solid
+    rgba(255,255,255,0.08);
 
-    padding: 28px;
+    border-radius: 20px;
+
+    padding: 22px;
+}
+
+.project-card-top{
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 16px;
+}
+
+.project-card h3{
+
+    font-size: 19px;
+
+    line-height: 1.35;
+}
+
+.project-description{
+
+    margin-top: 10px;
+
+    color:
+    rgba(255,255,255,0.62);
+
+    line-height: 1.5;
+}
+
+.submission-type{
+
+    display: inline-flex;
+
+    align-items: center;
+
+    min-height: 30px;
+
+    padding:
+    6px 12px;
+
+    border-radius: 999px;
+
+    font-size: 12px;
+
+    font-weight: 800;
+}
+
+.task-type{
+
+    background:
+    rgba(59,130,246,0.14);
+
+    color:
+    #60A5FA;
+}
+
+.final-project-type{
+
+    background:
+    rgba(168,85,247,0.16);
+
+    color:
+    #C084FC;
+}
+
+.project-meta{
+
+    display: grid;
+
+    grid-template-columns:
+    repeat(2,minmax(0,1fr));
+
+    gap: 12px;
+
+    margin-top: 18px;
+}
+
+.project-meta p{
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    min-width: 0;
+
+    color:
+    rgba(255,255,255,0.82);
+
+    font-size: 14px;
+}
+
+.project-meta span{
+
+    color:
+    rgba(255,255,255,0.44);
+
+    font-size: 12px;
+
+    font-weight: 700;
 }
 
 /* STATUS */
@@ -127,7 +238,9 @@ body{
 
     font-size: 13px;
 
-    margin-top: 14px;
+    margin-top: 0;
+
+    font-weight: 800;
 }
 
 .pending{
@@ -168,15 +281,24 @@ body{
     margin-top: 24px;
 }
 
-.project-actions button{
+.project-actions button,
+.project-actions a{
 
     flex: 1;
 
     height: 46px;
 
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
     border: none;
 
     border-radius: 14px;
+
+    text-decoration: none;
 
     cursor: pointer;
 
@@ -222,11 +344,21 @@ body{
     flex-wrap: wrap;
 }
 
+.type-filters,
+.status-filters{
+
+    display: flex;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+}
+
 /* SEARCH */
 
 #searchProject{
 
-    width: 320px;
+    width: min(100%, 420px);
 
     height: 52px;
 
@@ -247,15 +379,6 @@ body{
 }
 
 /* FILTER BUTTONS */
-
-.status-filters{
-
-    display: flex;
-
-    gap: 12px;
-
-    flex-wrap: wrap;
-}
 
 .filter-btn{
 
@@ -335,9 +458,225 @@ body{
     #8B7CFF;
 }
 
-/* FEEDBACK MODAL */
+.project-link-btn{
 
-.feedback-modal{
+    background:
+    rgba(255,255,255,0.08);
+
+    color:
+    white;
+}
+
+.deliveries-summary{
+
+    display: grid;
+
+    grid-template-columns:
+    repeat(4,minmax(0,1fr));
+
+    gap: 14px;
+}
+
+.deliveries-summary div{
+
+    min-height: 88px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 18px;
+
+    border-radius: 18px;
+
+    background:
+    #0F172A;
+
+    border: 1px solid
+    rgba(255,255,255,0.08);
+}
+
+.deliveries-summary span,
+.student-delivery-header span{
+
+    color:
+    rgba(255,255,255,0.48);
+
+    font-size: 12px;
+
+    font-weight: 800;
+}
+
+.deliveries-summary strong{
+
+    font-size: 28px;
+}
+
+.student-delivery-group{
+
+    background:
+    rgba(255,255,255,0.03);
+
+    border: 1px solid
+    rgba(255,255,255,0.08);
+
+    border-radius: 24px;
+
+    padding: 18px;
+}
+
+.student-delivery-group.open-group{
+
+    background:
+    rgba(15,23,42,0.72);
+
+    border-color:
+    rgba(139,124,255,0.22);
+}
+
+.student-delivery-header{
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 18px;
+
+    padding: 4px;
+}
+
+.student-delivery-main{
+
+    min-width: 190px;
+
+    flex: 1;
+}
+
+.student-delivery-header h3{
+
+    margin-top: 6px;
+
+    font-size: 22px;
+}
+
+.student-delivery-counts{
+
+    display: flex;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+
+    justify-content: flex-end;
+}
+
+.student-delivery-counts span{
+
+    display: inline-flex;
+
+    min-height: 34px;
+
+    align-items: center;
+
+    padding:
+    0 12px;
+
+    border-radius: 999px;
+
+    background:
+    rgba(255,255,255,0.06);
+}
+
+.toggle-deliveries-btn{
+
+    min-width: 128px;
+
+    height: 42px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    background:
+    rgba(108,77,255,0.16);
+
+    color:
+    #A89BFF;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.toggle-deliveries-btn:hover{
+
+    background:
+    rgba(108,77,255,0.26);
+
+    color:
+    white;
+}
+
+.student-delivery-breakdown{
+
+    display: flex;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+
+    margin-top: 14px;
+}
+
+.student-delivery-breakdown span{
+
+    display: inline-flex;
+
+    min-height: 30px;
+
+    align-items: center;
+
+    padding:
+    0 11px;
+
+    border-radius: 999px;
+
+    background:
+    rgba(255,255,255,0.04);
+
+    color:
+    rgba(255,255,255,0.62);
+
+    font-size: 12px;
+
+    font-weight: 800;
+}
+
+.student-delivery-list{
+
+    display: grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(300px,1fr));
+
+    gap: 16px;
+
+    margin-top: 18px;
+}
+
+/* DELIVERY MODAL */
+
+.delivery-modal{
 
     position: fixed;
     inset: 0;
@@ -348,21 +687,27 @@ body{
     z-index: 999;
 }
 
-.feedback-modal.active-feedback-modal{
+.delivery-modal.active-delivery-modal{
 
     display: flex;
 }
 
-.feedback-modal-content{
+.delivery-modal-content{
 
-    width: 480px;
+    width: min(560px, calc(100vw - 32px));
+
+    max-height:
+    calc(100vh - 48px);
+
+    overflow-y: auto;
+
     background: #0F172A;
     border-radius: 28px;
     padding: 36px;
     position: relative;
 }
 
-.close-feedback-modal{
+.close-delivery-modal{
 
     position: absolute;
     top: 18px;
@@ -370,47 +715,80 @@ body{
     cursor: pointer;
 }
 
-.feedback-modal-content form{
+.delivery-detail-grid{
 
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    display: grid;
+
+    grid-template-columns:
+    repeat(2,minmax(0,1fr));
+
+    gap: 14px;
+
     margin-top: 24px;
 }
 
-.feedback-modal-content select,
-.feedback-modal-content textarea{
+.delivery-detail-grid div,
+.delivery-feedback-box{
 
-    width: 100%;
-    border: none;
     border-radius: 16px;
     padding: 16px;
     background: rgba(255,255,255,0.05);
-    color: white;
-    outline: none;
 }
 
-.feedback-modal-content select option{
+.delivery-detail-grid span,
+.delivery-feedback-box span{
 
-    background: #0F172A;
-    color: white;
+    display: block;
+
+    margin-bottom: 7px;
+
+    color:
+    rgba(255,255,255,0.45);
+
+    font-size: 12px;
+
+    font-weight: 800;
 }
 
-.feedback-modal-content textarea{
+.delivery-detail-grid strong,
+.delivery-feedback-box p{
 
-    min-height: 150px;
-    resize: none;
+    color:
+    rgba(255,255,255,0.86);
+
+    line-height: 1.45;
+
+    overflow-wrap: anywhere;
 }
 
-.feedback-modal-content button{
+.delivery-feedback-box{
 
-    height: 54px;
-    border: none;
+    margin-top: 14px;
+}
+
+.delivery-link-btn{
+
+    width: 100%;
+
+    height: 50px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-top: 18px;
+
     border-radius: 16px;
+
     background: linear-gradient(135deg,#6C4DFF,#8B7CFF);
+
     color: white;
+
+    text-decoration: none;
+
     font-weight: 700;
-    cursor: pointer;
 }
 
 /* EMPTY STATE */
@@ -487,4 +865,53 @@ body{
     opacity: 1;
 
     transform: translateY(0);
+}
+
+@media (max-width: 900px){
+
+    .deliveries-summary{
+
+        grid-template-columns:
+        repeat(2,minmax(0,1fr));
+    }
+
+    .project-meta,
+    .delivery-detail-grid{
+
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 640px){
+
+    .projects-content{
+
+        padding: 28px 18px;
+    }
+
+    .deliveries-summary{
+
+        grid-template-columns: 1fr;
+    }
+
+    .student-delivery-header,
+    .project-card-top,
+    .project-actions{
+
+        align-items: stretch;
+
+        flex-direction: column;
+    }
+
+    .toggle-deliveries-btn{
+
+        width: 100%;
+    }
+
+    .student-delivery-counts{
+
+        justify-content: flex-start;
+    }
+
 }
