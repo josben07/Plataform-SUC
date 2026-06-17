@@ -368,25 +368,25 @@ async function loadPaymentMethods() {
                             </div>
                             <div class="payment-method-details">
                                 ${fields.number
-                                    ? `<p><span class="detail-label">Celular:</span> ${fields.number}</p>`
-                                    : ""
-                                }
+                            ? `<p><span class="detail-label">Celular:</span> ${fields.number}</p>`
+                            : ""
+                        }
                                 ${fields.account
-                                    ? `<p><span class="detail-label">Cuenta:</span> ${fields.account}</p>`
-                                    : ""
-                                }
+                            ? `<p><span class="detail-label">Cuenta:</span> ${fields.account}</p>`
+                            : ""
+                        }
                                 ${fields.email
-                                    ? `<p><span class="detail-label">Correo:</span> ${fields.email}</p>`
-                                    : ""
-                                }
+                            ? `<p><span class="detail-label">Correo:</span> ${fields.email}</p>`
+                            : ""
+                        }
                                 ${fields.cci
-                                    ? `<p><span class="detail-label">CCI:</span> ${fields.cci}</p>`
-                                    : ""
-                                }
+                            ? `<p><span class="detail-label">CCI:</span> ${fields.cci}</p>`
+                            : ""
+                        }
                                 ${fields.holder
-                                    ? `<p><span class="detail-label">Titular:</span> ${fields.holder}</p>`
-                                    : ""
-                                }
+                            ? `<p><span class="detail-label">Titular:</span> ${fields.holder}</p>`
+                            : ""
+                        }
                             </div>
                         </div>
                     `;
