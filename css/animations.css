@@ -68,12 +68,6 @@
     }
 }
 
-.splash-logo-sub {
-    height: 40px;
-    display: block;
-    margin: 0 auto;
-}
-
 .fade-up{
     opacity: 0;
     transform: translateY(40px);
