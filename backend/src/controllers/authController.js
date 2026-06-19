@@ -150,6 +150,17 @@ exports.login = async (req, res) => {
 
         }
 
+        if (user.status === "blocked") {
+
+            return res.status(403).json({
+
+                error:
+                "Tu cuenta esta bloqueada. Contacta al administrador."
+
+            });
+
+        }
+
         /* COMPARE PASSWORD */
 
         const validPassword =
