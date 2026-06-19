@@ -196,6 +196,41 @@
     cursor: pointer;
 }
 
+.protected-user-btn{
+
+    background:
+    rgba(255,255,255,0.08);
+
+    color:
+    rgba(255,255,255,0.5);
+
+    cursor:
+    not-allowed;
+}
+
+.protected-badge{
+
+    display:inline-flex;
+
+    margin-left:8px;
+
+    padding:
+    5px 10px;
+
+    border-radius:999px;
+
+    background:
+    rgba(245,158,11,0.16);
+
+    color:#F59E0B;
+
+    font-size:.75rem;
+
+    font-weight:800;
+
+    vertical-align:middle;
+}
+
 .blocked-status{
 
     padding: 8px 14px;

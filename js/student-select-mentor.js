@@ -121,7 +121,7 @@ const DEFAULT_AVATAR =
     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%236C4DFF'/%3E%3Ccircle cx='50' cy='34' r='16' fill='white'/%3E%3Cellipse cx='50' cy='72' rx='30' ry='22' fill='white'/%3E%3C/svg%3E";
 
 const CALENDLY_FALLBACK =
-    "https://calendly.com/jossvasquezcu-uch/30min";
+    "https://calendly.com/dev-tisnet/30min";
 
 const CALENDLY_WIDGET_SCRIPT =
     "https://assets.calendly.com/assets/external/widget.js";

@@ -73,6 +73,26 @@ body{background:#020617;color:white}
     color:#F59E0B;
 }
 
+.confirmed{
+    background:rgba(108,77,255,.14);
+    color:#8B7CFF;
+}
+
+.completed{
+    background:rgba(34,197,94,.14);
+    color:#22C55E;
+}
+
+.cancelled{
+    background:rgba(239,68,68,.14);
+    color:#EF4444;
+}
+
+.waiting{
+    background:rgba(245,158,11,.14);
+    color:#F59E0B;
+}
+
 .meet-btn{
     display:flex;
     justify-content:center;
@@ -175,6 +195,7 @@ body{background:#020617;color:white}
 }
 .completion-status .done{color:#22C55E}
 .completion-status .pending{color:#F59E0B}
+.completion-status .cancelled-text{color:#EF4444}
 
 .detail-btn{
     display:flex;

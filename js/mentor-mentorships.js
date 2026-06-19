@@ -111,6 +111,42 @@ function getPaymentLockedText(paymentStatus) {
 
 }
 
+function getSessionStatusHtml(session) {
+
+    switch (session.status) {
+
+        case "confirmed":
+            return `<div class="session-status confirmed">Confirmada</div>`;
+        case "completed":
+            return `<div class="session-status completed">Completada</div>`;
+        case "cancelled":
+            return `<div class="session-status cancelled">Cancelada</div>`;
+        case "reserved":
+        default:
+            return `<div class="session-status reserved">Reservada</div>`;
+
+    }
+
+}
+
+function getSessionFinalStatusText(session, status) {
+
+    if (session.status === "cancelled") {
+
+        return "Mentoria cancelada";
+
+    }
+
+    if (status.completed) {
+
+        return "Mentoria completada";
+
+    }
+
+    return "Pendiente de completar";
+
+}
+
 async function getCompletionStatus(sessionId) {
 
     try {
@@ -191,18 +227,23 @@ async function loadMentorSessions() {
                 const paymentLockedText =
                     getPaymentLockedText(st?.payment_status);
 
-                let statusHtml = session.status === "confirmed"
-                    ? `<div class="session-status" style="background:rgba(108,77,255,.14);color:#8B7CFF">Confirmada</div>`
-                    : session.status === "completed"
-                    ? `<div class="session-status" style="background:rgba(34,197,94,.14);color:#22C55E">Completada</div>`
-                    : `<div class="session-status reserved">Reservada</div>`;
+                let statusHtml =
+                    getSessionStatusHtml(session);
 
                 let actionHtml = "";
 
-                if (bothDone) {
+                if (session.status === "cancelled") {
+
+                    actionHtml = `
+                        <div class="completion-status">
+                            <span class="cancelled-text">Mentoria cancelada por el alumno</span>
+                        </div>
+                    `;
+
+                } else if (bothDone) {
 
                     statusHtml = `
-                        <div class="session-status" style="background:rgba(34,197,94,.14);color:#22C55E">
+                        <div class="session-status completed">
                             Completada
                         </div>
                     `;
@@ -210,7 +251,7 @@ async function loadMentorSessions() {
                 } else if (mentorConfirmed) {
 
                     statusHtml = `
-                        <div class="session-status" style="background:rgba(245,158,11,.14);color:#F59E0B">
+                        <div class="session-status waiting">
                             Esperando alumno
                         </div>
                     `;
@@ -259,7 +300,9 @@ async function loadMentorSessions() {
 
                     ${statusHtml}
 
-                    ${session.meet_link && session.status !== "completed"
+                    ${session.meet_link &&
+                        session.status !== "completed" &&
+                        session.status !== "cancelled"
                         ? paymentApproved
                             ? `
                             <a
@@ -338,7 +381,7 @@ function openMentorshipDetails(sessionId) {
         <p><strong>Estado de pago:</strong> ${escapeHtml(paymentLabel)}</p>
         <p><strong>Confirmación mentor:</strong> ${mentorDone}</p>
         <p><strong>Confirmación alumno:</strong> ${studentDone}</p>
-        <p><strong>Estado final:</strong> ${status.completed ? "Mentoría completada" : "Pendiente de completar"}</p>
+        <p><strong>Estado final:</strong> ${escapeHtml(getSessionFinalStatusText(session, status))}</p>
     `;
 
     document.getElementById("mentorDetailModal").classList.add("active");

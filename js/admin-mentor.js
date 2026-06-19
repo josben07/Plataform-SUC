@@ -1,8 +1,81 @@
+const token =
+    localStorage.getItem("token");
+
+const user =
+    JSON.parse(
+        localStorage.getItem("user")
+    );
+
+if (!token || !user || user.role !== "admin") {
+
+    window.location.href =
+        "../login.html";
+
+}
+
 const adminToast =
     document.querySelector(".admin-toast");
 
 const adminToastMessage =
     document.getElementById("adminToastMessage");
+
+const mentorGrid =
+    document.getElementById("mentorGrid");
+
+const mentorSummary =
+    document.getElementById("mentorSummary");
+
+const TRACKED_STATUSES =
+    [
+        "reserved",
+        "confirmed",
+        "completed",
+        "cancelled"
+    ];
+
+const STATUS_META =
+    {
+        reserved: {
+            label:
+                "Reservada",
+            detail:
+                "Pago pendiente",
+            section:
+                "Reservas pendientes de pago",
+            className:
+                "status-reserved"
+        },
+        confirmed: {
+            label:
+                "Confirmada",
+            detail:
+                "Pago aprobado",
+            section:
+                "Mentor&iacute;as confirmadas",
+            className:
+                "status-confirmed"
+        },
+        completed: {
+            label:
+                "Completada",
+            detail:
+                "Mentor&iacute;a finalizada",
+            section:
+                "Historial finalizado",
+            className:
+                "status-completed"
+        },
+        cancelled: {
+            label:
+                "Cancelada",
+            detail:
+                "Reserva cancelada",
+            section:
+                "Historial cancelado",
+            className:
+                "status-cancelled"
+        }
+    };
 
 function showAdminToast(message) {
 
@@ -19,60 +92,14 @@ function showAdminToast(message) {
 
 }
 
-const deleteModal =
-    document.querySelector(".delete-modal");
+function escapeHtml(value) {
 
-const confirmDeleteMentor =
-    document.getElementById("confirmDeleteMentor");
-
-const cancelDeleteMentor =
-    document.getElementById("cancelDeleteMentor");
-
-let deletingMentorId =
-    null;
-
-const mentorGrid =
-    document.getElementById("mentorGrid");
-
-const mentorModal =
-    document.querySelector(".mentor-modal");
-
-const openMentorModal =
-    document.getElementById("openMentorModal");
-
-const closeMentorModal =
-    document.querySelector(".close-mentor-modal");
-
-const mentorForm =
-    document.getElementById("mentorForm");
-
-const mentorSelect =
-    document.getElementById("mentorSelect");
-
-const sessionPrice =
-    document.getElementById("sessionPrice");
-
-let mentorsUsers =
-    [];
-
-let editingMentorId =
-    null;
-
-function normalizeMentorshipPriceForRequest(price) {
-
-    if (price === "") {
-
-        return null;
-
-    }
-
-    const numericPrice =
-        Number(price);
-
-    return Number.isFinite(numericPrice) &&
-        numericPrice >= 0
-        ? numericPrice
-        : null;
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
 }
 
@@ -98,470 +125,337 @@ function formatMentorshipPrice(price) {
 
 }
 
-/* LOAD USERS WITH ROLE MENTOR */
+function formatDate(dateValue) {
 
-async function loadMentorUsers() {
+    if (!dateValue) {
 
-    const response =
-        await fetch(`${API_URL}/api/mentor-profiles`);
+        return "Sin fecha";
 
-    mentorsUsers =
-        await response.json();
+    }
 
-    mentorSelect.innerHTML = `
+    const [year, month, day] =
+        String(dateValue).split("-");
 
-        <option value="">
-            Seleccionar mentor
-        </option>
+    if (!year || !month || !day) {
 
+        return escapeHtml(dateValue);
+
+    }
+
+    return `${day}/${month}/${year}`;
+
+}
+
+function formatTime(timeValue) {
+
+    if (!timeValue) {
+
+        return "Sin hora";
+
+    }
+
+    return String(timeValue).slice(0, 5);
+
+}
+
+function getSafeUrl(url) {
+
+    try {
+
+        const parsedUrl =
+            new URL(
+                url,
+                window.location.origin
+            );
+
+        return parsedUrl.protocol === "http:" ||
+            parsedUrl.protocol === "https:"
+            ? parsedUrl.href
+            : null;
+
+    } catch (error) {
+
+        return null;
+
+    }
+
+}
+
+function getStatusMeta(status) {
+
+    return STATUS_META[status] || {
+        label:
+            "Sin estado",
+        detail:
+            "No clasificada",
+        section:
+            "Otras mentor&iacute;as",
+        className:
+            "status-unknown"
+    };
+
+}
+
+function renderSummary(sessions) {
+
+    const counts =
+        TRACKED_STATUSES.reduce((acc, status) => {
+
+            acc[status] =
+                sessions.filter(
+                    session => session.status === status
+                ).length;
+
+            return acc;
+
+        }, {});
+
+    mentorSummary.innerHTML =
+        TRACKED_STATUSES
+            .map(status => {
+
+                const meta =
+                    getStatusMeta(status);
+
+                return `
+                    <div class="mentor-summary-card ${meta.className}">
+                        <span>${meta.label}</span>
+                        <strong>${counts[status]}</strong>
+                        <small>${meta.detail}</small>
+                    </div>
+                `;
+
+            })
+            .join("");
+
+}
+
+function renderEmptyState() {
+
+    mentorGrid.innerHTML =
+        `
+            <div class="empty-state">
+                <div class="empty-icon">
+                    &#127891;
+                </div>
+                <h3>
+                    No hay reservas de mentor&iacute;a
+                </h3>
+                <p>
+                    Cuando un alumno agende una mentor&iacute;a, aparecer&aacute; en este seguimiento.
+                </p>
+            </div>
+        `;
+
+}
+
+function renderSessionCard(session) {
+
+    const meta =
+        getStatusMeta(session.status);
+
+    const title =
+        escapeHtml(
+            session.session_title ||
+            "Mentoria agendada"
+        );
+
+    const mentorName =
+        escapeHtml(
+            session.mentor_name ||
+            "Mentor no asignado"
+        );
+
+    const studentName =
+        escapeHtml(
+            session.student_name ||
+            "Alumno no registrado"
+        );
+
+    const courseName =
+        escapeHtml(
+            session.course_name ||
+            ""
+        );
+
+    const safeMeetLink =
+        session.meet_link
+            ? getSafeUrl(session.meet_link)
+            : null;
+
+    const meetLink =
+        safeMeetLink
+            ? `
+                <a
+                    class="mentor-link"
+                    href="${escapeHtml(safeMeetLink)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Abrir reuni&oacute;n
+                </a>
+            `
+            : "";
+
+    return `
+        <article class="mentor-card history-card">
+            <div class="mentor-card-header">
+                <h3>${title}</h3>
+                <div class="mentor-status ${meta.className}">
+                    ${meta.label}
+                </div>
+            </div>
+
+            <div class="mentor-card-details">
+                <p>
+                    <span>Mentor</span>
+                    ${mentorName}
+                </p>
+                <p>
+                    <span>Alumno</span>
+                    ${studentName}
+                </p>
+                ${courseName
+                    ? `
+                        <p>
+                            <span>Curso</span>
+                            ${courseName}
+                        </p>
+                    `
+                    : ""}
+                <p>
+                    <span>Fecha</span>
+                    ${formatDate(session.session_date)}
+                </p>
+                <p>
+                    <span>Hora</span>
+                    ${formatTime(session.session_time)}
+                </p>
+                <p class="mentor-price">
+                    <span>Precio</span>
+                    ${formatMentorshipPrice(session.price)}
+                </p>
+            </div>
+
+            ${meetLink}
+        </article>
     `;
 
-    mentorsUsers.forEach(mentor => {
+}
 
-        mentorSelect.innerHTML += `
+function renderSection(title, sessions) {
 
-            <option value="${mentor.id}">
-                ${mentor.full_name}
-            </option>
+    if (sessions.length === 0) {
 
-        `;
+        return "";
 
-    });
+    }
+
+    return `
+        <div class="history-header">
+            <h3>${title}</h3>
+            <span>${sessions.length}</span>
+        </div>
+        ${sessions.map(renderSessionCard).join("")}
+    `;
 
 }
 
-/* AUTO-FILL SESSION PRICE WITH BASE PRICE */
+function renderMentorships(sessions) {
 
-mentorSelect.addEventListener("change", () => {
-
-    const mentor =
-        mentorsUsers.find(
-            m => m.id === mentorSelect.value
+    const trackedSessions =
+        sessions.filter(session =>
+            TRACKED_STATUSES.includes(session.status)
         );
 
-    if (
-        mentor &&
-        mentor.profile &&
-        mentor.profile.base_price != null
-    ) {
+    renderSummary(trackedSessions);
 
-        sessionPrice.value =
-            mentor.profile.base_price;
+    if (trackedSessions.length === 0) {
 
-    }
-
-});
-
-/* OPEN MODAL */
-
-openMentorModal.addEventListener("click", () => {
-
-    mentorForm.reset();
-
-    editingMentorId =
-        null;
-
-    mentorModal.classList.add("active-modal");
-
-});
-
-/* CLOSE */
-
-closeMentorModal.addEventListener("click", () => {
-
-    mentorModal.classList.remove("active-modal");
-
-});
-
-/* LOAD MENTOR SESSIONS */
-
-async function loadMentors() {
-
-    const response =
-        await fetch(`${API_URL}/api/mentor`);
-
-    const mentors =
-        await response.json();
-
-    mentorGrid.innerHTML = "";
-
-    const availableSessions =
-        mentors.filter(m =>
-            m.status === "available"
-        );
-
-    const historySessions =
-        mentors.filter(m =>
-            m.status === "reserved" ||
-            m.status === "completed" ||
-            m.status === "cancelled"
-        );
-
-    /* HISTORY SECTION */
-
-    if (historySessions.length > 0) {
-
-        mentorGrid.innerHTML += `
-
-            <div class="history-header">
-                <h3>
-                    📋 Historial de reservas
-                </h3>
-            </div>
-
-        `;
-
-        historySessions.forEach(session => {
-
-            mentorGrid.innerHTML += `
-
-                <div class="mentor-card history-card">
-
-                    <h3>
-                        ${session.session_title}
-                    </h3>
-
-                    <p>
-                        Mentor:
-                        ${session.mentor_name}
-                    </p>
-
-                    <p>
-                        Alumno:
-                        ${session.student_name || "Desconocido"}
-                    </p>
-
-                    <p>
-                        Fecha:
-                        ${session.session_date || "Sin fecha"}
-                    </p>
-
-                    <p>
-                        Hora:
-                        ${session.session_time || "Sin hora"}
-                    </p>
-
-                    <p class="mentor-price">
-                        Precio: ${formatMentorshipPrice(session.price)}
-                    </p>
-
-                    <div class="mentor-status status-${session.status}">
-                        ${session.status === "reserved"
-                ? "Reservada"
-                : session.status === "completed"
-                    ? "Completada"
-                    : "Cancelada"
-            }
-                    </div>
-
-                </div>
-
-            `;
-
-        });
-
-    }
-
-    /* AVAILABLE SECTION */
-
-    if (availableSessions.length > 0) {
-
-        mentorGrid.innerHTML += `
-
-            <div class="history-header">
-                <h3>
-                    🎯 Mentorías disponibles
-                </h3>
-            </div>
-
-        `;
-
-        availableSessions.forEach(mentor => {
-
-            const mentorUser =
-                mentorsUsers.find(
-                    m => m.id === mentor.mentor_id
-                );
-
-            const basePrice =
-                mentorUser?.profile?.base_price;
-
-            mentorGrid.innerHTML += `
-
-                <div class="mentor-card">
-
-                    <h3>
-                        ${mentor.session_title}
-                    </h3>
-
-                    <p>
-                        Mentor:
-                        ${mentor.mentor_name}
-                    </p>
-
-                    <p style="color:#A89BFF; font-weight:700;">
-                        Precio base del mentor:
-                        $${basePrice ? Number(basePrice).toFixed(2) : "0.00"}
-                    </p>
-
-                    <p>
-                        ${mentor.mentor_specialty || ""}
-                    </p>
-
-                    <p>
-                        ${mentor.session_date || "Sin fecha"}
-                    </p>
-
-                    <p>
-                        ${mentor.session_time || "Sin hora"}
-                    </p>
-
-                    <p class="mentor-price">
-                        Precio: ${formatMentorshipPrice(mentor.price)}
-                    </p>
-
-                    <div class="mentor-status">
-                        Disponible
-                    </div>
-
-                    <div class="mentor-actions">
-
-                        <button
-                            class="edit-mentor-btn"
-                            onclick="
-                                openEditMentorModal(
-                                    '${mentor.id}',
-                                    '${mentor.mentor_id || ""}',
-                                    '${mentor.mentor_specialty || ""}',
-                                    '${mentor.session_title}',
-                                    '${mentor.session_description || ""}',
-                                    '${mentor.session_date || ""}',
-                                    '${mentor.session_time || ""}',
-                                    '${mentor.price ?? ""}',
-                                    '${mentor.meet_link || ""}'
-                                )
-                            "
-                        >
-                            Editar
-                        </button>
-
-                        <button
-                            class="delete-mentor-btn"
-                            onclick="deleteMentor('${mentor.id}')"
-                        >
-                            Eliminar
-                        </button>
-
-                    </div>
-
-                </div>
-
-            `;
-
-        });
-
-    }
-
-    if (mentors.length === 0) {
-
-        mentorGrid.innerHTML = `
-
-            <div class="empty-state">
-
-                <div class="empty-icon">
-                    🎓
-                </div>
-
-                <h3>
-                    No hay mentorías
-                </h3>
-
-                <p>
-                    Aún no existen mentorías creadas.
-                </p>
-
-            </div>
-
-        `;
-
-    }
-
-}
-
-/* CREATE / UPDATE */
-
-mentorForm.addEventListener("submit", async (e) => {
-
-    e.preventDefault();
-
-    const selectedMentor =
-        mentorsUsers.find(
-            mentor => mentor.id === mentorSelect.value
-        );
-
-    if (!selectedMentor) {
-
-        showAdminToast("Selecciona un mentor");
-
+        renderEmptyState();
         return;
 
     }
 
-    const url =
-        editingMentorId
-            ? `${API_URL}/api/mentor/${editingMentorId}`
-            : `${API_URL}/api/mentor`;
-
-    const method =
-        editingMentorId
-            ? "PUT"
-            : "POST";
-
-    await fetch(
-        url,
-        {
-            method,
-
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body:
-                JSON.stringify({
-
-                    mentor_id:
-                        selectedMentor.id,
-
-                    mentor_name:
-                        selectedMentor.full_name,
-
-                    mentor_specialty:
-                        mentorSpecialty.value,
-
-                    session_title:
-                        sessionTitle.value,
-
-                    session_description:
-                        sessionDescription.value,
-
-                    session_date:
-                        sessionDate.value,
-
-                    session_time:
-                        sessionTime.value,
-
-                    price:
-                        normalizeMentorshipPriceForRequest(
-                            sessionPrice.value
-                        ),
-
-                    meet_link:
-                        meetLink.value
-
-                })
-        }
-    );
-
-    mentorModal.classList.remove("active-modal");
-
-    mentorForm.reset();
-
-    editingMentorId =
-        null;
-
-    showAdminToast("Mentoría guardada correctamente");
-
-    loadMentors();
-
-});
-
-/* EDIT */
-
-function openEditMentorModal(
-
-    id,
-    mentor_id,
-    mentor_specialty,
-    session_title,
-    session_description,
-    session_date,
-    session_time,
-    price,
-    meet_link
-
-) {
-
-    editingMentorId =
-        id;
-
-    mentorSelect.value =
-        mentor_id;
-
-    mentorSpecialty.value =
-        mentor_specialty;
-
-    sessionTitle.value =
-        session_title;
-
-    sessionDescription.value =
-        session_description;
-
-    sessionDate.value =
-        session_date;
-
-    sessionTime.value =
-        session_time;
-
-    sessionPrice.value =
-        price;
-
-    meetLink.value =
-        meet_link;
-
-    mentorModal.classList.add("active-modal");
+    mentorGrid.innerHTML =
+        [
+            renderSection(
+                STATUS_META.reserved.section,
+                trackedSessions.filter(
+                    session => session.status === "reserved"
+                )
+            ),
+            renderSection(
+                STATUS_META.confirmed.section,
+                trackedSessions.filter(
+                    session => session.status === "confirmed"
+                )
+            ),
+            renderSection(
+                STATUS_META.completed.section,
+                trackedSessions.filter(
+                    session => session.status === "completed"
+                )
+            ),
+            renderSection(
+                STATUS_META.cancelled.section,
+                trackedSessions.filter(
+                    session => session.status === "cancelled"
+                )
+            )
+        ].join("");
 
 }
 
-/* DELETE */
+async function loadMentorships() {
 
-function deleteMentor(mentorId) {
+    try {
 
-    deletingMentorId =
-        mentorId;
+        mentorGrid.innerHTML =
+            `
+                <div class="empty-state">
+                    <p>Cargando mentor&iacute;as...</p>
+                </div>
+            `;
 
-    deleteModal.classList.add("active-delete-modal");
+        const response =
+            await fetch(`${API_URL}/api/mentor`);
+
+        const sessions =
+            await response.json();
+
+        if (!response.ok || !Array.isArray(sessions)) {
+
+            throw new Error("No se pudieron cargar las mentorias");
+
+        }
+
+        renderMentorships(sessions);
+
+    } catch (error) {
+
+        console.error("[Admin mentorias] Error:", error);
+
+        showAdminToast(
+            "No se pudieron cargar las mentorias"
+        );
+
+        mentorSummary.innerHTML =
+            "";
+
+        mentorGrid.innerHTML =
+            `
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        !
+                    </div>
+                    <h3>Error al cargar mentor&iacute;as</h3>
+                    <p>Intenta recargar la pagina.</p>
+                </div>
+            `;
+
+    }
 
 }
 
-/* CONFIRM DELETE */
-
-confirmDeleteMentor.addEventListener("click", async () => {
-
-    await fetch(
-        `${API_URL}/api/mentor/${deletingMentorId}`,
-        {
-            method: "DELETE"
-        }
-    );
-
-    deleteModal.classList.remove("active-delete-modal");
-
-    showAdminToast("Mentoría eliminada correctamente");
-
-    loadMentors();
-
-});
-
-/* CANCEL DELETE */
-
-cancelDeleteMentor.addEventListener("click", () => {
-
-    deleteModal.classList.remove("active-delete-modal");
-
-});
-
-/* INIT */
-
-loadMentorUsers();
-loadMentors();
+loadMentorships();

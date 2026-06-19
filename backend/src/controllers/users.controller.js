@@ -72,6 +72,40 @@ const updateUser =
                 status
             } = req.body;
 
+            const {
+                data: existingUser,
+                error: existingUserError
+            } =
+                await supabase
+                    .from("users")
+                    .select("*")
+                    .eq("id", id)
+                    .maybeSingle();
+
+            if (existingUserError) {
+
+                return res.status(400).json(existingUserError);
+
+            }
+
+            if (!existingUser) {
+
+                return res.status(404).json({
+                    error:
+                        "Usuario no encontrado"
+                });
+
+            }
+
+            if (existingUser.is_protected === true) {
+
+                return res.status(403).json({
+                    error:
+                        "Este usuario es un admin protegido y no se puede modificar."
+                });
+
+            }
+
             const { data, error } =
                 await supabase
                     .from("users")

@@ -26,6 +26,24 @@ function showAdminToast(message) {
 
 }
 
+function escapeHtml(value) {
+
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+function isProtectedUser(user) {
+
+    return user &&
+        user.is_protected === true;
+
+}
+
 /* ========================= */
 /* GET USERS */
 /* ========================= */
@@ -188,6 +206,16 @@ let editingUserId =
 
 function openEditUserModal(user) {
 
+    if (isProtectedUser(user)) {
+
+        showAdminToast(
+            "Este admin esta protegido"
+        );
+
+        return;
+
+    }
+
     editingUserId =
         user.id;
 
@@ -229,15 +257,45 @@ function renderUsers(users) {
 
     users.forEach(user => {
 
+        const protectedUser =
+            isProtectedUser(user);
+
+        const roleLabel =
+            protectedUser
+                ? `${escapeHtml(user.role)} <span class="protected-badge">Boss</span>`
+                : escapeHtml(user.role);
+
+        const actionHtml =
+            protectedUser
+                ? `
+                    <button
+                        class="edit-user-btn protected-user-btn"
+                        type="button"
+                        disabled
+                        title="Admin protegido"
+                    >
+                        Protegido
+                    </button>
+                `
+                : `
+                    <button
+                        class="edit-user-btn"
+                        type="button"
+                        data-user-id="${escapeHtml(user.id)}"
+                    >
+                        Editar
+                    </button>
+                `;
+
         tableBody.innerHTML += `
 
             <tr>
 
-                <td>${user.full_name}</td>
+                <td>${escapeHtml(user.full_name)}</td>
 
-                <td>${user.email}</td>
+                <td>${escapeHtml(user.email)}</td>
 
-                <td>${user.role}</td>
+                <td>${roleLabel}</td>
 
                 <td>
                     <span class="${user.status === "blocked" ? "blocked-status" : "active-status"}">
@@ -246,12 +304,7 @@ function renderUsers(users) {
                 </td>
 
                 <td>
-                    <button
-                        class="edit-user-btn"
-                        onclick='openEditUserModal(${JSON.stringify(user)})'
-                    >
-                        Editar
-                    </button>
+                    ${actionHtml}
                 </td>
 
             </tr>
@@ -259,6 +312,27 @@ function renderUsers(users) {
         `;
 
     });
+
+    tableBody
+        .querySelectorAll(".edit-user-btn[data-user-id]")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                const selectedUser =
+                    allUsers.find(user =>
+                        String(user.id) === String(button.dataset.userId)
+                    );
+
+                if (selectedUser) {
+
+                    openEditUserModal(selectedUser);
+
+                }
+
+            });
+
+        });
 
 }
 
@@ -279,7 +353,8 @@ userForm.addEventListener(
 
         e.preventDefault();
 
-        await fetch(
+        const response =
+            await fetch(
             `${API_URL}/api/users/${editingUserId}`,
             {
                 method: "PUT",
@@ -303,8 +378,25 @@ userForm.addEventListener(
             }
         );
 
+        const result =
+            await response.json();
+
+        if (!response.ok) {
+
+            showAdminToast(
+                result.error || "No se pudo actualizar el usuario"
+            );
+
+            return;
+
+        }
+
         userModal.classList.remove(
             "active-user-modal"
+        );
+
+        showAdminToast(
+            "Usuario actualizado correctamente"
         );
 
         loadUsers();

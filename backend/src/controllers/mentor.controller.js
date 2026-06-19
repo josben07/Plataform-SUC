@@ -1057,8 +1057,7 @@ const requestMentorship =
                         session.mentor_id
                 })
                 .eq("user_id", student_id)
-                .eq("course_id", activeCourse.course_id)
-                .eq("submission_type", "final_project");
+                .eq("course_id", activeCourse.course_id);
 
             res.json(data);
 
@@ -1291,7 +1290,7 @@ const cancelMentorship =
             const { data: session } =
                 await supabase
                     .from("mentor_sessions")
-                    .select("id, session_description")
+                    .select("id, session_description, status")
                     .eq("id", id)
                     .maybeSingle();
 
@@ -1301,6 +1300,21 @@ const cancelMentorship =
                     error:
                         "Mentoría no encontrada."
                 });
+
+            }
+
+            if (session.status === "completed") {
+
+                return res.status(400).json({
+                    error:
+                        "No puedes cancelar una mentoria completada."
+                });
+
+            }
+
+            if (session.status === "cancelled") {
+
+                return res.json(session);
 
             }
 
@@ -1350,14 +1364,8 @@ const cancelMentorship =
                     .from("mentor_sessions")
                     .update({
 
-                        student_id:
-                            null,
-
-                        student_name:
-                            null,
-
                         status:
-                            "available"
+                            "cancelled"
 
                     })
                     .eq("id", id)
@@ -1770,8 +1778,7 @@ const bookMentorship =
                     mentor_id
                 })
                 .eq("user_id", student_id)
-                .eq("course_id", course_id)
-                .eq("submission_type", "final_project");
+                .eq("course_id", course_id);
 
             res.json(data);
 

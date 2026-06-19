@@ -352,12 +352,10 @@ const createProject =
             }
 
             const mentorId =
-                normalizedSubmissionType === "final_project"
-                    ? await getCourseMentorForStudent(
-                        user_id,
-                        course_id
-                    )
-                    : null;
+                await getCourseMentorForStudent(
+                    user_id,
+                    course_id
+                );
 
             const { data, error } =
                 await supabase
