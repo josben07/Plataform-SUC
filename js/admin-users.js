@@ -67,115 +67,30 @@ async function loadUsers() {
         const users =
             await response.json();
 
-        allUsers = users;
+        if (!response.ok) {
 
-        renderUsers(allUsers);
-        return;
-
-        tableBody.innerHTML = "";
-
-        users.forEach(user => {
-
-            tableBody.innerHTML += `
-
-                <tr>
-
-                    <td>
-
-                        ${user.full_name}
-
-                    </td>
-
-                    <td>
-
-                        ${user.email}
-
-                    </td>
-
-                    <td>
-
-                        ${user.role}
-
-                    </td>
-
-                    <td>
-
-                        <span class="${user.status === "blocked"
-                    ? "blocked-status"
-                    : "active-status"
-                }">
-
-                            ${user.status === "blocked"
-                    ? "Bloqueado"
-                    : "Activo"
-                }
-
-                        </span>
-
-                    </td>
-
-                    <td>
-
-                        <button
-                            class="edit-user-btn"
-                            onclick='openEditUserModal(${JSON.stringify(user)})'
-                        >
-
-                            Editar
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-            `;
-
-        });
-
-        if (users.length === 0) {
-
-            tableBody.innerHTML = `
-
-        <tr>
-
-            <td colspan="5">
-
-                <div class="empty-state">
-
-                    <div class="empty-icon">
-
-                        👤
-
-                    </div>
-
-                    <h3>
-
-                        No hay usuarios
-
-                    </h3>
-
-                    <p>
-
-                        Aún no hay usuarios registrados.
-
-                    </p>
-
-                </div>
-
-            </td>
-
-        </tr>
-
-    `;
+            showAdminToast(
+                users.error || "No se pudieron cargar los usuarios"
+            );
 
             return;
 
         }
 
+        allUsers =
+            Array.isArray(users)
+                ? users
+                : [];
+
+        renderUsers(allUsers);
+
     } catch (error) {
 
         console.error(error);
+
+        showAdminToast(
+            "Error del servidor al cargar usuarios"
+        );
 
     }
 
@@ -201,7 +116,22 @@ const editUserRole =
 const editUserStatus =
     document.getElementById("editUserStatus");
 
+const deleteUserModal =
+    document.getElementById("deleteUserModal");
+
+const deleteUserMessage =
+    document.getElementById("deleteUserMessage");
+
+const cancelDeleteUser =
+    document.getElementById("cancelDeleteUser");
+
+const confirmDeleteUser =
+    document.getElementById("confirmDeleteUser");
+
 let editingUserId =
+    null;
+
+let deletingUserId =
     null;
 
 function openEditUserModal(user) {
@@ -230,6 +160,56 @@ function openEditUserModal(user) {
 
     userModal.classList.add(
         "active-user-modal"
+    );
+
+}
+
+function canDeleteUser(user) {
+
+    return user &&
+        (user.role === "student" || user.role === "mentor") &&
+        !isProtectedUser(user);
+
+}
+
+function openDeleteUserModal(user) {
+
+    if (!canDeleteUser(user)) {
+
+                    showAdminToast(
+                        "Solo se pueden eliminar usuarios"
+                    );
+
+        return;
+
+    }
+
+    deletingUserId =
+        user.id;
+
+    const userType =
+        user.role === "mentor" ? "mentor" : "alumno";
+
+    if (deleteUserMessage) {
+
+        deleteUserMessage.innerHTML =
+            `&iquest;Est&aacute;s seguro que deseas eliminar todo el historial de <strong>${escapeHtml(user.full_name || user.email || `este ${userType}`)}</strong>?`;
+
+    }
+
+    deleteUserModal.classList.add(
+        "active-delete-user-modal"
+    );
+
+}
+
+function closeDeleteUserModal() {
+
+    deletingUserId =
+        null;
+
+    deleteUserModal.classList.remove(
+        "active-delete-user-modal"
     );
 
 }
@@ -265,7 +245,7 @@ function renderUsers(users) {
                 ? `${escapeHtml(user.role)} <span class="protected-badge">Boss</span>`
                 : escapeHtml(user.role);
 
-        const actionHtml =
+        const editActionHtml =
             protectedUser
                 ? `
                     <button
@@ -287,6 +267,19 @@ function renderUsers(users) {
                     </button>
                 `;
 
+        const deleteActionHtml =
+            canDeleteUser(user)
+                ? `
+                    <button
+                        class="delete-user-btn"
+                        type="button"
+                        data-delete-user-id="${escapeHtml(user.id)}"
+                    >
+                        Eliminar
+                    </button>
+                `
+                : "";
+
         tableBody.innerHTML += `
 
             <tr>
@@ -304,7 +297,10 @@ function renderUsers(users) {
                 </td>
 
                 <td>
-                    ${actionHtml}
+                    <div class="user-actions">
+                        ${editActionHtml}
+                        ${deleteActionHtml}
+                    </div>
                 </td>
 
             </tr>
@@ -334,6 +330,27 @@ function renderUsers(users) {
 
         });
 
+    tableBody
+        .querySelectorAll(".delete-user-btn[data-delete-user-id]")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                const selectedUser =
+                    allUsers.find(user =>
+                        String(user.id) === String(button.dataset.deleteUserId)
+                    );
+
+                if (selectedUser) {
+
+                    openDeleteUserModal(selectedUser);
+
+                }
+
+            });
+
+        });
+
 }
 
 closeUserModal.addEventListener(
@@ -346,6 +363,84 @@ closeUserModal.addEventListener(
 
     }
 );
+
+if (cancelDeleteUser) {
+
+    cancelDeleteUser.addEventListener(
+        "click",
+        closeDeleteUserModal
+    );
+
+}
+
+if (confirmDeleteUser) {
+
+    confirmDeleteUser.addEventListener(
+        "click",
+        async () => {
+
+            if (!deletingUserId) return;
+
+            confirmDeleteUser.disabled =
+                true;
+
+            confirmDeleteUser.textContent =
+                "Eliminando...";
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/api/users/${deletingUserId}`,
+                        {
+                            method:
+                                "DELETE"
+                        }
+                    );
+
+                const result =
+                    await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+
+                    showAdminToast(
+                        result.error || "No se pudo eliminar el usuario"
+                    );
+
+                    return;
+
+                }
+
+                closeDeleteUserModal();
+
+                showAdminToast(
+                    result.message || "Usuario eliminado correctamente"
+                );
+
+                loadUsers();
+
+            } catch (error) {
+
+                console.error(error);
+
+                showAdminToast(
+                    "Error del servidor al eliminar"
+                );
+
+            } finally {
+
+                confirmDeleteUser.disabled =
+                    false;
+
+                confirmDeleteUser.textContent =
+                    "Eliminar todo";
+
+            }
+
+        }
+    );
+
+}
 
 userForm.addEventListener(
     "submit",
@@ -379,7 +474,7 @@ userForm.addEventListener(
         );
 
         const result =
-            await response.json();
+            await response.json().catch(() => ({}));
 
         if (!response.ok) {
 
@@ -417,19 +512,19 @@ if (searchUser) {
         const filteredUsers =
             allUsers.filter(user =>
 
-                user.full_name
+                String(user.full_name || "")
                     .toLowerCase()
                     .includes(value)
 
                 ||
 
-                user.email
+                String(user.email || "")
                     .toLowerCase()
                     .includes(value)
 
                 ||
 
-                user.role
+                String(user.role || "")
                     .toLowerCase()
                     .includes(value)
 
