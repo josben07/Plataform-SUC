@@ -2,184 +2,56 @@
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>
-
-        Mentorías
-
-    </title>
-
+    <title>Mentor&iacute;as</title>
     <link rel="stylesheet" href="../../css/admin-mentor.css">
-
     <link rel="stylesheet" href="../../css/admin-sidebar.css">
 </head>
 
 <body>
-
     <div class="mentor-page">
+        <aside class="sidebar">
+            <div>
+                <div class="sidebar-logo">SUClassroom</div>
+                <nav class="sidebar-menu">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="users.html">Usuarios</a>
+                    <a href="courses.html">Cursos</a>
+                    <a href="projects.html">Entregas</a>
+                    <a href="mentor.html" class="active-link">Mentor&iacute;as</a>
+                    <a href="mentor-prices.html">Precios</a>
+                    <a href="payments.html">Pagos</a>
+                    <a href="settings.html">Configuraci&oacute;n</a>
+                    <a href="assign-mentor-course.html">Asignar Mentores</a>
+                </nav>
+            </div>
 
-        <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div>
-            <div class="sidebar-logo">SUClassroom</div>
-            <nav class="sidebar-menu">
-                <a href="dashboard.html">Dashboard</a>
-                <a href="users.html">Usuarios</a>
-                <a href="courses.html">Cursos</a>
-                <a href="projects.html">Entregas</a>
-                <a href="mentor.html" class="active-link">Mentor&iacute;as</a>
-                <a href="mentor-prices.html">Precios</a>
-                <a href="payments.html">Pagos</a>
-                <a href="settings.html">Configuraci&oacute;n</a>
-                <a href="assign-mentor-course.html">Asignar Mentores</a>
-            </nav>
-        </div>
-
-        <button class="logout-btn" id="logoutBtn">Cerrar sesi&oacute;n</button>
-    </aside>
-
-        <!-- CONTENT -->
+            <button class="logout-btn" id="logoutBtn">Cerrar sesi&oacute;n</button>
+        </aside>
 
         <main class="mentor-content">
-
             <div class="mentor-topbar">
-
-                <h2>
-
-                    Gestión de Mentorías
-
-                </h2>
-
-                <button id="openMentorModal">
-
-                    + Nueva Mentoría
-
-                </button>
-
+                <div>
+                    <h2>Seguimiento de Mentor&iacute;as</h2>
+                    <p>
+                        Revisa reservas, pagos aprobados y mentor&iacute;as finalizadas.
+                    </p>
+                </div>
             </div>
 
-            <!-- GRID -->
-
-            <div class="mentor-grid" id="mentorGrid">
-
-            </div>
-
+            <div class="mentor-summary" id="mentorSummary"></div>
+            <div class="mentor-grid" id="mentorGrid"></div>
         </main>
-
-    </div>
-
-    <!-- MODAL -->
-
-    <div class="mentor-modal">
-
-        <div class="mentor-modal-content">
-
-            <span class="close-mentor-modal">
-
-                ✕
-
-            </span>
-
-            <h2>
-
-                Nueva Mentoría
-
-            </h2>
-
-            <form id="mentorForm">
-
-                <select id="mentorSelect" required>
-                
-                    <option value="">
-                        Seleccionar mentor
-                    </option>
-                
-                </select>
-
-                <input type="text" id="mentorSpecialty" placeholder="Especialidad">
-
-                <input type="text" id="sessionTitle" placeholder="Título" required>
-
-                <textarea id="sessionDescription" placeholder="Descripción"></textarea>
-
-                <input type="date" id="sessionDate">
-
-                <input type="time" id="sessionTime">
-
-                <input
-                    type="number"
-                    id="sessionPrice"
-                    placeholder="Precio de mentoría"
-                    min="0"
-                    step="0.01"
-                >
-
-                <input type="text" id="meetLink" placeholder="Link de reunión">
-
-                <button type="submit">
-
-                    Guardar Mentoría
-
-                </button>
-
-            </form>
-
-        </div>
-
-    </div>
-
-    <!-- DELETE MODAL -->
-    
-    <div class="delete-modal">
-    
-        <div class="delete-modal-content">
-    
-            <h2>
-    
-                ¿Eliminar mentoría?
-    
-            </h2>
-    
-            <p>
-    
-                Esta acción no se puede deshacer.
-    
-            </p>
-    
-            <div class="delete-actions">
-    
-                <button id="cancelDeleteMentor">
-    
-                    Cancelar
-    
-                </button>
-    
-                <button id="confirmDeleteMentor">
-    
-                    Eliminar
-    
-                </button>
-    
-            </div>
-    
-        </div>
-    
     </div>
 
     <div class="admin-toast">
-        <span id="adminToastMessage">
-            Acción realizada
-        </span>
+        <span id="adminToastMessage">Acci&oacute;n realizada</span>
     </div>
 
     <script src="../../js/config.js"></script>
     <script src="../../js/admin-sidebar.js"></script>
     <script src="../../js/admin-mentor.js"></script>
-
 </body>
 
 </html>

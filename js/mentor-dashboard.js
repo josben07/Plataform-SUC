@@ -72,12 +72,20 @@ async function loadMentorDashboard() {
                 session.status === "confirmed"
         );
 
+    const activeMentorshipSessions =
+        sessions.filter(
+            session =>
+                session.status === "reserved" ||
+                session.status === "confirmed" ||
+                session.status === "completed"
+        );
+
     const studentIds =
         new Set([
             ...projects
                 .map(project => project.user_id)
                 .filter(Boolean),
-            ...sessions
+            ...activeMentorshipSessions
                 .map(session => session.student_id)
                 .filter(Boolean)
         ]);
