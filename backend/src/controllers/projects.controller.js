@@ -1,6 +1,55 @@
 const supabase =
     require("../config/supabase");
 
+const getCourseMentorForStudent =
+    async (userId, courseId) => {
+
+        if (!userId || !courseId) {
+
+            return null;
+
+        }
+
+        const { data: session } =
+            await supabase
+                .from("mentor_sessions")
+                .select("mentor_id")
+                .eq("student_id", userId)
+                .eq("course_id", courseId)
+                .in("status", [
+                    "reserved",
+                    "confirmed",
+                    "completed"
+                ])
+                .order("created_at", {
+                    ascending:
+                        false
+                })
+                .limit(1)
+                .maybeSingle();
+
+        if (session && session.mentor_id) {
+
+            return session.mentor_id;
+
+        }
+
+        const { data: assignedMentor } =
+            await supabase
+                .from("student_mentors")
+                .select("mentor_id")
+                .eq("student_id", userId)
+                .eq("course_id", courseId)
+                .eq("status", "active")
+                .limit(1)
+                .maybeSingle();
+
+        return assignedMentor
+            ? assignedMentor.mentor_id
+            : null;
+
+    };
+
 /* ========================= */
 /* GET PROJECTS */
 /* ========================= */
@@ -155,6 +204,38 @@ const createProject =
             const normalizedStatus =
                 status || "pending";
 
+            if (normalizedSubmissionType === "final_project") {
+
+                const { data: studentCourse } =
+                    await supabase
+                        .from("student_courses")
+                        .select("progress")
+                        .eq("student_id", user_id)
+                        .eq("course_id", course_id)
+                        .maybeSingle();
+
+                if (
+                    !studentCourse ||
+                    Number(studentCourse.progress || 0) < 100
+                ) {
+
+                    return res.status(400).json({
+                        error:
+                            "Completa todas las clases antes de enviar el proyecto final."
+                    });
+
+                }
+
+            }
+
+            const mentorId =
+                normalizedSubmissionType === "final_project"
+                    ? await getCourseMentorForStudent(
+                        user_id,
+                        course_id
+                    )
+                    : null;
+
             const { data, error } =
                 await supabase
                     .from("project_submissions")
@@ -164,7 +245,7 @@ const createProject =
                         course_id,
                         lesson_id,
                         mentor_id:
-                            null,
+                            mentorId,
 
                         title,
                         description,
@@ -233,19 +314,51 @@ const updateProjectStatus =
             const {
 
                 status,
-                feedback
+                feedback,
+                title,
+                description,
+                project_url,
+                course_id
 
             } = req.body;
+
+            const updateData =
+                {};
+
+            if (status !== undefined) {
+                updateData.status =
+                    status;
+            }
+
+            if (feedback !== undefined) {
+                updateData.feedback =
+                    feedback;
+            }
+
+            if (title !== undefined) {
+                updateData.title =
+                    title;
+            }
+
+            if (description !== undefined) {
+                updateData.description =
+                    description;
+            }
+
+            if (project_url !== undefined) {
+                updateData.project_url =
+                    project_url;
+            }
+
+            if (course_id !== undefined) {
+                updateData.course_id =
+                    course_id;
+            }
 
             const { data, error } =
                 await supabase
                     .from("project_submissions")
-                    .update({
-
-                        status,
-                        feedback
-
-                    })
+                    .update(updateData)
                     .eq("id", id)
                     .select()
                     .single();
@@ -256,24 +369,42 @@ const updateProjectStatus =
 
             }
 
-            if (
-                data.submission_type === "final_project" &&
-                status === "approved"
-            ) {
+            if (data.submission_type === "final_project") {
 
-                const { error: courseError } =
-                    await supabase
-                        .from("student_courses")
-                        .update({
-                            final_project_approved:
-                                true
-                        })
-                        .eq("student_id", data.user_id)
-                        .eq("course_id", data.course_id);
+                const courseUpdate =
+                    {};
 
-                if (courseError) {
+                if (status === "approved") {
 
-                    return res.status(400).json(courseError);
+                    courseUpdate.final_project_approved =
+                        true;
+
+                }
+
+                if (
+                    status === "pending" ||
+                    status === "rejected"
+                ) {
+
+                    courseUpdate.final_project_approved =
+                        false;
+
+                }
+
+                if (Object.keys(courseUpdate).length > 0) {
+
+                    const { error: courseError } =
+                        await supabase
+                            .from("student_courses")
+                            .update(courseUpdate)
+                            .eq("student_id", data.user_id)
+                            .eq("course_id", data.course_id);
+
+                    if (courseError) {
+
+                        return res.status(400).json(courseError);
+
+                    }
 
                 }
 

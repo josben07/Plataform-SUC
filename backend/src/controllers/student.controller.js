@@ -96,24 +96,32 @@ const getStudentMentors =
 
             const { userId } = req.params;
 
-            const { data: studentCourses } = await supabase
+            const { data: activeCourse } = await supabase
                 .from("student_courses")
                 .select("course_id")
-                .eq("student_id", userId);
+                .eq("student_id", userId)
+                .eq("status", "Activo")
+                .order("created_at", {
+                    ascending:
+                        false
+                })
+                .limit(1)
+                .maybeSingle();
 
-            const hasCourses = studentCourses && studentCourses.length > 0;
-            const enrolledCourseIds = hasCourses
-                ? studentCourses.map(sc => sc.course_id)
-                : [];
+            const hasActiveCourse =
+                Boolean(activeCourse && activeCourse.course_id);
 
             const { data: courseMentors } = await supabase
                 .from("course_mentors")
                 .select("*");
 
-            const courseMentorIds = hasCourses && courseMentors
+            const courseMentorIds = hasActiveCourse && courseMentors
                 ? new Set(
                     courseMentors
-                        .filter(cm => enrolledCourseIds.includes(cm.course_id))
+                        .filter(cm =>
+                            String(cm.course_id) ===
+                            String(activeCourse.course_id)
+                        )
                         .map(cm => cm.mentor_id)
                   )
                 : new Set();
@@ -129,12 +137,16 @@ const getStudentMentors =
                 full_name: m.full_name,
                 email: m.email,
                 profile: m.mentor_profiles?.[0] || null,
-                available: hasCourses && courseMentorIds.has(m.id)
+                available: hasActiveCourse && courseMentorIds.has(m.id)
             }));
 
             res.json({
                 mentors: result,
-                has_enrolled_courses: hasCourses
+                has_enrolled_courses: hasActiveCourse,
+                has_active_course: hasActiveCourse,
+                active_course_id: hasActiveCourse
+                    ? activeCourse.course_id
+                    : null
             });
 
         } catch (err) {

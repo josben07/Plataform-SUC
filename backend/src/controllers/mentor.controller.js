@@ -612,6 +612,84 @@ const createPendingMentorshipPayment =
 
     };
 
+const upsertStudentMentorRelation =
+    async ({
+        student_id,
+        mentor_id,
+        course_id
+    }) => {
+
+        if (
+            !student_id ||
+            !mentor_id ||
+            !course_id
+        ) {
+
+            return null;
+
+        }
+
+        const { data: existing } =
+            await supabase
+                .from("student_mentors")
+                .select("id")
+                .eq("student_id", student_id)
+                .eq("course_id", course_id)
+                .maybeSingle();
+
+        if (existing) {
+
+            const { data, error } =
+                await supabase
+                    .from("student_mentors")
+                    .update({
+                        mentor_id,
+                        status:
+                            "active"
+                    })
+                    .eq("id", existing.id)
+                    .select()
+                    .single();
+
+            if (error) {
+
+                console.error(
+                    "[student_mentors] Error actualizando relacion:",
+                    error
+                );
+
+            }
+
+            return data || existing;
+
+        }
+
+        const { data, error } =
+            await supabase
+                .from("student_mentors")
+                .insert([{
+                    student_id,
+                    mentor_id,
+                    course_id,
+                    status:
+                        "active"
+                }])
+                .select()
+                .single();
+
+        if (error) {
+
+            console.error(
+                "[student_mentors] Error creando relacion:",
+                error
+            );
+
+        }
+
+        return data || null;
+
+    };
+
 /* GET */
 
 const getMentorSessions =
@@ -929,27 +1007,6 @@ const requestMentorship =
             }
             
             const {
-                data: assignedMentor
-            } =
-                await supabase
-                    .from("student_mentors")
-                    .select("id")
-                    .eq("student_id", student_id)
-                    .eq("course_id", activeCourse.course_id)
-                    .eq("mentor_id", session.mentor_id)
-                    .eq("status", "active")
-                    .maybeSingle();
-
-            if (!assignedMentor) {
-
-                return res.status(400).json({
-                    error:
-                        "Debes elegir este mentor para tu curso antes de agendar."
-                });
-
-            }
-
-            const {
 
                 data,
                 error
@@ -983,6 +1040,14 @@ const requestMentorship =
                 session:
                     data,
                 activeCourse
+            });
+
+            await upsertStudentMentorRelation({
+                student_id,
+                mentor_id:
+                    session.mentor_id,
+                course_id:
+                    activeCourse.course_id
             });
 
             await supabase
@@ -1691,6 +1756,13 @@ const bookMentorship =
                 );
 
             }
+
+            await upsertStudentMentorRelation({
+                student_id,
+                mentor_id,
+                course_id:
+                    course_id || null
+            });
 
             await supabase
                 .from("project_submissions")

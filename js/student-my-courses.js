@@ -62,7 +62,7 @@ async function loadCourses() {
                             ${isActive ? "Continuar" : "Ver curso"}
                         </button>
                         <button class="course-btn btn-outline" onclick="window.location.href='./select-mentor.html?courseId=${course.id}'">
-                            Seleccionar Mentor
+                            Agendar Mentoría
                         </button>
                     </div>
                 </div>

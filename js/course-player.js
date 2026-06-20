@@ -75,6 +75,11 @@ const finishCourseBtn =
         "finishCourseBtn"
     );
 
+const sidebarHomeBtn =
+    document.getElementById(
+        "sidebarHomeBtn"
+    );
+
 const refreshCourseBtn =
     document.getElementById(
         "refreshCourseBtn"
@@ -406,6 +411,7 @@ function updateFinishCourseButton() {
     }
 
     const canFinishCourse =
+        currentLessonId === null &&
         getCurrentProgressPercent() === 100 &&
         currentCourseRelation &&
         currentCourseRelation.status !== "Completed" &&
@@ -415,6 +421,21 @@ function updateFinishCourseButton() {
     finishCourseBtn.classList.toggle(
         "visible-finish-btn",
         canFinishCourse
+    );
+
+}
+
+function updateHomeRouteButton() {
+
+    if (!sidebarHomeBtn) {
+
+        return;
+
+    }
+
+    sidebarHomeBtn.classList.toggle(
+        "is-home-current",
+        currentLessonId === null
     );
 
 }
@@ -1878,6 +1899,8 @@ function showWelcomeView() {
     completeLessonBtn.style.display =
         "none";
 
+    updateHomeRouteButton();
+
     if (resourcesPanel) {
         resourcesPanel.style.display =
             "none";
@@ -1975,7 +1998,7 @@ function showWelcomeView() {
                     style="background:#A89CFF"
                     onclick="window.location.href='./certificates.html'"
                 >
-                    Ver mi certificado
+                    Ir a Certificados
                 </button>
             </div>
 
@@ -2043,6 +2066,14 @@ function showLessonView() {
 
     completeLessonBtn.style.display =
         "inline-flex";
+
+    if (finishCourseBtn) {
+        finishCourseBtn.classList.remove(
+            "visible-finish-btn"
+        );
+    }
+
+    updateHomeRouteButton();
 
     if (finalProjectPanel) {
         finalProjectPanel.style.display =
@@ -2141,6 +2172,10 @@ if (finishCourseBtn) {
 
             currentCourseRelation =
                 result;
+
+            localStorage.removeItem(
+                "currentCourseId"
+            );
 
             updateFinishCourseButton();
 

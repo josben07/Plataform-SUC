@@ -342,6 +342,35 @@ const completeCourse =
 
             }
 
+            if (studentCourse.final_project_submitted !== true) {
+
+                return res.status(400).json({
+                    error:
+                        "Debes enviar el proyecto final antes de finalizar el curso."
+                });
+
+            }
+
+            const { data: approvedFinalProject } =
+                await supabase
+                    .from("project_submissions")
+                    .select("id")
+                    .eq("user_id", student_id)
+                    .eq("course_id", course_id)
+                    .eq("submission_type", "final_project")
+                    .eq("status", "approved")
+                    .limit(1)
+                    .maybeSingle();
+
+            if (!approvedFinalProject) {
+
+                return res.status(400).json({
+                    error:
+                        "No existe un proyecto final aprobado para este curso."
+                });
+
+            }
+
             if (studentCourse.final_mentorship_approved !== true) {
 
                 return res.status(400).json({

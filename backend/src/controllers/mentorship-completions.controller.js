@@ -28,7 +28,30 @@ async function finalizeCompletion(sessionId) {
     };
 
     if (comp.mentor_approved_project) {
-        courseUpdate.final_project_approved = true;
+        const { data: finalProject } = await supabase
+            .from("project_submissions")
+            .select("id")
+            .eq("user_id", session.student_id)
+            .eq("course_id", session.course_id)
+            .eq("submission_type", "final_project")
+            .limit(1)
+            .maybeSingle();
+
+        if (finalProject) {
+            courseUpdate.final_project_approved = true;
+
+            await supabase
+            .from("project_submissions")
+            .update({
+                status:
+                    "approved",
+                feedback:
+                    "Proyecto aprobado por el mentor al completar la mentoría."
+            })
+            .eq("user_id", session.student_id)
+            .eq("course_id", session.course_id)
+            .eq("submission_type", "final_project");
+        }
     }
 
     await supabase

@@ -354,6 +354,7 @@ function openStudentCompleteModal(sessionId) {
 
     currentSessionId = sessionId;
     document.getElementById("studentEvidenceFile").value = "";
+    document.querySelector('input[name="student_done"][value="si"]').checked = true;
     document.querySelector('input[name="student_more"][value="no"]').checked = true;
     document.getElementById("studentComments").value = "";
     selectedStars = 0;
@@ -407,6 +408,16 @@ function initStarRating() {
 async function submitStudentComplete() {
 
     if (!currentSessionId) return;
+
+    const seRealizo =
+        document.querySelector('input[name="student_done"]:checked')?.value;
+
+    if (seRealizo !== "si") {
+
+        showMsg("Solo puedes confirmar una mentoría que sí se realizó.");
+        return;
+
+    }
 
     const submitBtn = document.getElementById("studentCompleteSubmitBtn");
     submitBtn.disabled = true;

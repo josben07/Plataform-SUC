@@ -39,6 +39,63 @@ const generateCertificate = async (req, res) => {
             return res.status(400).json({ error: "Faltan datos requeridos." });
         }
 
+        const { data: studentCourse, error: studentCourseError } = await supabase
+            .from("student_courses")
+            .select("*")
+            .eq("student_id", student_id)
+            .eq("course_id", course_id)
+            .maybeSingle();
+
+        if (studentCourseError) {
+            return res.status(400).json(studentCourseError);
+        }
+
+        if (!studentCourse) {
+            return res.status(404).json({ error: "Curso del alumno no encontrado." });
+        }
+
+        if (studentCourse.status !== "Completed") {
+            return res.status(400).json({ error: "El curso debe estar completado para emitir certificado." });
+        }
+
+        if (studentCourse.final_project_submitted !== true) {
+            return res.status(400).json({ error: "Debes enviar el proyecto final antes de emitir certificado." });
+        }
+
+        if (studentCourse.final_project_approved !== true) {
+            return res.status(400).json({ error: "El proyecto final debe estar aprobado para emitir certificado." });
+        }
+
+        if (studentCourse.final_mentorship_approved !== true) {
+            return res.status(400).json({ error: "La mentoría final debe estar realizada y validada para emitir certificado." });
+        }
+
+        const { data: finalProject } = await supabase
+            .from("project_submissions")
+            .select("id")
+            .eq("user_id", student_id)
+            .eq("course_id", course_id)
+            .eq("submission_type", "final_project")
+            .eq("status", "approved")
+            .limit(1)
+            .maybeSingle();
+
+        if (!finalProject) {
+            return res.status(400).json({ error: "No existe proyecto final aprobado para este curso." });
+        }
+
+        const { data: mentorshipSession } = await supabase
+            .from("mentor_sessions")
+            .select("id, mentor_id, mentor_name, status")
+            .eq("id", studentCourse.final_mentorship_session_id)
+            .eq("student_id", student_id)
+            .eq("course_id", course_id)
+            .maybeSingle();
+
+        if (!mentorshipSession || mentorshipSession.status !== "completed") {
+            return res.status(400).json({ error: "La mentoría final debe figurar como completada." });
+        }
+
         const { data: existing } = await supabase
             .from("certificates")
             .select("id, certificate_number")
@@ -67,13 +124,21 @@ const generateCertificate = async (req, res) => {
         const year = new Date().getFullYear();
         const certNumber = `SUC-${year}-${String(nextNum).padStart(4, "0")}`;
 
-        let finalMentorName = mentor_name || null;
+        let finalMentorName =
+            mentor_name ||
+            mentorshipSession.mentor_name ||
+            null;
 
-        if (mentor_id && !finalMentorName) {
+        const finalMentorId =
+            mentor_id ||
+            mentorshipSession.mentor_id ||
+            null;
+
+        if (finalMentorId && !finalMentorName) {
             const { data: mentorUser } = await supabase
                 .from("users")
                 .select("full_name")
-                .eq("id", mentor_id)
+                .eq("id", finalMentorId)
                 .maybeSingle();
 
             if (mentorUser) {

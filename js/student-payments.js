@@ -28,6 +28,9 @@ let currentPaymentId =
 let currentPaymentType =
     "mentor";
 
+let currentPaymentMethod =
+    null;
+
 const user =
     JSON.parse(
         localStorage.getItem("user")
@@ -364,12 +367,16 @@ function selectPaymentMethod(el) {
 
     document.querySelectorAll(".payment-method").forEach(m => m.classList.remove("selected"));
     el.classList.add("selected");
+    currentPaymentMethod =
+        el.dataset.method || null;
 
 }
 
 function resetPaymentMethodSelection() {
 
     document.querySelectorAll(".payment-method").forEach(m => m.classList.remove("selected"));
+    currentPaymentMethod =
+        null;
 
 }
 
@@ -419,6 +426,16 @@ async function confirmPaymentWithProof(event) {
 
     }
 
+    if (!currentPaymentMethod) {
+
+        showPaymentToast(
+            "Selecciona un método de pago antes de confirmar."
+        );
+
+        return;
+
+    }
+
     const originalText =
         confirmPayBtn.textContent;
 
@@ -454,6 +471,8 @@ async function confirmPaymentWithProof(event) {
                                 "en_revision",
                             proof_url:
                                 proofUrl,
+                            payment_method:
+                                currentPaymentMethod,
                             actor_role:
                                 "student"
                         })
@@ -481,7 +500,7 @@ async function confirmPaymentWithProof(event) {
         await loadPayments();
 
         showPaymentToast(
-            "Pago enviado. Esperando aprobaciÃ³n del administrador."
+            "Pago enviado. Esperando aprobacion del administrador."
         );
 
     } catch (error) {

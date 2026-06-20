@@ -198,6 +198,7 @@ const updatePayment =
             const {
                 status,
                 proof_url,
+                payment_method,
                 provider,
                 provider_payment_id,
                 paid_at,
@@ -318,6 +319,13 @@ const updatePayment =
                 updateData.status =
                     "en_revision";
 
+                if (payment_method) {
+
+                    updateData.payment_method =
+                        payment_method;
+
+                }
+
                 if (!payment.paid_at) {
 
                     updateData.paid_at =
@@ -382,12 +390,6 @@ const updatePayment =
 
                 if (payment.payment_type === "mentor") {
 
-                    courseUpdate.final_mentorship_approved =
-                        true;
-
-                    courseUpdate.final_mentorship_session_id =
-                        payment.session_id || null;
-
                     if (payment.session_id) {
 
                         await supabase
@@ -427,26 +429,24 @@ const updatePayment =
                 payment.payment_type === "mentor"
             ) {
 
-                await supabase
-                    .from("student_courses")
-                    .update({
-                        final_mentorship_approved:
-                            false,
-                        final_mentorship_session_id:
-                            null
-                    })
-                    .eq(
-                        "student_id",
-                        payment.student_id
-                    )
-                    .eq(
-                        "course_id",
-                        payment.course_id
-                    )
-                    .eq(
-                        "final_mentorship_session_id",
-                        payment.session_id
-                    );
+                if (payment.session_id) {
+
+                    await supabase
+                        .from("mentor_sessions")
+                        .update({
+                            status:
+                                "reserved"
+                        })
+                        .eq(
+                            "id",
+                            payment.session_id
+                        )
+                        .neq(
+                            "status",
+                            "completed"
+                        );
+
+                }
 
             }
             res.json(data);
