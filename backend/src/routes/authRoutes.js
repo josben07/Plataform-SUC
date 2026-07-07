@@ -7,7 +7,9 @@ express.Router();
 const {
 
     register,
-    login
+    login,
+    googleLogin,
+    verify
 
 } = require(
     "../controllers/authController"
@@ -23,6 +25,16 @@ router.post(
 router.post(
     "/login",
     login
+);
+
+router.post(
+    "/google",
+    googleLogin
+);
+
+router.get(
+    "/verify",
+    verify
 );
 
 module.exports =
