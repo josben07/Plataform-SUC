@@ -73,5 +73,66 @@ if(themeToggle){
         }
     });
 
-}   
+}
+
+/* ========================= */
+/* SESSION CHECK */
+/* ========================= */
+
+(async function verifySession() {
+
+    const token =
+        localStorage.getItem("token");
+
+    if (!token) return;
+
+    const loginPage =
+        window.location.pathname
+            .includes("login.html");
+
+    const registerPage =
+        window.location.pathname
+            .includes("registrar.html");
+
+    if (
+        loginPage ||
+        registerPage
+    ) return;
+
+    try {
+
+        const response =
+            await fetch(
+
+                `${API_URL}/api/auth/verify`,
+                {
+
+                    headers: {
+
+                        Authorization:
+                            `Bearer ${token}`
+
+                    }
+
+                }
+            );
+
+        if (!response.ok) {
+
+            localStorage.removeItem(
+                "token"
+            );
+
+            localStorage.removeItem(
+                "user"
+            );
+        }
+
+    } catch (e) {
+
+        console.error(e);
+
+    }
+
+})();   
 

@@ -1,8 +1,8 @@
 const express =
-require("express");
+    require("express");
 
 const router =
-express.Router();
+    express.Router();
 
 const {
 
@@ -38,4 +38,4 @@ router.get(
 );
 
 module.exports =
-router;
+    router;
