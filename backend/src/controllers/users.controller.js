@@ -121,7 +121,6 @@ const updateUser =
                     profile_photo_url;
 
             }
-
             const { data, error } =
                 await supabase
                     .from("users")
@@ -529,7 +528,6 @@ const updatePassword =
         }
 
     };
-
 module.exports = {
 
     getUsers,

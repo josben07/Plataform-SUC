@@ -462,7 +462,6 @@ exports.login = async (req, res) => {
             });
 
         }
-
         /* COMPARE PASSWORD */
 
         const validPassword =

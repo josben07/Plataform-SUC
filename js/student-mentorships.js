@@ -304,7 +304,6 @@ function renderList(sessions, statusMap) {
         const priceHtml = (s.price != null && s.price != "")
             ? "S/ " + Number(s.price).toFixed(2)
             : "Por definir";
-
         rows.push("<tr>");
         rows.push('<td class="td-mentor">' + escapeHtml(s.mentor_name || "Mentor por confirmar") + "</td>");
         rows.push('<td class="td-course">' + escapeHtml(s.course_name || "Curso por confirmar") + "</td>");
@@ -543,5 +542,6 @@ async function confirmCancelMentorship() {
 
 }
 
+closeStudentCompleteModal();
 initStarRating();
 loadMentorships();
