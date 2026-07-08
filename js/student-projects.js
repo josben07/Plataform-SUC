@@ -71,22 +71,6 @@ function showProjectToast(message) {
 
 /* MODAL */
 
-openProjectModal.addEventListener(
-    "click",
-    () => {
-        
-        editingProjectId =
-            null;
-
-        projectForm.reset();
-
-        projectModal.classList.add(
-            "active-modal"
-        );
-
-    }
-);
-
 function openEditProjectModal(project) {
 
     editingProjectId =

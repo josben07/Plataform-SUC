@@ -798,3 +798,28 @@ body{
 .inactive-method .pm-type-badge{
     opacity:0.6;
 }
+
+/* ========================= */
+/* TOGGLE PASSWORD */
+/* ========================= */
+
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    padding-right: 45px !important;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+    user-select: none;
+    z-index: 2;
+    line-height: 1;
+}

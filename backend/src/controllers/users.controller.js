@@ -1,3 +1,5 @@
+const bcrypt = require("bcrypt");
+
 const supabase =
 require("../config/supabase");
 
@@ -69,7 +71,8 @@ const updateUser =
             const {
                 full_name,
                 role,
-                status
+                status,
+                profile_photo_url
             } = req.body;
 
             const {
@@ -106,14 +109,23 @@ const updateUser =
 
             }
 
+            const updateData = {
+                full_name,
+                role,
+                status
+            };
+
+            if (profile_photo_url !== undefined) {
+
+                updateData.profile_photo_url =
+                    profile_photo_url;
+
+            }
+
             const { data, error } =
                 await supabase
                     .from("users")
-                    .update({
-                        full_name,
-                        role,
-                        status
-                    })
+                    .update(updateData)
                     .eq("id", id)
                     .select();
 
@@ -394,11 +406,136 @@ const deleteUser =
 
     };
 
+/* ========================= */
+/* UPDATE PASSWORD */
+/* ========================= */
+
+const updatePassword =
+    async (req, res) => {
+
+        try {
+
+            const { id } =
+                req.params;
+
+            const {
+                currentPassword,
+                newPassword
+            } = req.body;
+
+            if (
+                !newPassword ||
+                newPassword.length < 6
+            ) {
+
+                return res.status(400).json({
+
+                    error:
+                        "La contraseña debe tener al menos 6 caracteres"
+
+                });
+
+            }
+
+            const {
+                data: user,
+                error: userError
+            } =
+                await supabase
+                    .from("users")
+                    .select("*")
+                    .eq("id", id)
+                    .maybeSingle();
+
+            if (userError || !user) {
+
+                return res.status(404).json({
+
+                    error:
+                        "Usuario no encontrado"
+
+                });
+
+            }
+
+            if (user.password) {
+
+                if (!currentPassword) {
+
+                    return res.status(400).json({
+
+                        error:
+                            "Debes ingresar tu contraseña actual"
+
+                    });
+
+                }
+
+                const valid =
+                    await bcrypt.compare(
+                        currentPassword,
+                        user.password
+                    );
+
+                if (!valid) {
+
+                    return res.status(400).json({
+
+                        error:
+                            "Contraseña actual incorrecta"
+
+                    });
+
+                }
+
+            }
+
+            const hashedPassword =
+                await bcrypt.hash(
+                    newPassword,
+                    10
+                );
+
+            const { error: updateError } =
+                await supabase
+                    .from("users")
+                    .update({
+                        password: hashedPassword
+                    })
+                    .eq("id", id);
+
+            if (updateError) {
+
+                return res.status(400).json(updateError);
+
+            }
+
+            res.json({
+
+                message:
+                    "Contraseña actualizada correctamente"
+
+            });
+
+        } catch (err) {
+
+            res.status(500).json({
+
+                error:
+                    err.message
+
+            });
+
+        }
+
+    };
+
 module.exports = {
 
     getUsers,
     updateUser,
-    deleteUser
+    deleteUser,
+    updatePassword
 
 };
 

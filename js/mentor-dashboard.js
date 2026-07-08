@@ -21,6 +21,8 @@ if (user.role !== "mentor") {
 
 }
 
+askKeepSession();
+
 document.getElementById("mentorName").textContent =
     `Bienvenido, ${user.full_name}`;
 

@@ -31,6 +31,8 @@ if(user.role !== "admin"){
     "../login.html";
 }
 
+askKeepSession();
+
 /* ========================= */
 /* USER INFO */
 /* ========================= */

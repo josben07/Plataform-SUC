@@ -118,3 +118,117 @@ profileForm.addEventListener(
 
     }
 );
+
+/* ========================= */
+/* PASSWORD FORM */
+/* ========================= */
+
+const passwordForm =
+    document.getElementById("passwordForm");
+
+const currentPassword =
+    document.getElementById("currentPassword");
+
+const newPassword =
+    document.getElementById("newPassword");
+
+const confirmPassword =
+    document.getElementById("confirmPassword");
+
+if (passwordForm) {
+
+    passwordForm.addEventListener(
+        "submit",
+        async (e) => {
+
+            e.preventDefault();
+
+            if (
+                newPassword.value !==
+                confirmPassword.value
+            ) {
+
+                showToast(
+                    "Las contraseñas no coinciden"
+                );
+
+                return;
+
+            }
+
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+            if (!passwordRegex.test(newPassword.value)) {
+
+                showToast(
+                    "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número"
+                );
+
+                return;
+
+            }
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/api/users/${user.id}/password`,
+                        {
+                            method: "PUT",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    currentPassword:
+                                        currentPassword.value,
+
+                                    newPassword:
+                                        newPassword.value
+                                })
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if (response.ok) {
+
+                    showToast(
+                        "Contraseña actualizada correctamente"
+                    );
+
+                    currentPassword.value =
+                        "";
+
+                    newPassword.value =
+                        "";
+
+                    confirmPassword.value =
+                        "";
+
+                } else {
+
+                    showToast(
+                        data.error
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(error);
+
+                showToast(
+                    "Error del servidor"
+                );
+
+            }
+
+        }
+    );
+
+}

@@ -1,4 +1,3 @@
-/* agregado para correr backend hoy */
 const path =
     require("path");
 
@@ -9,6 +8,18 @@ require("dotenv").config({
             ".env"
         )
 });
+
+/* VALIDATE ENV */
+
+if (!process.env.JWT_SECRET) {
+
+    console.error(
+        "FATAL: JWT_SECRET no está definido en el archivo .env"
+    );
+
+    process.exit(1);
+
+}
 
 const mentorProfilesRoutes =
     require("./src/routes/mentor-profiles.routes");

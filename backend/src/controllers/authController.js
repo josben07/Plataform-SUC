@@ -452,6 +452,17 @@ exports.login = async (req, res) => {
 
         }
 
+        if (!user.password) {
+
+            return res.status(400).json({
+
+                error:
+                "Esta cuenta fue creada con Google. Inicia sesión con Google."
+
+            });
+
+        }
+
         /* COMPARE PASSWORD */
 
         const validPassword =

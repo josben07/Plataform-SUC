@@ -13,6 +13,8 @@ if (!token || !user || user.role !== "student") {
 
 }
 
+askKeepSession();
+
 /* USER INFO */
 
 document.getElementById("studentName").textContent =

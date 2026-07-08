@@ -8,7 +8,8 @@ const {
 
     getUsers,
     updateUser,
-    deleteUser
+    deleteUser,
+    updatePassword
 
 } = require(
     "../controllers/users.controller"
@@ -24,6 +25,11 @@ router.get(
 router.put(
     "/:id",
     updateUser
+);
+
+router.put(
+    "/:id/password",
+    updatePassword
 );
 
 router.delete(

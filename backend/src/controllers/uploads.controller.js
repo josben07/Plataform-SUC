@@ -18,7 +18,9 @@ const UPLOAD_TYPE_TO_STORAGE_BUCKET = {
     payments:
         "payments",
     mentorships:
-        "mentorships"
+        "mentorships",
+    avatars:
+        "avatars"
 };
 
 const getSafeExtension =

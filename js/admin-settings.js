@@ -227,10 +227,12 @@ savePasswordBtn.addEventListener(
             return;
         }
 
-        if (password.length < 6) {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+        if (!passwordRegex.test(password)) {
 
             showToast(
-                "La contraseña debe tener mínimo 6 caracteres"
+                "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número"
             );
 
             return;

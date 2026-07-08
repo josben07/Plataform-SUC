@@ -82,6 +82,76 @@ body{background:#020617;color:white}
     opacity:.55;
 }
 
+.password-section{
+
+    margin-top:40px;
+
+    border-top:
+    1px solid rgba(255,255,255,.08);
+
+    padding-top:32px;
+}
+
+.password-section h3{
+
+    font-size:1.2rem;
+
+    margin-bottom:20px;
+}
+
+.password-section form{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+}
+
+.password-section input{
+
+    height:50px;
+
+    border:none;
+
+    border-radius:14px;
+
+    padding:0 16px;
+
+    background:
+    rgba(255,255,255,.05);
+
+    color:white;
+
+    outline:none;
+}
+
+.password-section button{
+
+    height:50px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:
+    rgba(255,255,255,.08);
+
+    color:white;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.3s ease;
+}
+
+.password-section button:hover{
+
+    background:
+    rgba(255,255,255,.14);
+}
+
 .profile-card button{
     height:54px;
     border:none;
@@ -122,4 +192,29 @@ body{background:#020617;color:white}
     color:white;
     outline:none;
     resize:none;
+}
+
+/* ========================= */
+/* TOGGLE PASSWORD */
+/* ========================= */
+
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    padding-right: 45px !important;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+    user-select: none;
+    z-index: 2;
+    line-height: 1;
 }

@@ -28,6 +28,39 @@ function showAuthToast(message) {
 }
 
 /* ========================= */
+/* LOADING OVERLAY */
+/* ========================= */
+
+const authLoading =
+    document.getElementById(
+        "authLoading"
+    );
+
+function showAuthLoading() {
+
+    if (authLoading) {
+
+        authLoading.classList.add(
+            "active"
+        );
+
+    }
+
+}
+
+function hideAuthLoading() {
+
+    if (authLoading) {
+
+        authLoading.classList.remove(
+            "active"
+        );
+
+    }
+
+}
+
+/* ========================= */
 /* SUPABASE CLIENT */
 /* ========================= */
 
@@ -76,19 +109,31 @@ async function handleGoogleCallback() {
 
     if (!supabaseClient) return;
 
+    showAuthLoading();
+
     const {
         data:
         { session }
     } =
         await supabaseClient.auth.getSession();
 
-    if (!session) return;
+    if (!session) {
+
+        hideAuthLoading();
+        return;
+
+    }
 
     if (
         localStorage.getItem(
             "token"
         )
-    ) return;
+    ) {
+
+        hideAuthLoading();
+        return;
+
+    }
 
     const accessToken =
         session.access_token;
@@ -98,6 +143,8 @@ async function handleGoogleCallback() {
         showAuthToast(
             "Error al obtener sesión de Google"
         );
+
+        hideAuthLoading();
 
         return;
 
@@ -134,6 +181,8 @@ async function handleGoogleCallback() {
         const data =
             await response.json();
 
+        hideAuthLoading();
+
         if (response.ok) {
 
             localStorage.setItem(
@@ -144,6 +193,11 @@ async function handleGoogleCallback() {
             localStorage.setItem(
                 "user",
                 JSON.stringify(data.user)
+            );
+
+            localStorage.setItem(
+                "keepSessionPending",
+                "true"
             );
 
             showAuthToast(
@@ -161,6 +215,8 @@ async function handleGoogleCallback() {
         }
 
     } catch (error) {
+
+        hideAuthLoading();
 
         console.error(error);
 
@@ -256,7 +312,25 @@ async function checkSession() {
 
     }
 
-    await handleGoogleCallback();
+    const urlParams =
+        new URLSearchParams(
+            window.location.hash
+                .replace("#", "?")
+        );
+
+    const hasAuthParams =
+        urlParams.has(
+            "access_token"
+        ) ||
+        urlParams.has(
+            "refresh_token"
+        );
+
+    if (hasAuthParams) {
+
+        await handleGoogleCallback();
+
+    }
 
 }
 
@@ -284,13 +358,25 @@ if (registerForm) {
 
             const email =
                 document.getElementById(
-                    "email"
+                    "registerEmail"
                 ).value;
 
             const password =
                 document.getElementById(
-                    "password"
+                    "registerPassword"
                 ).value;
+
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+            if (!passwordRegex.test(password)) {
+
+                showToast(
+                    "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número"
+                );
+
+                return;
+
+            }
 
             try {
 
@@ -380,12 +466,12 @@ if (loginForm) {
 
             const email =
                 document.getElementById(
-                    "email"
+                    "loginEmail"
                 ).value;
 
             const password =
                 document.getElementById(
-                    "password"
+                    "loginPassword"
                 ).value;
 
             try {
